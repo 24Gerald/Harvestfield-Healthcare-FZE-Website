@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, MemoryRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
@@ -14,9 +14,13 @@ function ScrollToTop() {
   return null
 }
 
+// Normal hosting uses real URLs. Set VITE_ROUTER=memory for sandboxed previews
+// (e.g. a single-file build served from a fixed URL) where the path cannot change.
+const Router = import.meta.env.VITE_ROUTER === 'memory' ? MemoryRouter : BrowserRouter
+
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <Router basename={import.meta.env.VITE_ROUTER === 'memory' ? '/' : import.meta.env.BASE_URL}>
       <ScrollToTop />
       <a
         href="#main"
@@ -34,6 +38,6 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
-    </BrowserRouter>
+    </Router>
   )
 }
