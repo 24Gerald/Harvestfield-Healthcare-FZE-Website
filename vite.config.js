@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Served from the domain root on Netlify. The GitHub Pages preview workflow
+  // sets BASE_PATH to the repository sub-path (see .github/workflows/pages.yml).
+  base: process.env.BASE_PATH || '/',
   plugins: [react(), tailwindcss()],
   build: {
     // The 3D stack is reached only through the dynamic import in

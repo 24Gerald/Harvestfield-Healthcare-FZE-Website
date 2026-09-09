@@ -1,0 +1,55 @@
+# Temporary preview on GitHub Pages.
+# Production hosting is Netlify (see netlify.toml); this workflow only exists so
+# the site can be reviewed at https://24gerald.github.io/Harvestfield-Healthcare-FZE-Website/
+# before the Netlify site and domain are connected. Delete it once Netlify is live.
+#
+# Note: the Request Supply form posts to Netlify Forms, which does not exist on
+# GitHub Pages — submitting on the preview shows the error state with the
+# mailto: fallback. Everything else behaves as in production.
+name: Preview on GitHub Pages
+
+on:
+  push:
+    branches: [claude/new-session-g34dfl, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+      # SPA fallback so /legal resolves on Pages, and skip Jekyll processing.
+      - run: cp dist/index.html dist/404.html && touch dist/.nojekyll
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
