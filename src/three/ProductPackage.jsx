@@ -207,9 +207,11 @@ function patchFilmShader(shader) {
     .replace(
       '#include <alphamap_fragment>',
       `#include <alphamap_fragment>
-      if (vOutside > 0.0) discard;
-      // soft anti-aliased cut edge
-      float edge = 1.0 - smoothstep(-0.006, 0.0, vOutside);
+      // cut edge: screen-space anti-aliased so it stays soft at any size,
+      // pixel ratio or GPU (no jagged discard line)
+      float aaw = max(fwidth(vOutside) * 0.9, 0.0015);
+      float edge = 1.0 - smoothstep(-aaw, aaw, vOutside);
+      if (edge <= 0.002) discard;
       // fused seal: whiter, slightly more opaque than bare film
       vec3 sealTint = vec3(0.965, 0.965, 0.945);
       diffuseColor.rgb = mix(diffuseColor.rgb, sealTint, vFlange);
@@ -261,7 +263,7 @@ function Environment() {
   return null
 }
 
-function Pack({ front, back, bundle, wrinkles, paused }) {
+function Pack({ front, back, bundle, wrinkles, paused, pose }) {
   const group = useRef()
   const drag = useRef({ active: false, velocity: 0 })
   const [frontTex, backTex, bundleTex, wrinkleTex] = useLoader(THREE.TextureLoader, [front, back, bundle, wrinkles])
@@ -291,6 +293,12 @@ function Pack({ front, back, bundle, wrinkles, paused }) {
     const g = group.current
     if (!g) return
     const t = state.clock.elapsedTime
+    if (pose != null) {
+      // fixed pose (used to capture the static still) — no spin, no bob
+      g.rotation.set(-0.1, pose, 0)
+      g.position.y = 0
+      return
+    }
     if (!drag.current.active) {
       const auto = paused ? 0 : 0.32
       drag.current.velocity = THREE.MathUtils.damp(drag.current.velocity, 0, 3, dt)
@@ -336,11 +344,18 @@ function Pack({ front, back, bundle, wrinkles, paused }) {
   )
 }
 
-export default function ProductPackage({ front, back, bundle, wrinkles, paused = false }) {
+export default function ProductPackage({ front, back, bundle, wrinkles, active = true }) {
   const [dpr, setDpr] = useState(Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2))
+  // `?packpose=<radians>` freezes the pack at that angle (used to render the static still)
+  const pose = useMemo(() => {
+    if (typeof window === 'undefined') return null
+    const v = new URLSearchParams(window.location.search).get('packpose')
+    return v == null || v === '' || Number.isNaN(Number(v)) ? null : Number(v)
+  }, [])
   return (
     <Canvas
       dpr={dpr}
+      frameloop={active ? 'always' : 'never'}
       camera={{ position: [0, 0.05, 5.95], fov: 34 }}
       gl={{ alpha: true, antialias: true, powerPreference: 'low-power', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
       style={{ touchAction: 'pan-y', cursor: 'grab' }}
@@ -352,7 +367,7 @@ export default function ProductPackage({ front, back, bundle, wrinkles, paused =
       <directionalLight position={[-4, 1, 3]} intensity={0.45} />
       <directionalLight position={[0, -2, -4]} intensity={0.7} color="#a9d3d8" />
       <Suspense fallback={null}>
-        <Pack front={front} back={back} bundle={bundle} wrinkles={wrinkles} paused={paused} />
+        <Pack front={front} back={back} bundle={bundle} wrinkles={wrinkles} paused={!active} pose={pose} />
       </Suspense>
     </Canvas>
   )

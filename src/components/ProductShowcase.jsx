@@ -12,9 +12,14 @@ export default function ProductShowcase({ className = '' }) {
   const ref = useRef(null)
   const reduce = useReducedMotion()
   const [inView, setInView] = useState(false)
+  // The canvas mounts once the card has been on screen for a moment and then
+  // stays mounted (paused while off screen) — mount/unmount churn during a fast
+  // scroll-through would race the WebGL setup.
+  const [mounted, setMounted] = useState(false)
   const [ready, setReady] = useState(false)
   const base = import.meta.env.BASE_URL
   const front = `${base}product/front.png`
+  const still = `${base}product/pack-still.png`
   const back = `${base}product/back.png`
   const bundle = `${base}product/net-bundle.png`
   const wrinkles = `${base}product/wrinkles.png`
@@ -27,6 +32,12 @@ export default function ProductShowcase({ className = '' }) {
     return () => io.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (!inView || mounted) return
+    const id = setTimeout(() => setMounted(true), 180)
+    return () => clearTimeout(id)
+  }, [inView, mounted])
+
   const webgl = typeof document !== 'undefined' && !!document.createElement('canvas').getContext('webgl2')
   const use3D = !reduce && webgl
 
@@ -36,17 +47,18 @@ export default function ProductShowcase({ className = '' }) {
       className={`relative aspect-[4/5] overflow-hidden rounded-3xl bg-[radial-gradient(80%_70%_at_50%_40%,#e7eeef_0%,#d5e2e4_100%)] ${className}`}
       onPointerEnter={() => setReady(true)}
     >
-      {/* Static artwork: loading state and fallback */}
+      {/* Pre-rendered still of the 3D pack: loading state and fallback, so the
+          soft seal and edges look the same before WebGL is up (and without it) */}
       <img
-        src={front}
+        src={still}
         alt="Synera DuoForte pack, front"
-        className={`absolute left-1/2 top-1/2 w-[62%] -translate-x-1/2 -translate-y-1/2 rounded-md shadow-[0_30px_60px_-30px_rgba(16,81,91,0.5)] transition-opacity duration-700 ${use3D && inView ? 'opacity-0' : 'opacity-100'}`}
+        className={`absolute left-1/2 top-1/2 w-[82%] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_28px_40px_rgba(16,81,91,0.22)] transition-opacity duration-700 ${use3D && mounted ? 'opacity-0' : 'opacity-100'}`}
         loading="lazy"
       />
-      {use3D && inView && (
+      {use3D && mounted && (
         <div className="absolute inset-0">
           <Suspense fallback={null}>
-            <ProductPackage front={front} back={back} bundle={bundle} wrinkles={wrinkles} paused={false} />
+            <ProductPackage front={front} back={back} bundle={bundle} wrinkles={wrinkles} active={inView} />
           </Suspense>
         </div>
       )}
