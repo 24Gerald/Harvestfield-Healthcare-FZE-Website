@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { HarvestfieldLogo } from '../components/HarvestfieldMark'
 import { ADMIN } from './config'
 import { makeClient } from './lib/github'
+import { makeServerClient, serverLogout } from './lib/server'
 import { clearVault } from './lib/vault'
 import Login from './components/Login'
 import Dashboard from './components/Dashboard'
@@ -20,7 +21,7 @@ export default function AdminApp() {
   const [view, setView] = useState({ name: 'posts' })
   const [deployBump, setDeployBump] = useState(0)
   const [refreshKey, setRefreshKey] = useState(0)
-  const client = useMemo(() => (session ? makeClient(session.token) : null), [session])
+  const client = useMemo(() => (session ? (session.mode === 'server' ? makeServerClient() : makeClient(session.token)) : null), [session])
 
   if (!session) {
     return (
@@ -36,7 +37,8 @@ export default function AdminApp() {
   ]
   const signOut = () => {
     if (confirm('Sign out?')) {
-      if (!session.storedInRepo && confirm('Also forget the GitHub token on this browser?')) clearVault()
+      if (session.mode === 'server') serverLogout().catch(() => {})
+      else if (!session.storedInRepo && confirm('Also forget the GitHub token on this browser?')) clearVault()
       setSession(null)
     }
   }

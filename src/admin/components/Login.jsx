@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { HarvestfieldLogo } from '../../components/HarvestfieldMark'
 import { ADMIN } from '../config'
 import { sha256Hex, hasVault, loadToken, saveToken, hasRepoVault, loadRepoToken, encryptToken } from '../lib/vault'
 import { makeClient } from '../lib/github'
+import { probeServer, serverLogin } from '../lib/server'
 import { Btn, Field, inputClass, EASE } from './ui'
 
 /**
@@ -20,11 +21,27 @@ export default function Login({ onReady }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [note, setNote] = useState('')
+  const [server, setServer] = useState(undefined) // undefined = probing, null = none, object = server mode
+
+  useEffect(() => {
+    probeServer().then(setServer)
+  }, [])
 
   async function submitPassword(e) {
     e.preventDefault()
     setBusy(true)
     setError('')
+    // Server mode (Vercel): the server checks the password and holds the GitHub token.
+    if (server?.configured) {
+      try {
+        const r = await serverLogin(password)
+        onReady({ mode: 'server', user: r.user })
+      } catch (err) {
+        setError(err.message)
+        setBusy(false)
+      }
+      return
+    }
     const ok = (await sha256Hex(password)) === ADMIN.passwordHash
     if (!ok) {
       setBusy(false)
@@ -129,7 +146,13 @@ export default function Login({ onReady }) {
             {stage === 'password' ? 'Sign in' : 'Save and continue'}
           </Btn>
         </motion.form>
-        <p className="mt-6 text-xs text-white/50">Publishing writes to {ADMIN.owner}/{ADMIN.repo} on branch {ADMIN.branch}.</p>
+        <p className="mt-6 text-xs text-white/50">
+          {server?.configured
+            ? `Server mode · publishing to ${ADMIN.owner}/${ADMIN.repo} on ${server.branch}`
+            : server && !server.configured
+              ? `Server found but not configured — missing ${server.missing.join(', ')} in the hosting environment. Using browser mode.`
+              : `Publishing writes to ${ADMIN.owner}/${ADMIN.repo} on branch ${ADMIN.branch}.`}
+        </p>
       </motion.div>
     </div>
   )

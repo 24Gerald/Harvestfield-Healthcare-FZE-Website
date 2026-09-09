@@ -26,4 +26,8 @@ export default [
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
+  {
+    files: ['api/**/*.js', 'lib/server/**/*.js', '*.config.js'],
+    languageOptions: { globals: { ...globals.node } },
+  },
 ]

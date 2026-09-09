@@ -14,6 +14,23 @@ npm run lint
 
 Node 22 is pinned in `netlify.toml`.
 
+## Deploy to Vercel (recommended)
+
+1. In Vercel: **Add New → Project → Import** this GitHub repository. Framework is detected as Vite; `vercel.json` sets the build, the SPA rewrites, `/admin`, and cache headers.
+2. Before the first deploy, add these **Environment Variables** (Production and Preview):
+
+   | Variable | Value |
+   | --- | --- |
+   | `GITHUB_TOKEN` | Fine-grained personal access token for this repo, *Contents: read and write* only. Lets the admin panel publish posts. |
+   | `ADMIN_PASSWORD` | The admin panel password. |
+   | `ADMIN_SESSION_SECRET` | Any long random string (e.g. `openssl rand -hex 32`). Signs login sessions. |
+   | `GITHUB_BRANCH` | Branch the admin writes to and Vercel deploys from (currently `claude/new-session-g34dfl`; change both when you move to `main`). |
+
+3. Deploy. Every push to the branch redeploys; every post published from `/admin` is a push.
+4. **Domains:** add `harvestfieldhealthcare.com` (and `www`) in the project's Domains tab and follow the DNS instructions. Adding `admin.harvestfieldhealthcare.com` as well makes the admin panel answer on that subdomain (rewrite in `vercel.json`).
+
+With those variables set, the admin panel runs in **server mode**: password only, no token in the browser. On a host without functions (GitHub Pages) it falls back to browser mode, where the token is entered once and kept encrypted.
+
 ## Deploy to Netlify
 
 1. Create a new site from this repository in Netlify. `netlify.toml` already sets the build command, publish directory, SPA redirect and cache headers.
@@ -84,7 +101,8 @@ The 3D bundle (~220 kB gzipped) is a separate chunk loaded on demand and never b
 
 Posts are written in the site's own admin panel at `/admin/` (password-protected). The panel stores each post as JSON in `content/posts/` and uploads media to `public/blog-media/` by committing to this repository through the GitHub API. Every commit triggers the Pages/Netlify deploy, so a post is live on `/blog` about two minutes after publishing. No external CMS, no database.
 
-- **Login:** the password is checked in the browser against a hash in `src/admin/config.js`. The very first login (ever) asks for a GitHub token (fine-grained personal access token with *Contents: read and write* on this repo) — that token is what actually authorises the commits, because a static site has no server to hold a secret. With "remember on all devices" the token is encrypted with the password (PBKDF2 600k + AES-GCM) and committed as `src/admin/vault.json`; from then on every device needs only the password. Because that ciphertext is public, **the password is the only protection for repo write access — use a long passphrase** and rotate the token if the password ever leaks. To revoke: delete the token on GitHub and empty `vault.json` to `{}`.
+- **Login (server mode, Vercel):** `/api/admin/login` checks `ADMIN_PASSWORD` and issues an httpOnly session cookie; `/api/admin/gh` performs the GitHub writes with the server-held `GITHUB_TOKEN`, restricted to `content/posts/` and `public/blog-media/`.
+- **Login (browser mode, GitHub Pages):** the password is checked in the browser against a hash in `src/admin/config.js`. The very first login (ever) asks for a GitHub token (fine-grained personal access token with *Contents: read and write* on this repo) — that token is what actually authorises the commits, because a static site has no server to hold a secret. With "remember on all devices" the token is encrypted with the password (PBKDF2 600k + AES-GCM) and committed as `src/admin/vault.json`; from then on every device needs only the password. Because that ciphertext is public, **the password is the only protection for repo write access — use a long passphrase** and rotate the token if the password ever leaks. To revoke: delete the token on GitHub and empty `vault.json` to `{}`.
 - **Branch:** commits go to the branch named in `src/admin/config.js` (`ADMIN.branch`). Change it to `main` once the site has a main branch.
 - **Change the password:** run `node -e "crypto.subtle.digest('SHA-256', new TextEncoder().encode('new-password')).then(b=>console.log(Buffer.from(b).toString('hex')))"` and paste the hash into `src/admin/config.js`.
 - **Post format:** see `content/posts/example-post.json`. Body is HTML from the editor; the site strips anything executable before rendering (`src/lib/posts.js`).
