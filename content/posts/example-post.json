@@ -2,7 +2,7 @@
   "title": "Example post — delete me",
   "slug": "example-post",
   "publishedAt": "2026-09-01T09:00:00.000Z",
-  "published": false,
+  "published": true,
   "excerpt": "A draft that shows how posts are stored. It never appears on the public site while published is false.",
   "author": "Harvestfield Healthcare",
   "cover": "",
