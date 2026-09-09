@@ -5,10 +5,12 @@
  *   - translucent white poly film with the artwork printed on it: printed areas
  *     are opaque, unprinted film is see-through (alpha map derived from the artwork)
  *   - the folded net bundle inside, visible through the film
- *   - a flat heat-seal border all the way round with a slightly wavy cut edge
- *     and crimp lines on the top seal
- *   - inflated pillow shape with soft lumps from the folded contents, plus
- *     micro-crinkles (vertex noise) and a wrinkle bump map for the film
+ *   - each side is ONE continuous sheet: the inflated pillow rolls smoothly into
+ *     a flat heat-seal flange (no separate seal plate, no hard step), the flange
+ *     has softly rounded corners, a slightly wavy cut edge and crimp lines on the
+ *     top seal — all done in the same surface and the same material
+ *   - soft lumps from the folded contents, micro-crinkles (vertex noise) and a
+ *     wrinkle bump map for the film
  *   - image-based lighting (RoomEnvironment) so the plastic picks up reflections
  *
  * Artwork: public/product/front.png, back.png; helpers net-bundle.png, wrinkles.png
@@ -20,7 +22,9 @@ import { PerformanceMonitor } from '@react-three/drei/core/PerformanceMonitor'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
-const PACK = { w: 2.2, h: 2.75, puff: 0.3, seal: 0.12, cornerR: 0.1 }
+const PACK = { w: 2.2, h: 2.75, puff: 0.3, seal: 0.13, cornerR: 0.16 }
+const FILM_ALPHA = 0.72 // bare (unprinted) film opacity
+const SEAL_ALPHA = 0.82 // fused double-layer seal is a touch more opaque
 
 /* ---------- small value-noise for lumps and crinkles ---------- */
 const hash = (x, y) => {
@@ -28,6 +32,10 @@ const hash = (x, y) => {
   return s - Math.floor(s)
 }
 const smooth = (t) => t * t * (3 - 2 * t)
+const smoothstep = (a, b, x) => {
+  const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1)
+  return t * t * (3 - 2 * t)
+}
 function noise2(x, y) {
   const xi = Math.floor(x)
   const yi = Math.floor(y)
@@ -42,8 +50,84 @@ function noise2(x, y) {
   return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v
 }
 
-/** Pillow surface: inflated profile + content lumps + film crinkles. */
-function puffedGeometry(w, h, puff, { lumps = 0.06, crinkle = 0.006, seed = 0, segments = 64 } = {}) {
+/**
+ * One side of the pouch as a single sheet: pillow body + heat-seal flange.
+ *
+ * Extra vertex attributes drive the shader:
+ *   aFlange  0 on the printed body → 1 on the seal (colour / alpha / roughness blend)
+ *   aTop     1 on the top seal strip (crimp lines)
+ *   aOutside signed distance to the wavy rounded outline (> 0 is cut away)
+ * UVs are clamped to the body so the artwork stops at the seal.
+ */
+function pouchGeometry(w, h, puff, seal, cornerR, { lumps = 0.05, crinkle = 0.006, seed = 0, segments = 110 } = {}) {
+  const W = w + 2 * seal
+  const H = h + 2 * seal
+  const g = new THREE.PlaneGeometry(W, H, segments, Math.round(segments * (H / W)))
+  const pos = g.attributes.position
+  const uv = g.attributes.uv
+  const n = pos.count
+  const flangeAttr = new Float32Array(n)
+  const topAttr = new Float32Array(n)
+  const outAttr = new Float32Array(n)
+  const hw = w / 2
+  const hh = h / 2
+  // the pillow profile reaches zero a little way into the flange so the roll-off
+  // is gentle instead of meeting the seal at a hard crease
+  const rw = hw + seal * 0.35
+  const rh = hh + seal * 0.35
+  const ow = hw + seal
+  const oh = hh + seal
+  for (let i = 0; i < n; i++) {
+    const x = pos.getX(i)
+    const y = pos.getY(i)
+    const ax = Math.abs(x)
+    const ay = Math.abs(y)
+
+    // inflated profile — finite slope at the edge (no sqrt cliff)
+    const fx = Math.max(0, 1 - Math.pow(ax / rw, 2.35))
+    const fy = Math.max(0, 1 - Math.pow(ay / rh, 2.6))
+    let body = fx * fy
+    body = body * body * (3 - 2 * body) * 0.85 + body * 0.15 // slightly fuller, still C1 at the toe
+
+    // how far this vertex sits beyond the printed body rectangle
+    const dx = Math.max(ax - hw, 0)
+    const dy = Math.max(ay - hh, 0)
+    const d = Math.hypot(dx, dy)
+    const toe = 1 - smoothstep(0, seal * 0.55, d) // extra softening of the fold
+    const flange = smoothstep(-0.01, seal * 0.4, d)
+
+    const lump = (noise2(x * 1.6 + seed, y * 1.6 + seed) - 0.5) * lumps + (noise2(x * 3.2 + seed * 2, y * 3.2 + seed) - 0.5) * lumps * 0.5
+    const crk = (noise2(x * 28 + seed, y * 28 + seed) - 0.5) * crinkle
+    const pillow = (puff + lump + crk) * body * toe
+
+    // seal: essentially flat, with a whisper of ripple and a tiny outward curl at the cut
+    const ripple = (noise2(x * 7 + seed * 3, y * 7 + seed) - 0.5) * 0.006
+    const curl = Math.pow(smoothstep(seal * 0.3, seal, d), 2) * 0.012
+    const sealZ = 0.002 + ripple + curl
+
+    pos.setZ(i, pillow + sealZ * flange)
+
+    // rounded outline with a slightly irregular cut
+    const qx = ax - (ow - cornerR)
+    const qy = ay - (oh - cornerR)
+    const sdf = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - cornerR
+    const wob = (noise2(x * 5.5 + seed, y * 5.5 + 3.1) - 0.5) * 0.018 + (noise2(x * 21 + seed, y * 21) - 0.5) * 0.004
+    outAttr[i] = sdf + wob
+
+    flangeAttr[i] = flange
+    topAttr[i] = y > hh ? smoothstep(hh - 0.005, hh + 0.02, y) : 0
+
+    uv.setXY(i, THREE.MathUtils.clamp((x + hw) / w, 0, 1), THREE.MathUtils.clamp((y + hh) / h, 0, 1))
+  }
+  g.setAttribute('aFlange', new THREE.BufferAttribute(flangeAttr, 1))
+  g.setAttribute('aTop', new THREE.BufferAttribute(topAttr, 1))
+  g.setAttribute('aOutside', new THREE.BufferAttribute(outAttr, 1))
+  g.computeVertexNormals()
+  return g
+}
+
+/** The folded contents — a softer, smaller pillow that sits inside the film. */
+function bundleGeometry(w, h, puff, { lumps = 0.05, seed = 0, segments = 48 } = {}) {
   const g = new THREE.PlaneGeometry(w, h, segments, Math.round(segments * (h / w)))
   const pos = g.attributes.position
   const hw = w / 2
@@ -51,56 +135,18 @@ function puffedGeometry(w, h, puff, { lumps = 0.06, crinkle = 0.006, seed = 0, s
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i)
     const y = pos.getY(i)
-    const nx = x / hw
-    const ny = y / hh
-    // Superellipse falloff: flat-ish centre, rounding toward the sealed edge.
-    const fx = Math.sqrt(Math.max(0, 1 - Math.pow(Math.abs(nx), 2.6)))
-    const fy = Math.sqrt(Math.max(0, 1 - Math.pow(Math.abs(ny), 2.8)))
+    const fx = Math.max(0, 1 - Math.pow(Math.abs(x) / hw, 2.2))
+    const fy = Math.max(0, 1 - Math.pow(Math.abs(y) / hh, 2.4))
     const body = fx * fy
-    const lump = (noise2(x * 1.6 + seed, y * 1.6 + seed) - 0.5) * lumps + (noise2(x * 3.2 + seed * 2, y * 3.2 + seed) - 0.5) * lumps * 0.5
-    const crk = (noise2(x * 28 + seed, y * 28 + seed) - 0.5) * crinkle
-    pos.setZ(i, puff * body + (lump + crk) * body)
+    const lump = (noise2(x * 1.7 + seed, y * 1.7 + seed) - 0.5) * lumps + (noise2(x * 3.4 + seed * 2, y * 3.4 + seed) - 0.5) * lumps * 0.5
+    pos.setZ(i, (puff + lump) * body)
   }
   g.computeVertexNormals()
   return g
 }
 
-/** Flat seal frame around the pouch with a slightly irregular outer cut. */
-function sealGeometry(w, h, seal, r) {
-  const ow = w / 2 + seal
-  const oh = h / 2 + seal
-  const shape = new THREE.Shape()
-  const N = 220
-  for (let i = 0; i <= N; i++) {
-    const t = (i / N) * Math.PI * 2
-    // rounded-rectangle outline via superellipse, then a tiny wobble on the cut edge
-    const c = Math.cos(t)
-    const s = Math.sin(t)
-    const k = 6
-    const x = Math.sign(c) * Math.pow(Math.abs(c), 2 / k) * ow
-    const y = Math.sign(s) * Math.pow(Math.abs(s), 2 / k) * oh
-    const wob = 1 + (noise2(i * 0.35, 7.7) - 0.5) * 0.02
-    if (i === 0) shape.moveTo(x * wob, y * wob)
-    else shape.lineTo(x * wob, y * wob)
-  }
-  const hole = new THREE.Path()
-  const iw = w / 2 - 0.02
-  const ih = h / 2 - 0.02
-  hole.moveTo(-iw + r, -ih)
-  hole.lineTo(iw - r, -ih)
-  hole.quadraticCurveTo(iw, -ih, iw, -ih + r)
-  hole.lineTo(iw, ih - r)
-  hole.quadraticCurveTo(iw, ih, iw - r, ih)
-  hole.lineTo(-iw + r, ih)
-  hole.quadraticCurveTo(-iw, ih, -iw, ih - r)
-  hole.lineTo(-iw, -ih + r)
-  hole.quadraticCurveTo(-iw, -ih, -iw + r, -ih)
-  shape.holes.push(hole)
-  return new THREE.ShapeGeometry(shape, 8)
-}
-
 /** Alpha map from the artwork: printed pixels opaque, bare film translucent. */
-function alphaFromArtwork(texture, filmAlpha = 0.72) {
+function alphaFromArtwork(texture, filmAlpha = FILM_ALPHA) {
   const img = texture.image
   const c = document.createElement('canvas')
   c.width = img.width
@@ -123,25 +169,81 @@ function alphaFromArtwork(texture, filmAlpha = 0.72) {
   return t
 }
 
-/** Crimp lines for the top heat seal. */
-function crimpTexture() {
-  const c = document.createElement('canvas')
-  c.width = 256
-  c.height = 32
-  const ctx = c.getContext('2d')
-  ctx.clearRect(0, 0, 256, 32)
-  ctx.strokeStyle = 'rgba(120,130,130,0.55)'
-  ctx.lineWidth = 1
-  for (let y = 3; y < 32; y += 4) {
-    ctx.beginPath()
-    ctx.moveTo(0, y + 0.5)
-    ctx.lineTo(256, y + 0.5)
-    ctx.stroke()
-  }
-  const t = new THREE.CanvasTexture(c)
-  t.wrapS = THREE.RepeatWrapping
-  t.repeat.set(3, 1)
-  return t
+/**
+ * Shader patch for the film material: blends the printed body into the seal
+ * (white, a little more opaque, more matte), draws crimp lines on the top seal
+ * and trims the sheet to the wavy rounded outline.
+ */
+function patchFilmShader(shader) {
+  shader.vertexShader = shader.vertexShader
+    .replace(
+      '#include <common>',
+      `#include <common>
+      attribute float aFlange;
+      attribute float aTop;
+      attribute float aOutside;
+      varying float vFlange;
+      varying float vTop;
+      varying float vOutside;
+      varying vec2 vLocal;`,
+    )
+    .replace(
+      '#include <begin_vertex>',
+      `#include <begin_vertex>
+      vFlange = aFlange;
+      vTop = aTop;
+      vOutside = aOutside;
+      vLocal = position.xy;`,
+    )
+  shader.fragmentShader = shader.fragmentShader
+    .replace(
+      '#include <common>',
+      `#include <common>
+      varying float vFlange;
+      varying float vTop;
+      varying float vOutside;
+      varying vec2 vLocal;`,
+    )
+    .replace(
+      '#include <alphamap_fragment>',
+      `#include <alphamap_fragment>
+      if (vOutside > 0.0) discard;
+      // soft anti-aliased cut edge
+      float edge = 1.0 - smoothstep(-0.006, 0.0, vOutside);
+      // fused seal: whiter, slightly more opaque than bare film
+      vec3 sealTint = vec3(0.965, 0.965, 0.945);
+      diffuseColor.rgb = mix(diffuseColor.rgb, sealTint, vFlange);
+      diffuseColor.a = mix(diffuseColor.a, ${SEAL_ALPHA.toFixed(3)}, vFlange) * edge;
+      // crimp lines across the top seal
+      float crimp = 0.5 + 0.5 * sin(vLocal.y * 290.0 + sin(vLocal.x * 40.0) * 0.6);
+      crimp = smoothstep(0.35, 0.85, crimp);
+      diffuseColor.rgb *= 1.0 - 0.13 * crimp * vTop * vFlange;`,
+    )
+    .replace(
+      '#include <roughnessmap_fragment>',
+      `#include <roughnessmap_fragment>
+      roughnessFactor = mix(roughnessFactor, 0.6, vFlange);`,
+    )
+}
+
+function makeFilmMaterial(map, alphaMap, bumpMap) {
+  const m = new THREE.MeshPhysicalMaterial({
+    map,
+    alphaMap,
+    bumpMap,
+    bumpScale: 0.004,
+    transparent: true,
+    roughness: 0.36,
+    metalness: 0,
+    clearcoat: 0.5,
+    clearcoatRoughness: 0.4,
+    envMapIntensity: 0.65,
+    depthWrite: false,
+    side: THREE.FrontSide,
+  })
+  m.onBeforeCompile = patchFilmShader
+  m.customProgramCacheKey = () => 'hf-pack-film'
+  return m
 }
 
 function Environment() {
@@ -164,21 +266,26 @@ function Pack({ front, back, bundle, wrinkles, paused }) {
   const drag = useRef({ active: false, velocity: 0 })
   const [frontTex, backTex, bundleTex, wrinkleTex] = useLoader(THREE.TextureLoader, [front, back, bundle, wrinkles])
 
-  const maps = useMemo(() => {
+  const materials = useMemo(() => {
     for (const t of [frontTex, backTex, bundleTex]) {
       t.colorSpace = THREE.SRGBColorSpace
       t.anisotropy = 8
     }
     wrinkleTex.wrapS = wrinkleTex.wrapT = THREE.RepeatWrapping
     wrinkleTex.repeat.set(2.2, 2.8)
-    return { frontAlpha: alphaFromArtwork(frontTex), backAlpha: alphaFromArtwork(backTex), crimp: crimpTexture() }
+    return {
+      front: makeFilmMaterial(frontTex, alphaFromArtwork(frontTex), wrinkleTex),
+      back: makeFilmMaterial(backTex, alphaFromArtwork(backTex), wrinkleTex),
+    }
   }, [frontTex, backTex, bundleTex, wrinkleTex])
+  useEffect(() => () => {
+    materials.front.dispose()
+    materials.back.dispose()
+  }, [materials])
 
-  const filmGeo = useMemo(() => puffedGeometry(PACK.w, PACK.h, PACK.puff, { lumps: 0.05, seed: 1.3 }), [])
-  const filmGeoBack = useMemo(() => puffedGeometry(PACK.w, PACK.h, PACK.puff, { lumps: 0.05, seed: 4.1 }), [])
-  const bundleGeo = useMemo(() => puffedGeometry(PACK.w * 0.94, PACK.h * 0.94, PACK.puff * 0.7, { lumps: 0.05, crinkle: 0, seed: 2.2, segments: 40 }), [])
-  const sealGeo = useMemo(() => sealGeometry(PACK.w, PACK.h, PACK.seal, PACK.cornerR), [])
-  const crimpGeo = useMemo(() => new THREE.PlaneGeometry(PACK.w * 0.9, PACK.seal * 0.7), [])
+  const filmGeo = useMemo(() => pouchGeometry(PACK.w, PACK.h, PACK.puff, PACK.seal, PACK.cornerR, { seed: 1.3 }), [])
+  const filmGeoBack = useMemo(() => pouchGeometry(PACK.w, PACK.h, PACK.puff, PACK.seal, PACK.cornerR, { seed: 4.1 }), [])
+  const bundleGeo = useMemo(() => bundleGeometry(PACK.w * 0.93, PACK.h * 0.93, PACK.puff * 0.68, { seed: 2.2 }), [])
 
   useFrame((state, dt) => {
     const g = group.current
@@ -212,20 +319,6 @@ function Pack({ front, back, bundle, wrinkles, paused }) {
     }
   }, [])
 
-  // Translucent printed film. Alpha comes from the artwork; the film itself is glossy.
-  const film = {
-    transparent: true,
-    roughness: 0.36,
-    metalness: 0,
-    clearcoat: 0.5,
-    clearcoatRoughness: 0.4,
-    envMapIntensity: 0.65,
-    bumpMap: wrinkleTex,
-    bumpScale: 0.004,
-    depthWrite: false,
-    side: THREE.FrontSide,
-  }
-
   return (
     <group ref={group} onPointerDown={() => (drag.current.active = true)}>
       {/* Folded net inside — rendered first so the film composites over it */}
@@ -236,25 +329,9 @@ function Pack({ front, back, bundle, wrinkles, paused }) {
         <meshStandardMaterial map={bundleTex} roughness={0.95} metalness={0} envMapIntensity={0.3} />
       </mesh>
 
-      {/* Heat-seal border — flat, translucent, slightly wavy edge */}
-      <mesh geometry={sealGeo} renderOrder={1}>
-        <meshPhysicalMaterial color="#f3f3ef" transparent opacity={0.94} roughness={0.45} clearcoat={0.4} clearcoatRoughness={0.4} envMapIntensity={0.6} side={THREE.DoubleSide} depthWrite={false} />
-      </mesh>
-      {/* Crimp lines on the top seal (both faces) */}
-      <mesh geometry={crimpGeo} position={[0, PACK.h / 2 + PACK.seal * 0.55, 0.003]} renderOrder={2}>
-        <meshBasicMaterial map={maps.crimp} transparent opacity={0.5} depthWrite={false} />
-      </mesh>
-      <mesh geometry={crimpGeo} position={[0, PACK.h / 2 + PACK.seal * 0.55, -0.003]} rotation={[0, Math.PI, 0]} renderOrder={2}>
-        <meshBasicMaterial map={maps.crimp} transparent opacity={0.5} depthWrite={false} />
-      </mesh>
-
-      {/* Printed film, front and back */}
-      <mesh geometry={filmGeo} renderOrder={3}>
-        <meshPhysicalMaterial map={frontTex} alphaMap={maps.frontAlpha} {...film} />
-      </mesh>
-      <mesh geometry={filmGeoBack} rotation={[0, Math.PI, 0]} renderOrder={3}>
-        <meshPhysicalMaterial map={backTex} alphaMap={maps.backAlpha} {...film} />
-      </mesh>
+      {/* Printed film + seal, front and back — one continuous sheet each */}
+      <mesh geometry={filmGeo} material={materials.front} renderOrder={1} />
+      <mesh geometry={filmGeoBack} material={materials.back} rotation={[0, Math.PI, 0]} renderOrder={1} />
     </group>
   )
 }
@@ -264,7 +341,7 @@ export default function ProductPackage({ front, back, bundle, wrinkles, paused =
   return (
     <Canvas
       dpr={dpr}
-      camera={{ position: [0, 0.1, 5.6], fov: 34 }}
+      camera={{ position: [0, 0.05, 5.95], fov: 34 }}
       gl={{ alpha: true, antialias: true, powerPreference: 'low-power', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
       style={{ touchAction: 'pan-y', cursor: 'grab' }}
     >
