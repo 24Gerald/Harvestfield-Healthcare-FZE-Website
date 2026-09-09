@@ -80,11 +80,14 @@ The 3D bundle (~220 kB gzipped) is a separate chunk loaded on demand and never b
 - **Mosquito:** replace the primitives inside `Mosquito`'s `<group>` with the model, oriented so it faces `+z`. The flight path, soft stop, wing flutter (attach `wingL`/`wingR` refs to the model's wing nodes) and distance fade live in `useFrame` and are independent of geometry.
 - Timing, targets and count are in `MOSQUITO_SET` at the bottom of the file.
 
-## Blog (Sanity)
+## Blog and the admin panel
 
-Posts are written in Sanity Studio (hosted by Sanity at `https://harvestfield.sanity.studio` once deployed) and read by the site at runtime through Sanity's public CDN — publish in the Studio and the post is live on `/blog` in seconds, with no rebuild and no admin panel on this site. Setup steps are in `studio/README.md`. The site needs `VITE_SANITY_PROJECT_ID` and `VITE_SANITY_DATASET` at build time (GitHub repository Variables for Pages, environment variables on Netlify); without them `/blog` shows a "coming soon" state.
+Posts are written in the site's own admin panel at `/admin/` (password-protected). The panel stores each post as JSON in `content/posts/` and uploads media to `public/blog-media/` by committing to this repository through the GitHub API. Every commit triggers the Pages/Netlify deploy, so a post is live on `/blog` about two minutes after publishing. No external CMS, no database.
 
-Content model: `post` (title, slug, publish date, excerpt, author, cover image, rich-text body with images) and `author`. The renderer is `src/lib/PortableText.jsx`; queries live in `src/lib/sanity.js`.
+- **Login:** the password is checked in the browser against a hash in `src/admin/config.js`. On first login the panel asks for a GitHub token (fine-grained personal access token with *Contents: read and write* on this repo). The token is encrypted with the password (PBKDF2 + AES-GCM) and kept in that browser only; it is what actually authorises the commits.
+- **Branch:** commits go to the branch named in `src/admin/config.js` (`ADMIN.branch`). Change it to `main` once the site has a main branch.
+- **Change the password:** run `node -e "crypto.subtle.digest('SHA-256', new TextEncoder().encode('new-password')).then(b=>console.log(Buffer.from(b).toString('hex')))"` and paste the hash into `src/admin/config.js`.
+- **Post format:** see `content/posts/example-post.json`. Body is HTML from the editor; the site strips anything executable before rendering (`src/lib/posts.js`).
 
 ## Design tokens
 

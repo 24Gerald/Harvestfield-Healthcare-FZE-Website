@@ -1,0 +1,59 @@
+/* Admin-only styles: the rich-text editor surface */
+.hf-editor {
+  min-height: 24rem;
+  outline: none;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--color-ink);
+}
+.hf-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-muted);
+  opacity: 0.7;
+}
+.hf-editor > * + * {
+  margin-top: 1rem;
+}
+.hf-editor h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-teal-deep);
+  margin-top: 1.75rem;
+}
+.hf-editor h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-teal-deep);
+  margin-top: 1.5rem;
+}
+.hf-editor blockquote {
+  border-left: 2px solid color-mix(in oklab, var(--color-teal-deep) 40%, transparent);
+  padding-left: 1rem;
+  font-style: italic;
+}
+.hf-editor ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+.hf-editor ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+.hf-editor a {
+  color: var(--color-teal-deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.hf-editor img {
+  max-width: 100%;
+  border-radius: 0.75rem;
+  display: block;
+}
+.hf-editor img.is-selected {
+  outline: 3px solid var(--color-teal-deep);
+  outline-offset: 2px;
+}
+.hf-editor hr {
+  border: 0;
+  border-top: 1px solid color-mix(in oklab, var(--color-teal-deep) 20%, transparent);
+}

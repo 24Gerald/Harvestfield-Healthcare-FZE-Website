@@ -9,7 +9,18 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Single-page app: every route (including /legal) is served by index.html.
+# The blog admin panel is its own page at /admin/.
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+
+# Single-page app: every route (including /privacy, /blog) is served by index.html.
 # Netlify Forms are detected from the static form in public/__forms.html,
 # which is copied to dist/ at build time — keep that file in sync with the
 # fields in src/sections/RequestSupply.jsx.

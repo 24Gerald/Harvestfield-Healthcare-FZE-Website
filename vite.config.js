@@ -13,6 +13,8 @@ export default defineConfig({
     // src/three/HeroBackground.jsx, so Rollup already splits it into its own
     // lazily fetched chunk; framer-motion is separated for better caching.
     rollupOptions: {
+      // Two pages: the site (index.html) and the blog admin panel (admin/index.html → /admin/).
+      input: { main: 'index.html', admin: 'admin/index.html' },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/framer-motion') || id.includes('node_modules/motion')) return 'motion'
