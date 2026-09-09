@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <a href="#top" onClick={(e) => { e.preventDefault(); smoothScrollTo('#top') }} aria-label="Harvestfield Healthcare — back to top" className="inline-block">
-              <HarvestfieldLogo markClassName="h-9 w-9" />
+              <HarvestfieldLogo className="h-12" />
             </a>
             <p className="mt-5 max-w-sm text-sm text-white/75">
               New-generation dual-insecticide mosquito nets, cut, sewn and packed in Nigeria.

@@ -1,45 +1,19 @@
-// TODO: replace with client-supplied vector logo (SVG/AI/EPS)
-//
-// Placeholder reconstruction of the Harvestfield interlocking dual-cross mark:
-// two overlapping plus shapes with a rounded interlock at the centre. Stroke
-// colour follows `currentColor`, so set `text-teal-deep` on light backgrounds
-// and `text-white` on dark ones.
+import logoFull from '../assets/logo-full-white.png'
+import logoMark from '../assets/logo-mark-white.png'
 
+/**
+ * Client-supplied logo (white lockup, for dark backgrounds).
+ * Source: HH_FULL_WHITE_LOGO — exported from the brand files as a PNG with
+ * transparency; the vector master should replace these PNGs if it becomes available.
+ * Both components render on teal-deep only; there is no dark-on-light variant yet.
+ */
+
+/** The cross mark alone. */
 export default function HarvestfieldMark({ className = 'h-8 w-8', title = 'Harvestfield Healthcare' }) {
-  return (
-    <svg
-      viewBox="0 0 64 64"
-      className={className}
-      role="img"
-      aria-label={title}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* Left cross */}
-      <path d="M22 12v40" />
-      <path d="M10 24h20" />
-      {/* Right cross, offset so the arms interlock through the centre */}
-      <path d="M42 12v40" />
-      <path d="M34 40h20" />
-      {/* Rounded interlock */}
-      <path d="M30 24c0 4.4 3.6 8 8 8" strokeWidth="4" />
-      <path d="M34 40c0-4.4-3.6-8-8-8" strokeWidth="4" />
-    </svg>
-  )
+  return <img src={logoMark} alt={title} className={className} draggable="false" />
 }
 
-/** Mark + wordmark lockup used in the nav and footer. */
-export function HarvestfieldLogo({ className = '', markClassName = 'h-8 w-8', stacked = false }) {
-  return (
-    <span className={`inline-flex items-center gap-3 ${className}`}>
-      <HarvestfieldMark className={markClassName} />
-      <span className={`leading-none ${stacked ? 'flex flex-col gap-1' : ''}`}>
-        <span className="block text-[15px] font-bold tracking-heading">Harvestfield</span>
-        <span className="block text-[10px] font-semibold uppercase tracking-eyebrow opacity-80">Healthcare FZE</span>
-      </span>
-    </span>
-  )
+/** Full lockup: mark, divider, "Harvestfield Healthcare — Free Zone Enterprise". */
+export function HarvestfieldLogo({ className = 'h-10 md:h-11', title = 'Harvestfield Healthcare Free Zone Enterprise' }) {
+  return <img src={logoFull} alt={title} className={`w-auto ${className}`} draggable="false" />
 }

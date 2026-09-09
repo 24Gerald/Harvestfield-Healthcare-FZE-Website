@@ -40,8 +40,8 @@ Every placeholder is marked with a `TODO:` comment in the code. `grep -rn "TODO"
 
 | What | Where | How to replace |
 | --- | --- | --- |
-| **Logo** | `src/components/HarvestfieldMark.jsx` | The mark is a hand-drawn SVG approximation. Paste the paths from the client's vector logo into `HarvestfieldMark` (keep `stroke="currentColor"` / `fill="currentColor"` so it stays white on dark and teal on light), or replace the component body with an `<img>`. The wordmark lockup is `HarvestfieldLogo` in the same file. Also replace `public/favicon.svg`. |
-| **Stat figures** | `src/data/stats.js` | Replace each `value: '[VALUE]'` with the real figure (e.g. `'12M'`, `'2'`, `'30%'`). Labels can stay. Nothing else changes. |
+| **Logo** | `src/assets/logo-full-white.png`, `src/assets/logo-mark-white.png`, `public/favicon.png` | Client PNGs (white, for dark backgrounds). Replace with the vector master when available; a teal-on-white variant is still needed for any future light-background use. |
+| **Stat figures** | `src/data/stats.js` | `value` is the big number, optional `unit` sits beside it, `label` beneath. |
 | **Section copy** | `src/data/content.js`, `src/data/faq.js` | All headings, body text, CTA labels and FAQ answers are here. The approved concept site was unreachable from the build environment, so body copy was written from the brief — paste the concept text over it. |
 | **Photography / product render** | `src/sections/TheNet.jsx`, `src/sections/Factory.jsx` | The Net section uses `<NetIllustration variant="render" />`; swap it for an `<img>` with descriptive `alt` text. The Factory process strip uses line icons (no photos exist yet); add images inside each step card if wanted. |
 | **OG image** | `index.html`, `public/og-placeholder.svg` | Replace with a 1200×630 PNG/JPG and update the two `og:image` / `twitter:image` URLs. |

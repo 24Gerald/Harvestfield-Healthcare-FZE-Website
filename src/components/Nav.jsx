@@ -55,7 +55,7 @@ export default function Nav() {
     >
       <nav aria-label="Primary" className="container-site flex h-16 items-center justify-between md:h-20">
         <a href="#top" onClick={(e) => go(e, '#top')} className="rounded-sm" aria-label="Harvestfield Healthcare — home">
-          <HarvestfieldLogo />
+          <HarvestfieldLogo className="h-9 md:h-11" />
         </a>
 
         <ul className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHovered(null)}>
