@@ -126,7 +126,7 @@ export default function RichText({ value, onChange, onInsertImage, placeholder =
 
   return (
     <div className="rounded-2xl border border-teal-deep/20 bg-white">
-      <div className="sticky top-16 z-10 flex flex-wrap items-center gap-1 rounded-t-2xl border-b border-teal-deep/10 bg-white/95 px-2 py-2 backdrop-blur">
+      <div className="sticky top-[calc(var(--hf-header,64px)_+_var(--hf-actionbar,0px))] z-10 flex items-center gap-1 overflow-x-auto rounded-t-2xl border-b border-teal-deep/10 bg-white/95 px-2 py-2 backdrop-blur [scrollbar-width:none] md:flex-wrap md:overflow-visible">
         {tools.map((t) => (
           <button
             key={t.label}
@@ -134,29 +134,29 @@ export default function RichText({ value, onChange, onInsertImage, placeholder =
             title={t.title}
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => (t.cmd ? exec(t.cmd) : block(t.block))}
-            className={`rounded-lg px-2.5 py-1.5 text-sm text-teal-deep hover:bg-teal-tint ${t.className || ''}`}
+            className={`flex-none whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm text-teal-deep hover:bg-teal-tint ${t.className || ''}`}
           >
             {t.label}
           </button>
         ))}
-        <button type="button" title="Link (Ctrl/Cmd+K)" onMouseDown={(e) => e.preventDefault()} onClick={() => { rememberSelection(); setLinkOpen(true) }} className="rounded-lg px-2.5 py-1.5 text-sm text-teal-deep hover:bg-teal-tint">
+        <button type="button" title="Link (Ctrl/Cmd+K)" onMouseDown={(e) => e.preventDefault()} onClick={() => { rememberSelection(); setLinkOpen(true) }} className="flex-none rounded-lg px-2.5 py-1.5 text-sm text-teal-deep hover:bg-teal-tint">
           Link
         </button>
-        <button type="button" title="Insert image" onMouseDown={(e) => e.preventDefault()} onClick={insertImage} className="rounded-lg px-2.5 py-1.5 text-sm text-teal-deep hover:bg-teal-tint">
+        <button type="button" title="Insert image" onMouseDown={(e) => e.preventDefault()} onClick={insertImage} className="flex-none rounded-lg px-2.5 py-1.5 text-sm text-teal-deep hover:bg-teal-tint">
           Image
         </button>
-        <span className="ml-auto pr-2 text-[11px] text-muted">Paste from Word/Docs is cleaned automatically</span>
+        <span className="ml-auto hidden pr-2 text-[11px] text-muted lg:inline">Paste from Word/Docs is cleaned automatically</span>
       </div>
       {linkOpen && (
-        <form onSubmit={addLink} className="flex gap-2 border-b border-teal-deep/10 bg-teal-tint-solid px-3 py-2">
-          <input name="url" autoFocus placeholder="https://…" className="flex-1 rounded-lg border border-teal-deep/20 px-3 py-1.5 text-sm" />
+        <form onSubmit={addLink} className="flex flex-wrap gap-2 border-b border-teal-deep/10 bg-teal-tint-solid px-3 py-2">
+          <input name="url" type="url" autoFocus placeholder="https://…" className="min-w-0 flex-1 basis-40 rounded-lg border border-teal-deep/20 px-3 py-1.5 text-sm" />
           <Btn type="submit" className="px-3 py-1.5">Add link</Btn>
           <Btn variant="quiet" className="px-3 py-1.5" onClick={() => setLinkOpen(false)}>Cancel</Btn>
         </form>
       )}
       <div
         ref={ref}
-        className="hf-editor px-5 py-4"
+        className="hf-editor px-4 py-4 sm:px-5"
         contentEditable
         suppressContentEditableWarning
         data-placeholder={placeholder}

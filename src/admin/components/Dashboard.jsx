@@ -44,8 +44,8 @@ export default function Dashboard({ client, onNew, onEdit, refreshKey }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }}>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-teal-deep">Posts</h1>
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold text-teal-deep sm:text-3xl">Posts</h1>
           <p className="mt-1 text-sm text-muted">Every save becomes a commit; the site updates itself within about two minutes.</p>
         </div>
         <Btn onClick={onNew}>+ New post</Btn>
@@ -59,7 +59,7 @@ export default function Dashboard({ client, onNew, onEdit, refreshKey }) {
             </button>
           ))}
         </div>
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search posts" className={`${inputClass} max-w-xs`} />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search posts" className={`${inputClass} sm:max-w-xs`} type="search" />
       </div>
 
       {posts === null ? (
@@ -81,15 +81,15 @@ export default function Dashboard({ client, onNew, onEdit, refreshKey }) {
         <ul className="mt-8 space-y-3">
           {shown.map((p, i) => (
             <motion.li key={p.data.slug} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE, delay: i * 0.04 }}>
-              <button type="button" onClick={() => onEdit(p)} className="group flex w-full items-center gap-4 rounded-2xl border border-teal-deep/10 bg-white p-3 text-left transition-shadow hover:shadow-[0_12px_30px_-18px_rgba(16,81,91,0.35)]">
-                <div className="h-14 w-20 flex-none overflow-hidden rounded-xl bg-teal-tint-solid">
+              <button type="button" onClick={() => onEdit(p)} className="group flex w-full items-center gap-3 rounded-2xl border border-teal-deep/10 bg-white p-3 text-left transition-shadow hover:shadow-[0_12px_30px_-18px_rgba(16,81,91,0.35)] sm:gap-4">
+                <div className="h-12 w-16 flex-none overflow-hidden rounded-xl bg-teal-tint-solid sm:h-14 sm:w-20">
                   {p.data.cover && <img src={rawUrl(p.data.cover)} alt="" className="h-full w-full object-cover" loading="lazy" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold text-teal-deep group-hover:underline group-hover:underline-offset-4">{p.data.title || 'Untitled'}</p>
                   <p className="mt-0.5 truncate text-xs text-muted">{fmtDate(p.data.publishedAt)} · /blog/{p.data.slug}</p>
                 </div>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${p.data.published ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                <span className={`flex-none rounded-full px-2.5 py-1 text-xs font-semibold ${p.data.published ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
                   {p.data.published ? 'Published' : 'Draft'}
                 </span>
               </button>

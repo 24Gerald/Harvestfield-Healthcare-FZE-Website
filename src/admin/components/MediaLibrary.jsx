@@ -73,9 +73,9 @@ export default function MediaLibrary({ client, onPick, pickLabel = 'Use this ima
         onDragOver={(e) => { e.preventDefault(); setDrag(true) }}
         onDragLeave={() => setDrag(false)}
         onDrop={(e) => { e.preventDefault(); setDrag(false); upload([...e.dataTransfer.files]) }}
-        className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-8 text-center transition-colors ${drag ? 'border-teal-deep bg-teal-tint' : 'border-teal-deep/25 bg-teal-tint-solid/60'}`}
+        className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 py-6 text-center transition-colors sm:px-6 sm:py-8 ${drag ? 'border-teal-deep bg-teal-tint' : 'border-teal-deep/25 bg-teal-tint-solid/60'}`}
       >
-        <p className="text-sm font-medium text-teal-deep">Drop images here</p>
+        <p className="text-sm font-medium text-teal-deep"><span className="hidden sm:inline">Drop images here</span><span className="sm:hidden">Add images</span></p>
         <p className="mt-1 text-xs text-muted">JPG, PNG, WebP, GIF or PDF. Large images are resized to {ADMIN.maxImageEdge}px on the long edge.</p>
         <Btn variant="ghost" className="mt-4" busy={uploading} onClick={() => fileRef.current.click()}>
           Choose files
@@ -88,7 +88,7 @@ export default function MediaLibrary({ client, onPick, pickLabel = 'Use this ima
       ) : items.length === 0 ? (
         <p className="mt-6 text-sm text-muted">No media yet.</p>
       ) : (
-        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4">
           {items.map((f, i) => (
             <motion.li key={f.sha} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE, delay: i * 0.03 }} className="group overflow-hidden rounded-2xl border border-teal-deep/10 bg-white">
               <div className="aspect-[4/3] bg-teal-tint-solid">
@@ -96,7 +96,7 @@ export default function MediaLibrary({ client, onPick, pickLabel = 'Use this ima
               </div>
               <div className="p-3">
                 <p className="truncate text-xs text-ink" title={f.name}>{f.name}</p>
-                <div className="mt-2 flex gap-1">
+                <div className="mt-2 flex flex-wrap gap-1">
                   {onPick && (
                     <Btn className="px-3 py-1 text-xs" onClick={() => onPick({ path: `blog-media/${f.name}`, name: f.name })}>
                       {pickLabel}

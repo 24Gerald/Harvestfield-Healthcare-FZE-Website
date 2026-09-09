@@ -30,6 +30,21 @@ export default function PostEditor({ client, initial, onSaved, onBack, onDeploye
   const toast = useToast()
   const draftKey = `hf-admin-draft-${initial?.data?.slug || 'new'}`
   const restoredRef = useRef(false)
+  const barRef = useRef(null)
+
+  // Publish the action bar's height so the editor toolbar can stick below it.
+  useEffect(() => {
+    const el = barRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const apply = () => document.documentElement.style.setProperty('--hf-actionbar', `${el.offsetHeight}px`)
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      document.documentElement.style.setProperty('--hf-actionbar', '0px')
+    }
+  }, [])
 
   // Autosave a local draft so a closed tab loses nothing.
   useEffect(() => {
@@ -131,34 +146,40 @@ export default function PostEditor({ client, initial, onSaved, onBack, onDeploye
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }}>
       {/* Action bar */}
-      <div className="sticky top-0 z-20 -mx-6 flex flex-wrap items-center gap-3 border-b border-teal-deep/10 bg-white/90 px-6 py-3 backdrop-blur md:-mx-10 md:px-10">
-        <Btn variant="quiet" onClick={onBack} className="-ml-2">
+      <div
+        ref={barRef}
+        className="sticky top-[var(--hf-header,64px)] z-20 -mx-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-teal-deep/10 bg-white/95 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6 sm:py-3 md:-mx-10 md:px-10"
+      >
+        <Btn variant="quiet" onClick={onBack} className="-ml-2 px-3">
           ← Posts
         </Btn>
-        <span className="text-sm text-muted">
+        <span className="hidden text-sm text-muted sm:inline">
           {initial ? 'Editing' : 'New post'} · {wordCount} words {dirty && '· unsaved changes'}
         </span>
-        <div className="ml-auto flex flex-wrap items-center gap-2">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
           <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${post.published ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
             {post.published ? 'Published' : 'Draft'}
           </span>
-          {initial && <Btn variant="danger" onClick={del} busy={busy}>Delete</Btn>}
+          {initial && <Btn variant="danger" onClick={del} busy={busy} className="px-3">Delete</Btn>}
           {post.published ? (
-            <Btn variant="ghost" onClick={unpublish} busy={busy}>Unpublish</Btn>
+            <Btn variant="ghost" onClick={unpublish} busy={busy} className="px-3">Unpublish</Btn>
           ) : (
-            <Btn variant="ghost" onClick={() => save(false)} busy={busy}>Save draft</Btn>
+            <Btn variant="ghost" onClick={() => save(false)} busy={busy} className="px-3">Save draft</Btn>
           )}
           <Btn onClick={() => save(true)} busy={busy}>{post.published ? 'Update' : 'Publish'}</Btn>
         </div>
       </div>
+      <p className="mt-3 text-xs text-muted sm:hidden">
+        {initial ? 'Editing' : 'New post'} · {wordCount} words {dirty && '· unsaved changes'}
+      </p>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-6">
+      <div className="mt-5 grid gap-8 sm:mt-8 lg:grid-cols-[1fr_320px]">
+        <div className="min-w-0 space-y-6">
           <input
             value={post.title}
             onChange={(e) => set({ title: e.target.value })}
             placeholder="Post title"
-            className="w-full border-0 bg-transparent text-3xl font-bold text-teal-deep placeholder:text-teal-deep/30 focus:outline-none md:text-4xl"
+            className="w-full border-0 bg-transparent text-2xl font-bold text-teal-deep placeholder:text-teal-deep/30 focus:outline-none sm:text-3xl md:text-4xl"
           />
           <Field label="Excerpt" hint="One or two sentences shown on the blog page and in link previews.">
             <textarea rows={2} className={inputClass} value={post.excerpt} onChange={(e) => set({ excerpt: e.target.value })} />
@@ -166,8 +187,8 @@ export default function PostEditor({ client, initial, onSaved, onBack, onDeploye
           <RichText value={post.body} onChange={(html) => set({ body: html })} onInsertImage={insertImage} />
         </div>
 
-        <aside className="space-y-6">
-          <div className="rounded-2xl border border-teal-deep/15 p-5">
+        <aside className="min-w-0 space-y-6">
+          <div className="rounded-2xl border border-teal-deep/15 p-4 sm:p-5">
             <p className="eyebrow text-teal-deep">Cover image</p>
             <div className="mt-3 aspect-[16/10] overflow-hidden rounded-xl bg-teal-tint-solid">
               {post.cover && <img src={rawUrl(post.cover)} alt={post.coverAlt} className="h-full w-full object-cover" />}
@@ -191,7 +212,7 @@ export default function PostEditor({ client, initial, onSaved, onBack, onDeploye
             )}
           </div>
 
-          <div className="space-y-4 rounded-2xl border border-teal-deep/15 p-5">
+          <div className="space-y-4 rounded-2xl border border-teal-deep/15 p-4 sm:p-5">
             <Field label="URL slug" hint={`${ADMIN.siteUrl}/blog/${post.slug || '…'}`}>
               <input className={inputClass} value={post.slug} onChange={(e) => { setSlugTouched(true); set({ slug: slugify(e.target.value) }) }} />
             </Field>
@@ -202,7 +223,7 @@ export default function PostEditor({ client, initial, onSaved, onBack, onDeploye
               <input className={inputClass} value={post.author} onChange={(e) => set({ author: e.target.value })} />
             </Field>
           </div>
-          {sha && <p className="text-[11px] text-muted">File: {ADMIN.postsDir}/{initial.data.slug}.json</p>}
+          {sha && <p className="break-all text-[11px] text-muted">File: {ADMIN.postsDir}/{initial.data.slug}.json</p>}
         </aside>
       </div>
 

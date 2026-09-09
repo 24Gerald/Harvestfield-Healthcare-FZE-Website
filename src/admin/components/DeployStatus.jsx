@@ -28,12 +28,13 @@ export default function DeployStatus({ client, bump }) {
   const building = run.status !== 'completed'
   const ok = run.conclusion === 'success'
   return (
-    <a href={run.html_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/90 hover:bg-white/15" title="Latest deploy">
-      <span className={`h-2 w-2 rounded-full ${building ? 'animate-pulse bg-amber-300' : ok ? 'bg-emerald-300' : 'bg-red-400'}`} />
-      {building ? 'Deploying…' : ok ? 'Site up to date' : 'Last deploy failed'}
+    <a href={run.html_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 whitespace-nowrap rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/90 hover:bg-white/15" title={building ? 'Deploying…' : ok ? 'Site up to date' : 'Last deploy failed'}>
+      <span className={`h-2 w-2 flex-none rounded-full ${building ? 'animate-pulse bg-amber-300' : ok ? 'bg-emerald-300' : 'bg-red-400'}`} />
+      <span className="hidden sm:inline">{building ? 'Deploying…' : ok ? 'Site up to date' : 'Last deploy failed'}</span>
+      <span className="sm:hidden">{building ? 'Deploying…' : ok ? 'Live' : 'Deploy failed'}</span>
       <span className="sr-only"> — open on GitHub</span>
       {!building && ok && (
-        <span className="text-white/50">
+        <span className="hidden text-white/50 md:inline">
           ·{' '}
           <span className="underline-offset-2 hover:underline" onClick={(e) => { e.preventDefault(); window.open(ADMIN.siteUrl, '_blank') }}>
             view site

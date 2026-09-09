@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { HarvestfieldLogo } from '../components/HarvestfieldMark'
 import { ADMIN } from './config'
@@ -22,6 +22,19 @@ export default function AdminApp() {
   const [deployBump, setDeployBump] = useState(0)
   const [refreshKey, setRefreshKey] = useState(0)
   const client = useMemo(() => (session ? (session.mode === 'server' ? makeServerClient() : makeClient(session.token)) : null), [session])
+  const headerRef = useRef(null)
+
+  // Publish the sticky header's height so the editor's action bar and toolbar
+  // can stick just below it (it is one row on desktop, two on phones).
+  useEffect(() => {
+    const el = headerRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const apply = () => document.documentElement.style.setProperty('--hf-header', `${el.offsetHeight}px`)
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [session])
 
   if (!session) {
     return (
@@ -46,10 +59,10 @@ export default function AdminApp() {
   return (
     <ToastProvider>
       <div className="min-h-screen bg-[#f6f9f9] text-ink">
-        <header className="on-dark sticky top-0 z-30 bg-teal-deep text-white">
-          <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-6 md:px-10">
-            <HarvestfieldLogo className="h-9" />
-            <nav className="flex items-center gap-1">
+        <header ref={headerRef} className="on-dark sticky top-0 z-30 bg-teal-deep text-white">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2.5 md:h-16 md:flex-nowrap md:gap-6 md:px-10 md:py-0">
+            <HarvestfieldLogo className="h-8 md:h-9" />
+            <nav className="order-last -mx-1 flex w-full items-center gap-1 md:order-none md:mx-0 md:w-auto" aria-label="Admin sections">
               {nav.map((n) => (
                 <button
                   key={n.id}
@@ -63,20 +76,25 @@ export default function AdminApp() {
                   <span className="relative">{n.label}</span>
                 </button>
               ))}
+              <a href={ADMIN.siteUrl} target="_blank" rel="noopener noreferrer" className="ml-auto px-2 text-xs text-white/70 hover:text-white md:hidden">
+                View site ↗
+              </a>
             </nav>
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex min-w-0 items-center gap-2 md:gap-3">
               <DeployStatus client={client} bump={deployBump} />
               <a href={ADMIN.siteUrl} target="_blank" rel="noopener noreferrer" className="hidden text-xs text-white/70 hover:text-white md:block">
                 View site ↗
               </a>
-              <Btn variant="ghost" className="border-white/30 px-3 py-1.5 text-xs text-white hover:bg-white/10" onClick={signOut}>
-                {session.user} · sign out
+              <Btn variant="ghost" className="whitespace-nowrap border-white/30 px-3 py-1.5 text-xs text-white hover:bg-white/10" onClick={signOut} aria-label={`Sign out (${session.user})`}>
+                <span className="hidden md:inline">{session.user} · </span>
+                <span className="md:hidden">Sign out</span>
+                <span className="hidden md:inline">sign out</span>
               </Btn>
             </div>
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-10">
+        <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
           <AnimatePresence mode="wait">
             {view.name === 'posts' && (
               <motion.div key="posts" exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
