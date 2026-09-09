@@ -56,17 +56,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* TODO: add partner logos once client provides permission + logo files */}
-        {/*
-        <div className="mt-12 border-t border-white/10 pt-8">
-          <p className="eyebrow text-white/60">Partners</p>
-          <div className="mt-4 flex flex-wrap items-center gap-8">
-            <img src={gdmLogo} alt="GDM Health Products" className="h-8" />
-            <img src={whoPqLogo} alt="WHO Prequalification" className="h-8" />
-          </div>
-        </div>
-        */}
-
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {site.name}. {site.parent}
@@ -89,8 +78,8 @@ export default function Footer() {
               </>
             )}
           </p>
-          <Link to="/legal" className="hover:text-white">
-            Legal
+          <Link to="/privacy" className="hover:text-white">
+            Privacy &amp; data notice
           </Link>
         </div>
       </div>

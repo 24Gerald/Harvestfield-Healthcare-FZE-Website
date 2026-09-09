@@ -19,14 +19,19 @@ export const site = {
 
 /**
  * Form backend adapter switch — see src/lib/formAdapter.js.
- *   'netlify'  → Netlify Forms (default; zero-config on Netlify hosting)
- *   'mailto'   → opens the visitor's mail client addressed to site.contactEmail
- *   'endpoint' → POSTs JSON to FORM_ENDPOINT_URL below
+ *   'formsubmit' → FormSubmit.co relays each submission to site.contactEmail.
+ *                  Works on any host (GitHub Pages included). The FIRST submission
+ *                  triggers a one-time activation email to that inbox — click it.
+ *   'netlify'    → Netlify Forms (zero-config on Netlify hosting; set the
+ *                  notification email in Netlify → Forms → Form notifications)
+ *   'mailto'     → opens the visitor's mail client addressed to site.contactEmail
+ *   'endpoint'   → POSTs JSON to FORM_ENDPOINT_URL below
  *
- * Do NOT switch to a third-party service (Formspree, HubSpot, etc.) without
- * client confirmation — that is what the 'endpoint' option is reserved for.
+ * Client asked (Sept 2026) for submissions to reach info@harvestfieldhealthcare.com
+ * while the site is on GitHub Pages, hence 'formsubmit'. Switch to 'netlify'
+ * once hosting moves to Netlify if a first-party inbox is preferred.
  */
-export const FORM_BACKEND = 'netlify'
+export const FORM_BACKEND = 'formsubmit'
 export const FORM_ENDPOINT_URL = '' // e.g. 'https://api.example.com/supply-requests'
 
 /**
@@ -98,6 +103,7 @@ export const navLinks = [
   { label: 'The Net', href: '#net' },
   { label: 'Supply', href: '#supply' },
   { label: 'FAQ', href: '#faq' },
+  { label: 'Blog', href: '/blog', route: true },
 ]
 
 export const CTA = { label: 'Request Supply', href: '#request-supply' }

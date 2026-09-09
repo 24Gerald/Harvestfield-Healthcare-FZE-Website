@@ -1,7 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
-import NetIllustration from '../components/NetIllustration'
+import ProductShowcase from '../components/ProductShowcase'
+import IngredientMesh from '../components/IngredientMesh'
 import { net } from '../data/content'
 import { EASE_OUT } from '../lib/motion'
 
@@ -85,15 +86,18 @@ export default function TheNet() {
           <div className="lg:col-span-6">
             <Reveal delay={0.1}>
               <motion.div
-                className="overflow-hidden rounded-3xl"
                 initial={reduce ? false : { clipPath: 'inset(0 0 0 100% round 24px)' }}
                 whileInView={{ clipPath: 'inset(0 0 0 0% round 24px)' }}
                 viewport={{ once: true, margin: '0px 0px -10% 0px' }}
                 transition={{ duration: 1.1, ease: EASE_OUT, delay: 0.1 }}
               >
-                <NetIllustration variant="render" className="w-full" />
+                <ProductShowcase />
               </motion.div>
               <p className="mt-3 text-xs text-muted">{net.designerNote}</p>
+            </Reveal>
+            <Reveal delay={0.2} className="mt-6">
+              <IngredientMesh ingredients={net.ingredients} />
+              <p className="mt-3 text-xs text-muted">{net.meshNote}</p>
             </Reveal>
             <ul className="mt-8 space-y-5">
               {net.benefits.map((b, i) => (

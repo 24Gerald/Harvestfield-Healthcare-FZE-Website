@@ -45,16 +45,18 @@ Every placeholder is marked with a `TODO:` comment in the code. `grep -rn "TODO"
 | **Section copy** | `src/data/content.js`, `src/data/faq.js` | All headings, body text, CTA labels and FAQ answers are here. The approved concept site was unreachable from the build environment, so body copy was written from the brief — paste the concept text over it. |
 | **Photography / product render** | `src/sections/TheNet.jsx`, `src/sections/Factory.jsx` | The Net section uses `<NetIllustration variant="render" />`; swap it for an `<img>` with descriptive `alt` text. The Factory process strip uses line icons (no photos exist yet); add images inside each step card if wanted. |
 | **OG image** | `index.html`, `public/og-placeholder.svg` | Replace with a 1200×630 PNG/JPG and update the two `og:image` / `twitter:image` URLs. |
-| **Partner logos** | `src/components/Footer.jsx` | A commented-out block is ready. Add logo files to `src/assets/` and un-comment once the client has permission. |
-| **Privacy notice** | `src/pages/Legal.jsx` | Route stub only. Draft after confirming NDPR requirements. |
+| **Privacy & data notice** | `src/data/legal.js` | Full draft at `/privacy` (NDPA 2023 / NDPR). Items in [brackets] need the client's confirmation; have counsel review before launch. |
+| **Pack artwork (3D pack shot)** | `public/product/front.png`, `back.png` | Reconstructed from pack photos by `scripts/make-product-placeholder.py`. Replace with the real print artwork flattened to PNG/JPG (~1000×1250, front and back). |
+| **Partner logos** | `src/assets/gdm-logo-white.png`, `trustedBy` in `src/data/content.js` | Add a partner: drop the logo in `src/assets/`, register it in `TrustedBy.jsx`'s `logos` map, add an entry with `url`. |
 | **Mosquito 3D model** | `public/models/mosquito/`, `HERO_MOSQUITO_MODEL` in `src/data/siteConfig.js` | The hero flies a real glTF model at the net when one is present. Unzip a Sketchfab glTF download (scene.gltf, scene.bin, textures/) into `public/models/mosquito/`. Missing or broken file → procedural mosquito, automatically. Adjust `rotation`/`length` in the config so the head faces the net; attribution appears in the footer once the model loads. |
 | **Mosquito video** | `public/video/`, `HERO_MOSQUITO_VIDEO` in `src/data/siteConfig.js` | Drop `mosquito.webm` (VP9 with alpha) and `mosquito.mov` (HEVC with alpha, for Safari) into `public/video/` and the hero flies the footage at the net instead of the 3D mosquitoes. Black-background footage without alpha: set `blend: 'screen'`. Nothing renders until a file exists. |
 
 ## Pointing the form at a different backend
 
-The form in `src/sections/RequestSupply.jsx` calls one function, `submitSupplyRequest()`, in `src/lib/formAdapter.js`. Switch backends by changing `FORM_BACKEND` in `src/data/siteConfig.js`:
+The form in `src/sections/RequestSupply.jsx` calls one function, `submitSupplyRequest()`, in `src/lib/formAdapter.js`. Switch backends by changing `FORM_BACKEND` in `src/data/siteConfig.js` (currently `'formsubmit'` so the form works on GitHub Pages):
 
-- `'netlify'` (default) — Netlify Forms. Works out of the box on Netlify hosting. Keep the field names in `public/__forms.html` in sync with the React form.
+- `'formsubmit'` (current) — FormSubmit.co relays each submission by email to `info@harvestfieldhealthcare.com`. Works on any host. The first ever submission sends a one-time activation email to that inbox; click the link once and every later submission is delivered.
+- `'netlify'` — Netlify Forms. Works out of the box on Netlify hosting. Keep the field names in `public/__forms.html` in sync with the React form.
 - `'mailto'` — opens the visitor's mail client addressed to `info@harvestfieldhealthcare.com`. No server needed; useful if the site is ever hosted elsewhere.
 - `'endpoint'` — POSTs JSON to `FORM_ENDPOINT_URL`. Reserved for a real backend once the client confirms one. Do not wire a third-party form service without that confirmation.
 
@@ -77,6 +79,12 @@ The 3D bundle (~220 kB gzipped) is a separate chunk loaded on demand and never b
 - **Net:** replace the `<mesh>` inside `NetLattice` with a loaded model (e.g. `useGLTF`). Keep it centred on local `z = 0`. If you keep the shader, the breathing displacement and contact ripples keep working; the `impacts` ref is the contract between mosquitoes and net.
 - **Mosquito:** replace the primitives inside `Mosquito`'s `<group>` with the model, oriented so it faces `+z`. The flight path, soft stop, wing flutter (attach `wingL`/`wingR` refs to the model's wing nodes) and distance fade live in `useFrame` and are independent of geometry.
 - Timing, targets and count are in `MOSQUITO_SET` at the bottom of the file.
+
+## Blog (Sanity)
+
+Posts are written in Sanity Studio (hosted by Sanity at `https://harvestfield.sanity.studio` once deployed) and read by the site at runtime through Sanity's public CDN — publish in the Studio and the post is live on `/blog` in seconds, with no rebuild and no admin panel on this site. Setup steps are in `studio/README.md`. The site needs `VITE_SANITY_PROJECT_ID` and `VITE_SANITY_DATASET` at build time (GitHub repository Variables for Pages, environment variables on Netlify); without them `/blog` shows a "coming soon" state.
+
+Content model: `post` (title, slug, publish date, excerpt, author, cover image, rich-text body with images) and `author`. The renderer is `src/lib/PortableText.jsx`; queries live in `src/lib/sanity.js`.
 
 ## Design tokens
 

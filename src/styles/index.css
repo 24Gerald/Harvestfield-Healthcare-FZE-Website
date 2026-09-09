@@ -219,3 +219,71 @@
     animation: none;
   }
 }
+
+/* Ingredient nodes — ring expands from a fibre intersection, dot settles, label pops then fades */
+@keyframes hf-node-ring {
+  0% {
+    r: 2;
+    opacity: 1;
+  }
+  100% {
+    r: 30;
+    opacity: 0;
+  }
+}
+@keyframes hf-node-dot {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes hf-node-glow {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+@keyframes hf-node-label {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  18% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.hf-node .hf-node-ring {
+  animation: hf-node-ring 1.1s var(--ease-brand) forwards;
+}
+.hf-node .hf-node-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hf-node-dot 0.6s var(--ease-brand) forwards;
+}
+.hf-node .hf-node-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hf-node-glow 2.4s var(--ease-brand) forwards;
+}
+.hf-node .hf-node-label {
+  animation: hf-node-label 2.5s var(--ease-brand) forwards;
+}

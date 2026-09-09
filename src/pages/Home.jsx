@@ -1,5 +1,6 @@
 import Hero from '../sections/Hero'
 import StatStrip from '../sections/StatStrip'
+import TrustedBy from '../sections/TrustedBy'
 import Factory from '../sections/Factory'
 import TheNet from '../sections/TheNet'
 import Supply from '../sections/Supply'
@@ -11,6 +12,7 @@ export default function Home() {
     <>
       <Hero />
       <StatStrip />
+      <TrustedBy />
       <Factory />
       <TheNet />
       <Supply />

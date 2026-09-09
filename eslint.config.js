@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import react from 'eslint-plugin-react'
 
 export default [
-  { ignores: ['dist', 'node_modules'] },
+  { ignores: ['dist', 'node_modules', 'studio'] },
   // Build/tooling config runs under Node, not the browser.
   { files: ['*.config.js'], languageOptions: { globals: globals.node } },
   {

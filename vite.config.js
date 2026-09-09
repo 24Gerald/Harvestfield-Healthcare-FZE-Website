@@ -16,6 +16,8 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/framer-motion') || id.includes('node_modules/motion')) return 'motion'
+          // three.js core is shared by the two lazy scenes (hero, pack shot); keep it one named chunk.
+          if (id.includes('node_modules/three/') || id.includes('node_modules/@react-three/')) return 'three'
         },
       },
     },

@@ -419,15 +419,15 @@ function CameraRig({ enabled, base }) {
    ------------------------------------------------------------------------ */
 // theta: 0 faces the camera; positive = toward screen-right when viewed from +z.
 const MOSQUITO_SET = [
-  { theta: 0.55, height: 0.9, drift: [0.35, 0.6], period: 11, phase: 0.0, scale: 1.05 },
-  { theta: -0.5, height: -0.6, drift: [0.3, 0.7], period: 13.5, phase: 0.45, scale: 0.9 },
-  { theta: 1.15, height: 1.7, drift: [0.35, 0.5], period: 12, phase: 0.75, scale: 0.8 },
+  { theta: 0.55, height: 0.9, drift: [0.35, 0.6], period: 11, phase: 0.0, scale: 0.578 },
+  { theta: -0.5, height: -0.6, drift: [0.3, 0.7], period: 13.5, phase: 0.45, scale: 0.495 },
+  { theta: 1.15, height: 1.7, drift: [0.35, 0.5], period: 12, phase: 0.75, scale: 0.44 },
 ]
 
 // Mobile: two mosquitoes working the gathered top around the hoop, above the text block.
 const MOBILE_SET = [
-  { theta: 0.6, height: 2.55, drift: [0.35, 0.3], period: 11, phase: 0.0, scale: 0.95 },
-  { theta: -0.45, height: 3.15, drift: [0.3, 0.25], period: 13, phase: 0.5, scale: 0.8 },
+  { theta: 0.6, height: 2.55, drift: [0.35, 0.3], period: 11, phase: 0.0, scale: 0.522 },
+  { theta: -0.45, height: 3.15, drift: [0.3, 0.25], period: 13, phase: 0.5, scale: 0.44 },
 ]
 
 export default function HeroNetScene({ lite = false, mosquitoes = true }) {

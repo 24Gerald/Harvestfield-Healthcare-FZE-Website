@@ -18,6 +18,8 @@ export const FORM_NAME = 'request-supply'
 /** @param {SupplyRequest} values */
 export async function submitSupplyRequest(values) {
   switch (FORM_BACKEND) {
+    case 'formsubmit':
+      return submitViaFormSubmit(values)
     case 'netlify':
       return submitToNetlify(values)
     case 'mailto':
@@ -41,6 +43,30 @@ async function submitToNetlify(values) {
     body,
   })
   if (!res.ok) throw new Error(`Netlify Forms responded ${res.status}`)
+}
+
+/* ---------- FormSubmit.co ------------------------------------------------
+   Relays the submission by email to site.contactEmail, no account needed.
+   The first ever submission sends a one-time activation link to that inbox.
+   AJAX endpoint returns JSON; `_captcha` off because the honeypot handles bots. */
+async function submitViaFormSubmit(values) {
+  const res = await fetch(`https://formsubmit.co/ajax/${site.contactEmail}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      _subject: `Supply request — ${values.organization || values.fullName}`,
+      _template: 'table',
+      _captcha: 'false',
+      _replyto: values.email,
+      name: values.fullName,
+      organization: values.organization || '—',
+      email: values.email,
+      message: values.message,
+    }),
+  })
+  if (!res.ok) throw new Error(`FormSubmit responded ${res.status}`)
+  const data = await res.json().catch(() => ({}))
+  if (data.success === 'false' || data.success === false) throw new Error(data.message || 'FormSubmit rejected the submission')
 }
 
 /* ---------- mailto: fallback ---------------------------------------------

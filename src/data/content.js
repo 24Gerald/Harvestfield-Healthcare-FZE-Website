@@ -16,6 +16,14 @@ export const hero = {
   secondaryCta: { label: 'See the Net', href: '#net' },
 }
 
+export const trustedBy = {
+  eyebrow: 'Trusted by',
+  body: 'Synera DuoForte is designed by GDM Health Products and manufactured under licence by Harvestfield Healthcare FZE.',
+  partners: [
+    { name: 'GDM Health Products', role: 'Designer of Synera DuoForte', logo: 'gdm', url: 'https://www.gdmedhealth.com/' },
+  ],
+}
+
 export const factory = {
   id: 'factory',
   eyebrow: 'The Factory',
@@ -69,7 +77,8 @@ export const net = {
       detail: 'Cut, sewn and packed in Ogun State, so supply moves in days rather than shipping seasons.',
     },
   ],
-  designerNote: 'Designed by GDM Health Products. Manufactured by Harvestfield Healthcare FZE.',
+  designerNote: 'Synera DuoForte pack. Designed by GDM Health Products. Manufactured by Harvestfield Healthcare FZE.',
+  meshNote: 'Both active ingredients are bound into the polyester fibre itself, so every intersection of the mesh carries them.',
 }
 
 export const supply = {
@@ -126,7 +135,11 @@ export const requestSupply = {
   },
 }
 
-export const legal = {
-  title: 'Legal',
-  body: 'Privacy notice coming soon.',
+
+export const blog = {
+  eyebrow: 'Blog',
+  title: 'Notes from the factory floor.',
+  intro: 'Updates on production, malaria programme supply and the science behind dual-insecticide nets.',
+  soonTitle: 'First posts coming soon.',
+  soonBody: 'We are setting up the blog. Check back shortly, or write to us if you have a question in the meantime.',
 }
