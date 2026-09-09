@@ -6,6 +6,8 @@ import react from 'eslint-plugin-react'
 
 export default [
   { ignores: ['dist', 'node_modules'] },
+  // Build/tooling config runs under Node, not the browser.
+  { files: ['*.config.js'], languageOptions: { globals: globals.node } },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
