@@ -1,6 +1,7 @@
 import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 import NetIllustration from '../components/NetIllustration'
+import SketchfabEmbed from '../components/SketchfabEmbed'
 import { net } from '../data/content'
 
 export default function TheNet() {
@@ -62,6 +63,18 @@ export default function TheNet() {
               ))}
             </ul>
           </div>
+        </div>
+
+        {/* Interactive mosquito model — third-party Sketchfab viewer, loaded on demand */}
+        <div className="mt-20 grid gap-8 md:mt-24 lg:grid-cols-12 lg:gap-16">
+          <Reveal className="lg:col-span-4">
+            <Eyebrow className="text-teal-deep">{net.model.eyebrow}</Eyebrow>
+            <h3 className="mt-4 text-2xl font-bold text-teal-deep sm:text-3xl">{net.model.title}</h3>
+            <p className="mt-4 text-base text-ink/85">{net.model.body}</p>
+          </Reveal>
+          <Reveal delay={0.1} className="lg:col-span-8">
+            <SketchfabEmbed {...net.model.sketchfab} loadLabel={net.model.loadLabel} note={net.model.note} />
+          </Reveal>
         </div>
       </div>
     </section>

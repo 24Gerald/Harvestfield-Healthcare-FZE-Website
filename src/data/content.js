@@ -70,6 +70,21 @@ export const net = {
     },
   ],
   designerNote: 'Designed by GDM Health Products. Manufactured by Harvestfield Healthcare FZE.',
+  // Interactive 3D model of the mosquito (third-party Sketchfab embed, loaded on demand).
+  model: {
+    eyebrow: 'Up close',
+    title: 'Know what the net is up against.',
+    body: 'Rotate and zoom a 3D model of the mosquito. Every feature that lets it find a sleeper is what the dual-insecticide fibre is designed to stop.',
+    loadLabel: 'View the mosquito in 3D',
+    note: 'Loads an interactive viewer from Sketchfab (about 10 MB).',
+    sketchfab: {
+      modelId: '0df94ab7ce0145818ea22309774ee0ea',
+      title: 'Mosquito Monster',
+      modelUrl: 'https://sketchfab.com/3d-models/mosquito-monster-0df94ab7ce0145818ea22309774ee0ea',
+      author: 'COMODOX',
+      authorUrl: 'https://sketchfab.com/comodox',
+    },
+  },
 }
 
 export const supply = {

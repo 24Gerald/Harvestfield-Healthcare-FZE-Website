@@ -47,6 +47,7 @@ Every placeholder is marked with a `TODO:` comment in the code. `grep -rn "TODO"
 | **OG image** | `index.html`, `public/og-placeholder.svg` | Replace with a 1200×630 PNG/JPG and update the two `og:image` / `twitter:image` URLs. |
 | **Partner logos** | `src/components/Footer.jsx` | A commented-out block is ready. Add logo files to `src/assets/` and un-comment once the client has permission. |
 | **Privacy notice** | `src/pages/Legal.jsx` | Route stub only. Draft after confirming NDPR requirements. |
+| **Mosquito 3D model** | `src/data/content.js` (`net.model.sketchfab`), `src/components/SketchfabEmbed.jsx` | Third-party Sketchfab embed ("Mosquito Monster" by COMODOX), loaded only when the visitor clicks. Change the model id/URLs in `content.js` to swap models; attribution links are required by Sketchfab's terms. |
 
 ## Pointing the form at a different backend
 
