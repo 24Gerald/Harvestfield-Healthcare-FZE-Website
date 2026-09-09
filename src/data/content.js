@@ -21,7 +21,7 @@ export const factory = {
   eyebrow: 'The Factory',
   title: 'Brought home to Nigeria.',
   body: [
-    'For 25 years Harvestfield has distributed health products across Nigeria. Now we make them here too. Inside the Harvestfield Industries Free Trade Zone in Ogun State, netting arrives in bulk and leaves as finished, packed mosquito nets, ready for the programs and families who need them.',
+    'For 26 years Harvestfield has distributed health products across Nigeria. Now we make them here too. Inside the Harvestfield Industries Free Trade Zone in Ogun State, netting arrives in bulk and leaves as finished, packed mosquito nets, ready for the programs and families who need them.',
     'Manufacturing in-country closes the distance between a decision and a delivery. No shipping windows, no port delays, no waiting on a factory a continent away.',
   ],
   process: [
