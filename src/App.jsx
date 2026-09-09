@@ -2,6 +2,7 @@ import { BrowserRouter, MemoryRouter, Routes, Route, useLocation } from 'react-r
 import { useEffect } from 'react'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
+import ScrollProgress from './components/ScrollProgress'
 import Home from './pages/Home'
 import Legal from './pages/Legal'
 
@@ -28,6 +29,7 @@ export default function App() {
       >
         Skip to content
       </a>
+      <ScrollProgress />
       <Nav />
       <main id="main">
         <Routes>

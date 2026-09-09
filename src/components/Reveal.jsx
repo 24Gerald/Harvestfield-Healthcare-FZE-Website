@@ -1,12 +1,29 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import { EASE_OUT } from '../lib/motion'
 
-const EASE = [0.22, 0.61, 0.36, 1]
+const variants = {
+  // Subtle fade-up — the default, used for paragraphs and cards.
+  fade: { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } },
+  // Masked rise — headings emerge from a clipped line. Pair with an overflow-hidden wrapper below.
+  rise: { hidden: { opacity: 0, y: '60%', clipPath: 'inset(0 0 100% 0)' }, show: { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' } },
+  // Scale-in — chips and small objects.
+  pop: { hidden: { opacity: 0, scale: 0.85 }, show: { opacity: 1, scale: 1 } },
+}
 
 /**
- * Subtle fade-up on scroll. Wrap any block; pass `delay` (seconds) to stagger
- * siblings. Disabled entirely under prefers-reduced-motion.
+ * Scroll-triggered reveal. Wrap any block; pass `delay` (seconds) to stagger
+ * siblings and `variant` to choose the motion. Disabled under prefers-reduced-motion.
  */
-export default function Reveal({ children, delay = 0, y = 20, className = '', as = 'div', once = true, ...rest }) {
+export default function Reveal({
+  children,
+  delay = 0,
+  variant = 'fade',
+  duration = 0.6,
+  className = '',
+  as = 'div',
+  once = true,
+  ...rest
+}) {
   const reduce = useReducedMotion()
   const Tag = motion[as] ?? motion.div
 
@@ -22,10 +39,11 @@ export default function Reveal({ children, delay = 0, y = 20, className = '', as
   return (
     <Tag
       className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      variants={variants[variant]}
+      initial="hidden"
+      whileInView="show"
       viewport={{ once, margin: '0px 0px -10% 0px' }}
-      transition={{ duration: 0.5, ease: EASE, delay }}
+      transition={{ duration, ease: EASE_OUT, delay }}
       {...rest}
     >
       {children}

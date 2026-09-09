@@ -166,3 +166,56 @@
     transform: translate(-40px, 0);
   }
 }
+
+/* Button click ripple — an ink spread from the pointer position. */
+@keyframes hf-ripple {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+.hf-ripple {
+  animation: hf-ripple 0.65s var(--ease-brand) forwards;
+  will-change: transform, opacity;
+}
+
+/* Form success check-mark draw */
+@keyframes hf-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.hf-draw {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: hf-draw 0.6s var(--ease-brand) 0.25s forwards;
+}
+@keyframes hf-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.hf-pop {
+  animation: hf-pop 0.45s var(--ease-brand) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hf-ripple {
+    display: none;
+  }
+  .hf-draw {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+  .hf-pop {
+    animation: none;
+  }
+}

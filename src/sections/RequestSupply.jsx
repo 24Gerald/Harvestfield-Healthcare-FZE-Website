@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { EASE_OUT } from '../lib/motion'
 import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 import Button from '../components/Button'
@@ -21,6 +23,7 @@ const inputClass =
 
 export default function RequestSupply() {
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
+  const reduce = useReducedMotion()
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -48,37 +51,60 @@ export default function RequestSupply() {
       <div className="container-site section-pad">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Context */}
-          <Reveal className="lg:col-span-5">
-            <Eyebrow className="text-teal-deep">{copy.eyebrow}</Eyebrow>
-            <h2 className="mt-4 text-3xl font-bold text-teal-deep sm:text-4xl lg:text-5xl">{copy.title}</h2>
+          <div className="lg:col-span-5">
+            <Reveal>
+              <Eyebrow className="text-teal-deep">{copy.eyebrow}</Eyebrow>
+            </Reveal>
+            <Reveal variant="rise" delay={0.08} duration={0.8}>
+              <h2 className="mt-4 text-3xl font-bold text-teal-deep sm:text-4xl lg:text-5xl">{copy.title}</h2>
+            </Reveal>
             <ul className="mt-8 space-y-4">
-              {copy.context.map((line) => (
-                <li key={line} className="flex gap-3 text-base text-ink/85">
+              {copy.context.map((line, i) => (
+                <Reveal key={line} as="li" delay={0.2 + i * 0.1} className="flex gap-3 text-base text-ink/85">
                   <span className="mt-2.5 h-1.5 w-1.5 flex-none rounded-full bg-teal-deep" aria-hidden="true" />
                   {line}
-                </li>
+                </Reveal>
               ))}
             </ul>
-            <p className="mt-8 text-sm text-muted">
+            <Reveal delay={0.5} className="mt-8 text-sm text-muted">
               Prefer email?{' '}
               <a href={`mailto:${site.contactEmail}`} className="font-medium text-teal-deep underline-offset-4 hover:underline">
                 {site.contactEmail}
               </a>
-            </p>
-          </Reveal>
+            </Reveal>
+          </div>
 
           {/* Form */}
           <Reveal delay={0.1} className="lg:col-span-7">
+            <AnimatePresence mode="wait" initial={false}>
             {status === 'success' ? (
-              <div role="status" className="rounded-3xl bg-white p-8 md:p-10">
-                <h3 className="text-2xl font-bold text-teal-deep">{copy.success.title}</h3>
+              <motion.div
+                key="success"
+                role="status"
+                className="rounded-3xl bg-white p-8 md:p-10"
+                initial={reduce ? false : { opacity: 0, y: 16, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={reduce ? undefined : { opacity: 0, y: -12 }}
+                transition={{ duration: 0.5, ease: EASE_OUT }}
+              >
+                <span className="hf-pop inline-flex h-14 w-14 items-center justify-center rounded-full bg-teal-deep text-white" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path className="hf-draw" d="M6 14.5l5.5 5.5L22 9" />
+                  </svg>
+                </span>
+                <h3 className="mt-6 text-2xl font-bold text-teal-deep">{copy.success.title}</h3>
                 <p className="mt-3 text-base text-ink/80">{copy.success.body}</p>
                 <Button variant="ghost" className="mt-8" onClick={() => setStatus('idle')}>
                   Send another request
                 </Button>
-              </div>
+              </motion.div>
             ) : (
-              <form
+              <motion.form
+                key="form"
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduce ? undefined : { opacity: 0, y: -12 }}
+                transition={{ duration: 0.45, ease: EASE_OUT }}
                 name={FORM_NAME}
                 method="POST"
                 action="/"
@@ -125,13 +151,26 @@ export default function RequestSupply() {
                 )}
 
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <Button type="submit" disabled={status === 'submitting'} className="disabled:opacity-60">
-                    {status === 'submitting' ? 'Sending…' : copy.submit}
+                  <Button type="submit" disabled={status === 'submitting'} aria-busy={status === 'submitting'} className="min-w-[10.5rem] disabled:opacity-80">
+                    {status === 'submitting' ? (
+                      <>
+                        <motion.span
+                          aria-hidden="true"
+                          className="inline-block h-4 w-4 rounded-full border-2 border-white/40 border-t-white"
+                          animate={reduce ? undefined : { rotate: 360 }}
+                          transition={{ duration: 0.8, ease: 'linear', repeat: Infinity }}
+                        />
+                        Sending
+                      </>
+                    ) : (
+                      copy.submit
+                    )}
                   </Button>
                   <p className="text-xs text-muted">We reply within {site.replyTime}.</p>
                 </div>
-              </form>
+              </motion.form>
             )}
+            </AnimatePresence>
           </Reveal>
         </div>
       </div>

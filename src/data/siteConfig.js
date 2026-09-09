@@ -40,6 +40,36 @@ export const HERO_MOBILE_MODE = 'svg'
 // (phones, tablets), count as "mobile" for the hero and get the lightweight layer.
 export const HERO_MOBILE_BREAKPOINT = 1024
 
+/**
+ * Real 3D mosquito for the hero scene.
+ *
+ * Drop a glTF export into public/models/mosquito/ (Sketchfab's "glTF" download
+ * unzips to scene.gltf + scene.bin + textures/ — copy all of it). Any .gltf or
+ * .glb works. If the file is missing or fails to load, the hero silently falls
+ * back to the procedural mosquito, so this is safe to leave enabled.
+ *
+ * Tuning: most models need `rotation` adjusted so the head points toward +z
+ * (the net). Try [0, Math.PI, 0] if it flies backwards, [0, Math.PI / 2, 0]
+ * or [0, -Math.PI / 2, 0] if it flies sideways.
+ */
+export const HERO_MOSQUITO_MODEL = {
+  enabled: true,
+  url: 'models/mosquito/scene.gltf', // relative to the site base path
+  length: 1.1, // world units — the model is scaled so its longest side matches this
+  rotation: [0, 0, 0], // Euler radians, applied so the head faces +z
+  opacity: 0.92,
+  wingNodes: [], // optional node names to flutter, e.g. ['Wing_L', 'Wing_R'] — check the file in a glTF viewer
+  // Shown in the footer only once the model has actually loaded (licence attribution).
+  credit: {
+    title: 'Mosquito Monster',
+    author: 'COMODOX',
+    url: 'https://sketchfab.com/3d-models/mosquito-monster-0df94ab7ce0145818ea22309774ee0ea',
+    authorUrl: 'https://sketchfab.com/comodox',
+    platform: 'Sketchfab',
+    platformUrl: 'https://sketchfab.com',
+  },
+}
+
 export const navLinks = [
   { label: 'The Factory', href: '#factory' },
   { label: 'The Net', href: '#net' },

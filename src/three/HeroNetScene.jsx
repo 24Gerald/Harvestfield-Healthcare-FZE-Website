@@ -16,21 +16,32 @@
  * plane and the mosquitoes approach from negative z (the far side, away from
  * the viewer) toward the viewer — so the viewer is the protected sleeper.
  *
- * Swapping in real assets later
+ * Mosquito bodies
+ *   <Mosquito> is the flight rig: path, soft stop at the net, contact ripples.
+ *   It renders one of two bodies inside its group, both facing +z:
+ *     <ModelBody>      a real glTF model from public/models/mosquito/ (see
+ *                      HERO_MOSQUITO_MODEL in src/data/siteConfig.js)
+ *     <ProceduralBody> the built-in primitive mosquito — the automatic fallback
+ *                      while the model loads, if it is missing, or if it fails.
+ *   The rig writes per-frame animation state (wing flutter, depth fade) into a
+ *   ref that either body reads, so swapping bodies never touches the rig.
+ *
+ * Swapping the net later
  *   - Replace the body of <NetLattice> with a loaded mesh; keep it on z = 0 and
  *     keep the `impacts` uniform contract if you want ripples on contact.
- *   - Replace the primitives inside <Mosquito> with a loaded model. The flight
- *     path, orientation and impact logic live in `useFrame` and do not depend
- *     on the geometry — only on the group's forward axis being +z.
  *
  * Mounting, lazy-loading and fallbacks are handled by ./HeroBackground.jsx —
  * this file is pure scene code.
  */
-import { useMemo, useRef, useState } from 'react'
+import { Component, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-// Deep import keeps the rest of drei out of the bundle (drei is otherwise a ~1 MB barrel).
+// Deep imports keep the rest of drei out of the bundle (drei is otherwise a ~1 MB barrel).
 import { PerformanceMonitor } from '@react-three/drei/core/PerformanceMonitor'
+import { useGLTF } from '@react-three/drei/core/Gltf'
 import * as THREE from 'three'
+import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import { HERO_MOSQUITO_MODEL } from '../data/siteConfig'
+import { modelStatus } from '../lib/modelStatus'
 
 /* ---------------------------------------------------------------------------
    Shared constants
@@ -167,14 +178,14 @@ export function NetLattice({ impacts, color = NET_COLOR, opacity = 0.55 }) {
 }
 
 /* ---------------------------------------------------------------------------
-   Mosquito — abstract primitive form + procedural flight path
+   Mosquito — flight rig (path, soft stop, contact ripples)
    ------------------------------------------------------------------------ */
 const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3)
 const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2
 
 // Phase boundaries of one flight cycle (normalised 0..1)
-const APPROACH_END = 0.44
-const HOLD_END = 0.6
+const APPROACH_END = 0.42
+const HOLD_END = 0.62
 
 export function Mosquito({
   index = 0,
@@ -189,14 +200,15 @@ export function Mosquito({
   color = MOSQUITO_COLOR,
 }) {
   const group = useRef()
-  const wingL = useRef()
-  const wingR = useRef()
-  const bodyMat = useRef()
-  const wingMat = useRef()
+
+  // Per-frame animation state shared with whichever body is mounted.
+  //   flutter: wing angle offset (radians), depth: 0 (far) → 1 (at the net),
+  //   probe: 0..1 intensity while the mosquito is pushing against the net.
+  const anim = useRef({ flutter: 0, depth: 0, probe: 0 })
 
   // Scratch objects reused every frame (no allocations in the render loop).
   const scratch = useMemo(
-    () => ({ pos: new THREE.Vector3(), next: new THREE.Vector3(), lastPhase: 0, contactMade: false }),
+    () => ({ pos: new THREE.Vector3(), next: new THREE.Vector3(), contactMade: false }),
     [],
   )
 
@@ -210,12 +222,12 @@ export function Mosquito({
     }
   }, [index])
 
-  const margin = 0.14 // how far behind the surface the mosquito is held
+  const margin = 0.16 // how far behind the surface the mosquito is held
 
   /**
    * Flight path in net-local space for a normalised cycle position p (0..1).
    *   0            → APPROACH_END : drift in from zFar, decelerating toward the net
-   *   APPROACH_END → HOLD_END     : held at the surface with a soft, decaying bounce
+   *   APPROACH_END → HOLD_END     : held at the surface, probing with decaying jabs
    *   HOLD_END     → 1            : drift away again
    */
   const pathAt = (p, t, out) => {
@@ -235,10 +247,10 @@ export function Mosquito({
     if (p < APPROACH_END) {
       z = THREE.MathUtils.lerp(zFar, surface, easeOutCubic(p / APPROACH_END))
     } else if (p < HOLD_END) {
-      // Soft stop: two decaying nudges against the surface — never through it.
+      // Soft stop: three decaying jabs against the surface — never through it.
       const q = (p - APPROACH_END) / (HOLD_END - APPROACH_END)
-      const bounce = Math.abs(Math.sin(q * Math.PI * 2)) * (1 - q) * 0.22
-      z = surface - bounce
+      const jab = Math.abs(Math.sin(q * Math.PI * 3)) * (1 - q) * 0.26
+      z = surface - jab
     } else {
       const q = (p - HOLD_END) / (1 - HOLD_END)
       z = THREE.MathUtils.lerp(surface, zFar, easeInOutSine(q))
@@ -260,29 +272,181 @@ export function Mosquito({
     g.lookAt(g.parent.localToWorld(scratch.next))
 
     // Register a contact ripple on the net the moment the hold phase begins.
-    if (p >= APPROACH_END && p < HOLD_END) {
+    const holding = p >= APPROACH_END && p < HOLD_END
+    if (holding) {
       if (!scratch.contactMade) {
         scratch.contactMade = true
-        impacts.current[index % MAX_IMPACTS] = { x: scratch.pos.x, y: scratch.pos.y, strength: 0.16 * scale, time: t }
+        impacts.current[index % MAX_IMPACTS] = { x: scratch.pos.x, y: scratch.pos.y, strength: 0.18 * scale, time: t }
       }
     } else {
       scratch.contactMade = false
     }
 
-    // Wing flutter — fast, subtle oscillation on the wing meshes only.
-    const flutter = Math.sin(t * 95 + index) * 0.55
-    if (wingL.current) wingL.current.rotation.x = 0.35 + flutter
-    if (wingR.current) wingR.current.rotation.x = -0.35 - flutter
-
-    // Fade with distance so far-away mosquitoes read as atmosphere, not focus.
-    const depth = THREE.MathUtils.clamp(1 - (Math.abs(scratch.pos.z) - margin) / Math.abs(zFar), 0, 1)
-    if (bodyMat.current) bodyMat.current.opacity = 0.25 + depth * 0.5
-    if (wingMat.current) wingMat.current.opacity = 0.12 + depth * 0.25
+    // Shared animation state for the body.
+    const a = anim.current
+    a.probe = holding ? 1 - (p - APPROACH_END) / (HOLD_END - APPROACH_END) : 0
+    a.flutter = Math.sin(t * 95 + index) * (0.55 + a.probe * 0.25) // wings beat harder while pushing
+    a.depth = THREE.MathUtils.clamp(1 - (Math.abs(scratch.pos.z) - margin) / Math.abs(zFar), 0, 1)
   })
 
   return (
     <group ref={group} scale={scale} renderOrder={1}>
-      {/* Body — capsule laid along +z (forward). Swap this block for a modelled body. */}
+      <MosquitoBody anim={anim} color={color} />
+    </group>
+  )
+}
+
+/* ---------------------------------------------------------------------------
+   Mosquito bodies
+   ------------------------------------------------------------------------ */
+
+/**
+ * One HEAD request decides whether a model file is actually present before any
+ * mosquito tries to load it. Hosts that serve index.html for unknown paths (SPA
+ * redirects) return HTML with a 200, so the content type is checked as well.
+ *   null → checking, true → present, false → absent (procedural body, no error noise)
+ */
+let modelAvailable = HERO_MOSQUITO_MODEL.enabled ? null : false
+let modelCheck = null
+const modelListeners = new Set()
+function checkModelAvailable() {
+  if (modelCheck) return modelCheck
+  const url = `${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`
+  modelCheck = fetch(url, { method: 'HEAD' })
+    .then((r) => {
+      const type = r.headers.get('content-type') || ''
+      modelAvailable = r.ok && !/text\/html/i.test(type)
+    })
+    .catch(() => {
+      modelAvailable = false
+    })
+    .finally(() => {
+      if (!modelAvailable) modelStatus.set('fallback')
+      modelListeners.forEach((l) => l(modelAvailable))
+    })
+  return modelCheck
+}
+function useModelAvailable() {
+  const [state, setState] = useState(modelAvailable)
+  useEffect(() => {
+    if (modelAvailable !== null) return setState(modelAvailable)
+    modelListeners.add(setState)
+    checkModelAvailable()
+    return () => modelListeners.delete(setState)
+  }, [])
+  return state
+}
+
+/** Chooses the real model when configured and present, with the procedural body as fallback. */
+function MosquitoBody({ anim, color }) {
+  const available = useModelAvailable()
+  if (!available) return <ProceduralBody anim={anim} color={color} />
+  return (
+    <ModelErrorBoundary fallback={<ProceduralBody anim={anim} color={color} />}>
+      <Suspense fallback={<ProceduralBody anim={anim} color={color} />}>
+        <ModelBody anim={anim} />
+      </Suspense>
+    </ModelErrorBoundary>
+  )
+}
+
+/** Catches a missing/broken model file and shows the procedural body instead. */
+class ModelErrorBoundary extends Component {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  componentDidCatch(err) {
+    modelStatus.set('fallback')
+    if (import.meta.env.DEV) console.warn('[hero] mosquito model unavailable, using procedural body:', err?.message)
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children
+  }
+}
+
+/**
+ * Real glTF model. Normalised to a known size, centred, rotated per config so
+ * the head faces +z, and given per-instance materials for the depth fade.
+ */
+function ModelBody({ anim }) {
+  const cfg = HERO_MOSQUITO_MODEL
+  const url = `${import.meta.env.BASE_URL}${cfg.url}`
+  const { scene } = useGLTF(url)
+
+  const { object, wings, materials, scale, offset } = useMemo(() => {
+    // Clone so each mosquito gets its own transforms and materials (SkeletonUtils' clone handles rigged models).
+    const obj = cloneSkeleton(scene)
+    const box = new THREE.Box3().setFromObject(obj)
+    const size = box.getSize(new THREE.Vector3())
+    const center = box.getCenter(new THREE.Vector3())
+    const s = cfg.length / Math.max(size.x, size.y, size.z, 1e-6)
+
+    const mats = []
+    obj.traverse((node) => {
+      if (!node.isMesh) return
+      node.frustumCulled = false
+      const list = Array.isArray(node.material) ? node.material : [node.material]
+      const cloned = list.map((m) => {
+        const c = m.clone()
+        c.transparent = true
+        c.opacity = cfg.opacity
+        mats.push(c)
+        return c
+      })
+      node.material = Array.isArray(node.material) ? cloned : cloned[0]
+    })
+    const w = cfg.wingNodes.map((n) => obj.getObjectByName(n)).filter(Boolean)
+    return { object: obj, wings: w, materials: mats, scale: s, offset: center.multiplyScalar(-s) }
+  }, [scene, cfg])
+
+  useEffect(() => {
+    modelStatus.set('loaded')
+  }, [])
+
+  const wingRest = useMemo(() => wings.map((w) => w.rotation.x), [wings])
+
+  useFrame(() => {
+    const a = anim.current
+    const fade = 0.35 + a.depth * 0.65
+    for (const m of materials) m.opacity = cfg.opacity * fade
+    for (let i = 0; i < wings.length; i++) {
+      wings[i].rotation.x = wingRest[i] + a.flutter * (i % 2 === 0 ? 1 : -1)
+    }
+    // Without named wing nodes, a subtle body tremor stands in for the wing beat.
+    if (wings.length === 0) object.position.y = Math.sin(a.flutter * 4) * 0.004
+  })
+
+  return (
+    <group rotation={cfg.rotation}>
+      <primitive object={object} scale={scale} position={offset} />
+    </group>
+  )
+}
+
+/** Built-in abstract mosquito: capsule body, sphere head, thin wing planes. */
+function ProceduralBody({ anim, color = MOSQUITO_COLOR }) {
+  const wingL = useRef()
+  const wingR = useRef()
+  const bodyMat = useRef()
+  const wingMat = useRef()
+
+  useEffect(() => {
+    if (modelStatus.get() !== 'loaded') modelStatus.set('fallback')
+  }, [])
+
+  useFrame(() => {
+    const a = anim.current
+    if (wingL.current) wingL.current.rotation.x = 0.35 + a.flutter
+    if (wingR.current) wingR.current.rotation.x = -0.35 - a.flutter
+    // Fade with distance so far-away mosquitoes read as atmosphere, not focus.
+    if (bodyMat.current) bodyMat.current.opacity = 0.3 + a.depth * 0.6
+    if (wingMat.current) wingMat.current.opacity = 0.15 + a.depth * 0.3
+  })
+
+  return (
+    <>
+      {/* Body — capsule laid along +z (forward). */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <capsuleGeometry args={[0.045, 0.3, 3, 10]} />
         <meshStandardMaterial ref={bodyMat} color={color} roughness={0.7} transparent depthWrite={false} />
@@ -296,7 +460,7 @@ export function Mosquito({
         <cylinderGeometry args={[0.006, 0.006, 0.18, 4]} />
         <meshBasicMaterial color={color} transparent opacity={0.5} depthWrite={false} />
       </mesh>
-      {/* Wings — thin planes either side; flutter is driven in useFrame */}
+      {/* Wings — thin planes either side; flutter is driven by the rig */}
       <group position={[0, 0.06, 0.02]}>
         <mesh ref={wingL} position={[-0.17, 0, 0]} rotation={[0.35, 0, 0.15]}>
           <circleGeometry args={[0.16, 14]} />
@@ -307,7 +471,7 @@ export function Mosquito({
           <meshBasicMaterial color="#ffffff" transparent opacity={0.3} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
       </group>
-    </group>
+    </>
   )
 }
 
@@ -356,6 +520,14 @@ export default function HeroNetScene({ lite = false }) {
 export function HeroCanvas({ lite = false }) {
   const maxDpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2)
   const [dpr, setDpr] = useState(maxDpr)
+
+  // Check for the model as soon as the canvas mounts and start fetching it if present.
+  useEffect(() => {
+    if (!HERO_MOSQUITO_MODEL.enabled) return
+    checkModelAvailable().then(() => {
+      if (modelAvailable) useGLTF.preload(`${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`)
+    })
+  }, [])
 
   return (
     <Canvas

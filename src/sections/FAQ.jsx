@@ -42,9 +42,16 @@ function Item({ item, open, onToggle, index }) {
             initial={reduce ? false : { height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={reduce ? undefined : { height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            <p className="pb-6 pr-10 text-base text-ink/80">{item.answer}</p>
+            <motion.p
+              className="pb-6 pr-10 text-base text-ink/80"
+              initial={reduce ? false : { y: -8, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+            >
+              {item.answer}
+            </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -59,10 +66,14 @@ export default function FAQ() {
     <section id={faqSection.id} className="scroll-mt-20 bg-white">
       <div className="container-site section-pad">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-          <Reveal className="lg:col-span-4">
-            <Eyebrow className="text-teal-deep">{faqSection.eyebrow}</Eyebrow>
-            <h2 className="mt-4 text-3xl font-bold text-teal-deep sm:text-4xl">{faqSection.title}</h2>
-          </Reveal>
+          <div className="lg:col-span-4">
+            <Reveal>
+              <Eyebrow className="text-teal-deep">{faqSection.eyebrow}</Eyebrow>
+            </Reveal>
+            <Reveal variant="rise" delay={0.08} duration={0.8}>
+              <h2 className="mt-4 text-3xl font-bold text-teal-deep sm:text-4xl">{faqSection.title}</h2>
+            </Reveal>
+          </div>
           <ul className="border-t border-teal-deep/15 lg:col-span-8">
             {faqs.map((item, i) => (
               <Item
