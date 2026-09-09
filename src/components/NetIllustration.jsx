@@ -67,27 +67,45 @@ function MosquitoGlyph({ x, y, className = '', fill = '#dff2f4' }) {
 
 export default function NetIllustration({ variant = 'render', animated = true, mosquitoes = true, className = '' }) {
   if (variant === 'hero') {
+    // Canopy silhouette: gathered top, hoop, tulle flaring down in folds.
+    const canopyPath = 'M300 20 L300 60 C300 75 250 85 220 100 C190 130 150 300 110 460 L490 460 C450 300 410 130 380 100 C350 85 300 75 300 60 Z'
     return (
       <svg viewBox={`0 0 ${W} ${H}`} className={className} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <defs>
-          <radialGradient id="hf-hero-fade" cx="55%" cy="50%" r="60%">
-            <stop offset="0%" stopColor="#fff" stopOpacity="1" />
-            <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-          </radialGradient>
-          <mask id="hf-hero-mask">
-            <rect width={W} height={H} fill="url(#hf-hero-fade)" />
-          </mask>
+          <clipPath id="hf-canopy-clip">
+            <path d={canopyPath} />
+          </clipPath>
+          <linearGradient id="hf-canopy-shade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#fff" stopOpacity="0.05" />
+            <stop offset="35%" stopColor="#fff" stopOpacity="0.16" />
+            <stop offset="55%" stopColor="#fff" stopOpacity="0.06" />
+            <stop offset="80%" stopColor="#fff" stopOpacity="0.14" />
+            <stop offset="100%" stopColor="#fff" stopOpacity="0.04" />
+          </linearGradient>
         </defs>
-        <g mask="url(#hf-hero-mask)" transform="skewY(-7)">
+        {/* hanging cord */}
+        <path d="M300 0 V60" stroke="#ffffff" strokeWidth="1.2" opacity="0.7" />
+        {/* tulle: membrane + fine mesh, clipped to the canopy shape */}
+        <g clipPath="url(#hf-canopy-clip)">
+          <rect width={W} height={H} fill="url(#hf-canopy-shade)" />
           <g className={animated ? 'hf-net-breathe' : ''}>
-            <Lattice stroke="#a9d3d8" opacity="0.8" />
+            <Lattice step={14} stroke="#dff2f4" opacity="0.5" curved={false} />
+          </g>
+          {/* fold highlights */}
+          <g fill="none" stroke="#ffffff" strokeWidth="1.4" opacity="0.35" strokeLinecap="round">
+            <path d="M262 100 C240 220 200 340 170 460" />
+            <path d="M338 100 C360 220 400 340 430 460" />
+            <path d="M300 100 C300 240 296 350 292 460" />
           </g>
         </g>
-        {/* Mosquitoes drift in from the left and are stopped at the lattice. */}
+        {/* hoop */}
+        <ellipse cx="300" cy="100" rx="82" ry="12" fill="none" stroke="#ffffff" strokeWidth="3" opacity="0.9" />
+        <circle cx="300" cy="60" r="5" fill="#ffffff" opacity="0.9" />
+        {/* Mosquitoes drift in from the left and are stopped at the tulle. */}
         {mosquitoes && (
           <>
-            <MosquitoGlyph x={330} y={150} />
-            <MosquitoGlyph x={360} y={290} className="hf-mosquito--b" />
+            <MosquitoGlyph x={215} y={210} />
+            <MosquitoGlyph x={185} y={330} className="hf-mosquito--b" />
           </>
         )}
       </svg>

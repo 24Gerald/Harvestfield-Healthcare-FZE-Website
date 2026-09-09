@@ -31,11 +31,13 @@ export const FORM_ENDPOINT_URL = '' // e.g. 'https://api.example.com/supply-requ
 
 /**
  * Hero 3D scene behaviour on small viewports.
- *   'svg'         → lightweight CSS/SVG animation of the same concept (no WebGL). Default.
- *   'webgl-lite'  → the R3F scene with fewer mosquitoes and no mouse parallax.
- * Benchmark on real devices before switching to 'webgl-lite'.
+ *   'webgl-lite'  → the R3F scene with two mosquitoes, lower pixel-ratio cap, coarser
+ *                   canopy mesh and no mouse parallax. Default.
+ *   'svg'         → lightweight CSS/SVG animation of the same concept (no WebGL) —
+ *                   switch to this if device testing shows the lite scene is too heavy.
+ * Reduced-motion users and devices without WebGL always get the SVG version.
  */
-export const HERO_MOBILE_MODE = 'svg'
+export const HERO_MOBILE_MODE = 'webgl-lite'
 // Viewports narrower than this, and any device whose primary pointer is touch
 // (phones, tablets), count as "mobile" for the hero and get the lightweight layer.
 export const HERO_MOBILE_BREAKPOINT = 1024

@@ -100,7 +100,7 @@ export default function HeroBackground({ hostRef }) {
       <HeroVideoMosquito />
 
       {/* Vignette behind the text block so the headline always has contrast. */}
-      <div className="absolute inset-0 bg-[radial-gradient(70%_80%_at_18%_55%,rgba(11,59,67,0.85)_0%,rgba(11,59,67,0.45)_40%,rgba(11,59,67,0)_75%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(95%_55%_at_50%_64%,rgba(11,59,67,0.92)_0%,rgba(11,59,67,0.55)_45%,rgba(11,59,67,0)_82%)] md:bg-[radial-gradient(70%_80%_at_18%_55%,rgba(11,59,67,0.85)_0%,rgba(11,59,67,0.45)_40%,rgba(11,59,67,0)_75%)]" />
       {/* Soft fade into the next (white) section. */}
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-teal-deep/40" />
     </div>
