@@ -14,7 +14,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import NetIllustration from '../components/NetIllustration'
-import { HERO_MOBILE_MODE, HERO_MOBILE_BREAKPOINT } from '../data/siteConfig'
+import HeroVideoMosquito from '../components/HeroVideoMosquito'
+import { HERO_MOBILE_MODE, HERO_MOBILE_BREAKPOINT, HERO_MOSQUITO_VIDEO } from '../data/siteConfig'
+import { useAssetAvailable } from '../lib/useAssetAvailable'
 
 const HeroCanvas = lazy(() => import('./HeroNetScene').then((m) => ({ default: m.HeroCanvas })))
 
@@ -69,6 +71,12 @@ export default function HeroBackground({ hostRef }) {
   const useSvg = reduce || !webgl || (small && HERO_MOBILE_MODE === 'svg')
   const lite = small && HERO_MOBILE_MODE === 'webgl-lite'
 
+  // A supplied mosquito video replaces the 3D/SVG mosquitoes (the net stays).
+  const base = import.meta.env.BASE_URL
+  const videoWebm = useAssetAvailable(`${base}${HERO_MOSQUITO_VIDEO.webm}`, HERO_MOSQUITO_VIDEO.enabled)
+  const videoHevc = useAssetAvailable(`${base}${HERO_MOSQUITO_VIDEO.hevc}`, HERO_MOSQUITO_VIDEO.enabled)
+  const hideMosquitoes = HERO_MOSQUITO_VIDEO.replace3D && (videoWebm || videoHevc)
+
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
       {/* Always-on base: brand gradient. Guarantees a finished look before/without the 3D layer. */}
@@ -76,17 +84,20 @@ export default function HeroBackground({ hostRef }) {
 
       {useSvg ? (
         <div className="absolute inset-y-0 right-[-10%] w-[120%] opacity-50 sm:right-[-5%] sm:w-[85%] md:w-[70%]">
-          <NetIllustration variant="hero" animated={!reduce} className="h-full w-full" />
+          <NetIllustration variant="hero" animated={!reduce} mosquitoes={!hideMosquitoes} className="h-full w-full" />
         </div>
       ) : (
         inView && (
-          <div className="absolute inset-0 opacity-55">
+          <div className="absolute inset-0 opacity-85">
             <Suspense fallback={null}>
-              <HeroCanvas lite={lite} />
+              <HeroCanvas lite={lite} mosquitoes={!hideMosquitoes} />
             </Suspense>
           </div>
         )
       )}
+
+      {/* Optional transparent mosquito video (renders nothing until a file exists) */}
+      <HeroVideoMosquito />
 
       {/* Vignette behind the text block so the headline always has contrast. */}
       <div className="absolute inset-0 bg-[radial-gradient(70%_80%_at_18%_55%,rgba(11,59,67,0.85)_0%,rgba(11,59,67,0.45)_40%,rgba(11,59,67,0)_75%)]" />

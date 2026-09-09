@@ -21,8 +21,9 @@
  *   It renders one of two bodies inside its group, both facing +z:
  *     <ModelBody>      a real glTF model from public/models/mosquito/ (see
  *                      HERO_MOSQUITO_MODEL in src/data/siteConfig.js)
- *     <ProceduralBody> the built-in primitive mosquito — the automatic fallback
- *                      while the model loads, if it is missing, or if it fails.
+ *     <ProceduralBody> the built-in anatomically modelled mosquito (see
+ *                      ./RealisticMosquito.jsx) — used by default, and as the
+ *                      fallback while a model loads, if it is missing, or fails.
  *   The rig writes per-frame animation state (wing flutter, depth fade) into a
  *   ref that either body reads, so swapping bodies never touches the rig.
  *
@@ -42,6 +43,8 @@ import * as THREE from 'three'
 import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { HERO_MOSQUITO_MODEL } from '../data/siteConfig'
 import { modelStatus } from '../lib/modelStatus'
+import { useAssetAvailable } from '../lib/useAssetAvailable'
+import RealisticMosquito from './RealisticMosquito'
 
 /* ---------------------------------------------------------------------------
    Shared constants
@@ -300,46 +303,9 @@ export function Mosquito({
    Mosquito bodies
    ------------------------------------------------------------------------ */
 
-/**
- * One HEAD request decides whether a model file is actually present before any
- * mosquito tries to load it. Hosts that serve index.html for unknown paths (SPA
- * redirects) return HTML with a 200, so the content type is checked as well.
- *   null → checking, true → present, false → absent (procedural body, no error noise)
- */
-let modelAvailable = HERO_MOSQUITO_MODEL.enabled ? null : false
-let modelCheck = null
-const modelListeners = new Set()
-function checkModelAvailable() {
-  if (modelCheck) return modelCheck
-  const url = `${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`
-  modelCheck = fetch(url, { method: 'HEAD' })
-    .then((r) => {
-      const type = r.headers.get('content-type') || ''
-      modelAvailable = r.ok && !/text\/html/i.test(type)
-    })
-    .catch(() => {
-      modelAvailable = false
-    })
-    .finally(() => {
-      if (!modelAvailable) modelStatus.set('fallback')
-      modelListeners.forEach((l) => l(modelAvailable))
-    })
-  return modelCheck
-}
-function useModelAvailable() {
-  const [state, setState] = useState(modelAvailable)
-  useEffect(() => {
-    if (modelAvailable !== null) return setState(modelAvailable)
-    modelListeners.add(setState)
-    checkModelAvailable()
-    return () => modelListeners.delete(setState)
-  }, [])
-  return state
-}
-
 /** Chooses the real model when configured and present, with the procedural body as fallback. */
 function MosquitoBody({ anim, color }) {
-  const available = useModelAvailable()
+  const available = useAssetAvailable(`${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`, HERO_MOSQUITO_MODEL.enabled)
   if (!available) return <ProceduralBody anim={anim} color={color} />
   return (
     <ModelErrorBoundary fallback={<ProceduralBody anim={anim} color={color} />}>
@@ -424,55 +390,12 @@ function ModelBody({ anim }) {
   )
 }
 
-/** Built-in abstract mosquito: capsule body, sphere head, thin wing planes. */
-function ProceduralBody({ anim, color = MOSQUITO_COLOR }) {
-  const wingL = useRef()
-  const wingR = useRef()
-  const bodyMat = useRef()
-  const wingMat = useRef()
-
+/** Built-in mosquito body (procedural, anatomically modelled). */
+function ProceduralBody({ anim }) {
   useEffect(() => {
     if (modelStatus.get() !== 'loaded') modelStatus.set('fallback')
   }, [])
-
-  useFrame(() => {
-    const a = anim.current
-    if (wingL.current) wingL.current.rotation.x = 0.35 + a.flutter
-    if (wingR.current) wingR.current.rotation.x = -0.35 - a.flutter
-    // Fade with distance so far-away mosquitoes read as atmosphere, not focus.
-    if (bodyMat.current) bodyMat.current.opacity = 0.3 + a.depth * 0.6
-    if (wingMat.current) wingMat.current.opacity = 0.15 + a.depth * 0.3
-  })
-
-  return (
-    <>
-      {/* Body — capsule laid along +z (forward). */}
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <capsuleGeometry args={[0.045, 0.3, 3, 10]} />
-        <meshStandardMaterial ref={bodyMat} color={color} roughness={0.7} transparent depthWrite={false} />
-      </mesh>
-      {/* Head + proboscis */}
-      <mesh position={[0, 0.02, 0.2]}>
-        <sphereGeometry args={[0.055, 10, 8]} />
-        <meshStandardMaterial color={color} roughness={0.7} transparent opacity={0.6} depthWrite={false} />
-      </mesh>
-      <mesh position={[0, 0.02, 0.32]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.006, 0.006, 0.18, 4]} />
-        <meshBasicMaterial color={color} transparent opacity={0.5} depthWrite={false} />
-      </mesh>
-      {/* Wings — thin planes either side; flutter is driven by the rig */}
-      <group position={[0, 0.06, 0.02]}>
-        <mesh ref={wingL} position={[-0.17, 0, 0]} rotation={[0.35, 0, 0.15]}>
-          <circleGeometry args={[0.16, 14]} />
-          <meshBasicMaterial ref={wingMat} color="#ffffff" transparent side={THREE.DoubleSide} depthWrite={false} />
-        </mesh>
-        <mesh ref={wingR} position={[0.17, 0, 0]} rotation={[-0.35, 0, -0.15]}>
-          <circleGeometry args={[0.16, 14]} />
-          <meshBasicMaterial color="#ffffff" transparent opacity={0.3} side={THREE.DoubleSide} depthWrite={false} />
-        </mesh>
-      </group>
-    </>
-  )
+  return <RealisticMosquito anim={anim} />
 }
 
 /* ---------------------------------------------------------------------------
@@ -494,12 +417,12 @@ function CameraRig({ enabled }) {
    HeroNetScene — the rotated group holding net + mosquitoes
    ------------------------------------------------------------------------ */
 const MOSQUITO_SET = [
-  { target: [0.9, 0.4], drift: [1.4, 0.8], period: 10, phase: 0.0, scale: 1 },
-  { target: [-1.6, -0.5], drift: [1.1, 0.9], period: 12.5, phase: 0.42, scale: 0.85 },
-  { target: [2.6, -1.1], drift: [1.3, 0.6], period: 11, phase: 0.72, scale: 0.75 },
+  { target: [1.0, 0.5], drift: [1.3, 0.7], period: 11, phase: 0.0, scale: 1.05 },
+  { target: [-1.4, -0.6], drift: [1.0, 0.8], period: 13.5, phase: 0.45, scale: 0.9 },
+  { target: [2.7, -1.0], drift: [1.2, 0.6], period: 12, phase: 0.75, scale: 0.8 },
 ]
 
-export default function HeroNetScene({ lite = false }) {
+export default function HeroNetScene({ lite = false, mosquitoes = true }) {
   // Shared contact records: mosquitoes write, the lattice reads.
   const impacts = useRef([])
   const set = lite ? MOSQUITO_SET.slice(0, 2) : MOSQUITO_SET
@@ -507,9 +430,8 @@ export default function HeroNetScene({ lite = false }) {
   return (
     <group rotation={[NET_TILT.x, NET_TILT.y, NET_TILT.z]} position={[0.8, 0.1, 0]}>
       <NetLattice impacts={impacts} />
-      {set.map((m, i) => (
-        <Mosquito key={i} index={i} impacts={impacts} {...m} />
-      ))}
+      {mosquitoes &&
+        set.map((m, i) => <Mosquito key={i} index={i} impacts={impacts} {...m} />)}
     </group>
   )
 }
@@ -517,7 +439,7 @@ export default function HeroNetScene({ lite = false }) {
 /* ---------------------------------------------------------------------------
    HeroCanvas — the R3F canvas with lights and a performance guard
    ------------------------------------------------------------------------ */
-export function HeroCanvas({ lite = false }) {
+export function HeroCanvas({ lite = false, mosquitoes = true }) {
   const maxDpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2)
   const [dpr, setDpr] = useState(maxDpr)
 
@@ -540,9 +462,11 @@ export function HeroCanvas({ lite = false }) {
     >
       {/* If frame rate drops, halve the pixel ratio; restore when it recovers. */}
       <PerformanceMonitor onDecline={() => setDpr(1)} onIncline={() => setDpr(maxDpr)} />
-      <ambientLight intensity={0.9} />
-      <directionalLight position={[2, 3, 5]} intensity={0.6} />
-      <HeroNetScene lite={lite} />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[2, 3, 5]} intensity={1.1} />
+      {/* Rim light from behind the net: catches wing edges and legs so the dark body separates from the teal. */}
+      <directionalLight position={[-3, 2, -4]} intensity={1.6} color="#a9d3d8" />
+      <HeroNetScene lite={lite} mosquitoes={mosquitoes} />
       <CameraRig enabled={!lite} />
     </Canvas>
   )

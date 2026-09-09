@@ -1,0 +1,1 @@
+Place mosquito.webm (VP9 + alpha) and mosquito.mov (HEVC + alpha) here. See README.md.

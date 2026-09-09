@@ -48,6 +48,7 @@ Every placeholder is marked with a `TODO:` comment in the code. `grep -rn "TODO"
 | **Partner logos** | `src/components/Footer.jsx` | A commented-out block is ready. Add logo files to `src/assets/` and un-comment once the client has permission. |
 | **Privacy notice** | `src/pages/Legal.jsx` | Route stub only. Draft after confirming NDPR requirements. |
 | **Mosquito 3D model** | `public/models/mosquito/`, `HERO_MOSQUITO_MODEL` in `src/data/siteConfig.js` | The hero flies a real glTF model at the net when one is present. Unzip a Sketchfab glTF download (scene.gltf, scene.bin, textures/) into `public/models/mosquito/`. Missing or broken file → procedural mosquito, automatically. Adjust `rotation`/`length` in the config so the head faces the net; attribution appears in the footer once the model loads. |
+| **Mosquito video** | `public/video/`, `HERO_MOSQUITO_VIDEO` in `src/data/siteConfig.js` | Drop `mosquito.webm` (VP9 with alpha) and `mosquito.mov` (HEVC with alpha, for Safari) into `public/video/` and the hero flies the footage at the net instead of the 3D mosquitoes. Black-background footage without alpha: set `blend: 'screen'`. Nothing renders until a file exists. |
 
 ## Pointing the form at a different backend
 

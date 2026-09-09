@@ -34,21 +34,36 @@ function Lattice({ step = 26, stroke, opacity, curved = true }) {
   )
 }
 
-function MosquitoGlyph({ x, y, className = '', fill = '#ffffff' }) {
+function MosquitoGlyph({ x, y, className = '', fill = '#dff2f4' }) {
+  // Silhouette with proper anatomy: head + proboscis, humped thorax, tapered abdomen,
+  // six jointed legs trailing back, two long veined wings. Faces right (toward the net).
   return (
-    <g className={`hf-mosquito ${className}`} transform={`translate(${x} ${y})`} fill={fill}>
-      <g transform="translate(0 0)">
-        <ellipse cx="0" cy="0" rx="13" ry="3.2" opacity="0.85" />
-        <circle cx="14" cy="-0.5" r="3.4" opacity="0.85" />
-        <path d="M17 -0.5 L28 -2" stroke={fill} strokeWidth="1" opacity="0.7" />
-        <ellipse className="hf-wing" cx="-2" cy="-7" rx="9" ry="3.6" opacity="0.5" transform="rotate(-18 -2 -7)" />
-        <ellipse className="hf-wing" cx="-2" cy="7" rx="9" ry="3.6" opacity="0.5" transform="rotate(18 -2 7)" />
+    <g className={`hf-mosquito ${className}`} transform={`translate(${x} ${y})`} fill={fill} stroke={fill} strokeLinecap="round" strokeLinejoin="round">
+      <g fill="none" strokeWidth="1.1" opacity="0.8">
+        <path d="M6 4 L-2 14 L-14 20" />
+        <path d="M4 5 L-8 12 L-22 12" />
+        <path d="M1 5 L-12 8 L-26 2" />
+        <path d="M8 3 L14 12 L8 22" />
+        <path d="M6 4 L2 14 L-8 24" />
+        <path d="M3 5 L-6 10 L-18 18" />
+      </g>
+      <path d="M-3 0 C-10 -1 -20 1 -28 5 C-20 3 -10 3 -3 3 Z" opacity="0.9" />
+      <ellipse cx="4" cy="0" rx="7" ry="4.5" opacity="0.95" />
+      <circle cx="13" cy="-0.5" r="3.2" opacity="0.95" />
+      <path d="M16 0 L30 3" fill="none" strokeWidth="0.9" opacity="0.85" />
+      <path d="M14 -3 C17 -8 20 -9 24 -9 M14 -3 C16 -7 18 -10 20 -12" fill="none" strokeWidth="0.6" opacity="0.7" />
+      <g className="hf-wing" opacity="0.55">
+        <path d="M2 -2 C6 -14 22 -20 30 -14 C24 -8 12 -4 2 -2 Z" />
+        <path d="M4 -4 C12 -12 22 -16 28 -14" fill="none" strokeWidth="0.5" opacity="0.7" />
+      </g>
+      <g className="hf-wing" opacity="0.4">
+        <path d="M0 -2 C2 -12 12 -20 20 -18 C14 -10 6 -5 0 -2 Z" />
       </g>
     </g>
   )
 }
 
-export default function NetIllustration({ variant = 'render', animated = true, className = '' }) {
+export default function NetIllustration({ variant = 'render', animated = true, mosquitoes = true, className = '' }) {
   if (variant === 'hero') {
     return (
       <svg viewBox={`0 0 ${W} ${H}`} className={className} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -65,8 +80,12 @@ export default function NetIllustration({ variant = 'render', animated = true, c
           <Lattice stroke="#a9d3d8" opacity="0.8" />
         </g>
         {/* Mosquitoes drift in from the left and are stopped at the lattice. */}
-        <MosquitoGlyph x={330} y={150} />
-        <MosquitoGlyph x={360} y={290} className="hf-mosquito--b" />
+        {mosquitoes && (
+          <>
+            <MosquitoGlyph x={330} y={150} />
+            <MosquitoGlyph x={360} y={290} className="hf-mosquito--b" />
+          </>
+        )}
       </svg>
     )
   }

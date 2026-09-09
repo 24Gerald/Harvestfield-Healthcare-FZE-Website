@@ -70,6 +70,27 @@ export const HERO_MOSQUITO_MODEL = {
   },
 }
 
+/**
+ * Optional filmed / rendered mosquito as a transparent video layer in the hero.
+ *
+ * Provide BOTH encodings for full browser coverage and drop them in public/video/:
+ *   webm — VP9 with alpha channel (Chrome, Edge, Firefox, Android)
+ *   hevc — HEVC/H.265 with alpha in a .mov container (Safari, iOS); export from
+ *          Apple Compressor / Final Cut / After Effects with "HEVC with alpha"
+ * Footage on a plain black background with no alpha channel also works: set
+ * blend to 'screen' and the black disappears against the teal.
+ * When a file is present the video flies the same approach → stop → retreat
+ * path as the 3D mosquitoes and the 3D mosquitoes are hidden (the net stays).
+ */
+export const HERO_MOSQUITO_VIDEO = {
+  enabled: true,
+  webm: 'video/mosquito.webm',
+  hevc: 'video/mosquito.mov',
+  blend: 'normal', // 'normal' for alpha footage, 'screen' for black-background footage
+  width: 360, // px on desktop; scales down on small screens
+  replace3D: true,
+}
+
 export const navLinks = [
   { label: 'The Factory', href: '#factory' },
   { label: 'The Net', href: '#net' },
