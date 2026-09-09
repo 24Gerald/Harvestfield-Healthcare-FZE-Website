@@ -147,3 +147,63 @@ os.makedirs('public/product', exist_ok=True)
 front().save('public/product/front.png', optimize=True)
 back().save('public/product/back.png', optimize=True)
 print('wrote public/product/front.png and back.png')
+
+
+# ---------------------------------------------------------------------------
+# Folded net bundle (what shows through the translucent film) + wrinkle bump map
+# ---------------------------------------------------------------------------
+def net_bundle():
+    import random
+    random.seed(11)
+    im = Image.new('RGB', (W, H), (236, 238, 236))
+    d = ImageDraw.Draw(im)
+    # soft folds: broad diagonal bands of light and shade
+    shade = Image.new('L', (W, H), 128)
+    sd = ImageDraw.Draw(shade)
+    for i in range(14):
+        x = random.randint(-200, W)
+        y = random.randint(-200, H)
+        ang = random.uniform(-0.6, 0.6)
+        length = random.randint(600, 1400)
+        wdt = random.randint(40, 140)
+        tone = random.choice([90, 100, 150, 165])
+        import math
+        dx, dy = math.cos(ang) * length, math.sin(ang) * length
+        sd.line((x, y, x + dx, y + dy), fill=tone, width=wdt)
+    shade = shade.filter(ImageFilter.GaussianBlur(45))
+    base = Image.composite(Image.new('RGB', (W, H), (255, 255, 255)), Image.new('RGB', (W, H), (205, 208, 204)), shade)
+    im = Image.blend(im, base, 0.85)
+    d = ImageDraw.Draw(im)
+    # fine mesh
+    for x in range(0, W, 6):
+        d.line((x, 0, x, H), fill=(214, 218, 214), width=1)
+    for y in range(0, H, 6):
+        d.line((0, y, W, y), fill=(214, 218, 214), width=1)
+    # fold creases: crisp light lines
+    for i in range(9):
+        x = random.randint(0, W); y = random.randint(0, H); ang = random.uniform(-0.5, 0.5); ln = random.randint(300, 900)
+        import math
+        d.line((x, y, x + math.cos(ang) * ln, y + math.sin(ang) * ln), fill=(250, 250, 250), width=3)
+    return im
+
+def wrinkle_bump():
+    import random, math
+    random.seed(5)
+    S = 512
+    im = Image.new('L', (S, S), 128)
+    d = ImageDraw.Draw(im)
+    for i in range(140):
+        x = random.randint(0, S); y = random.randint(0, S); ang = random.uniform(0, math.pi); ln = random.randint(30, 220)
+        tone = random.choice([96, 108, 148, 160])
+        d.line((x, y, x + math.cos(ang) * ln, y + math.sin(ang) * ln), fill=tone, width=random.randint(2, 7))
+    im = im.filter(ImageFilter.GaussianBlur(3))
+    # fine grain
+    px = im.load()
+    for y in range(S):
+        for x in range(S):
+            px[x, y] = max(0, min(255, px[x, y] + random.randint(-6, 6)))
+    return im
+
+net_bundle().save('public/product/net-bundle.png', optimize=True)
+wrinkle_bump().save('public/product/wrinkles.png', optimize=True)
+print('wrote net-bundle.png and wrinkles.png')

@@ -2,21 +2,24 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { HarvestfieldLogo } from '../../components/HarvestfieldMark'
 import { ADMIN } from '../config'
-import { sha256Hex, hasVault, loadToken, saveToken } from '../lib/vault'
+import { sha256Hex, hasVault, loadToken, saveToken, hasRepoVault, loadRepoToken, encryptToken } from '../lib/vault'
 import { makeClient } from '../lib/github'
 import { Btn, Field, inputClass, EASE } from './ui'
 
 /**
  * Step 1: password (checked against a hash).
- * Step 2 (first time on this browser only): paste a GitHub token, which is
- * verified against the repo and then stored encrypted with the password.
+ * Step 2 (only until a token has been stored): paste a GitHub token once. It is
+ * verified against the repo, then stored encrypted with the password — in the
+ * site repo itself ("all devices", default) and/or in this browser.
  */
 export default function Login({ onReady }) {
   const [password, setPassword] = useState('')
   const [token, setToken] = useState('')
   const [stage, setStage] = useState('password') // password | token
+  const [remember, setRemember] = useState('all') // all | device
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [note, setNote] = useState('')
 
   async function submitPassword(e) {
     e.preventDefault()
@@ -28,16 +31,17 @@ export default function Login({ onReady }) {
       setError('That password is not right.')
       return
     }
-    if (hasVault()) {
-      const t = await loadToken(password)
-      if (t) {
-        try {
-          const who = await makeClient(t).whoami()
-          onReady({ token: t, user: who.login })
-          return
-        } catch (err) {
-          setError(`Stored token no longer works: ${err.message}. Paste a new one.`)
-        }
+    // Try the vault committed to the site first, then this browser's vault.
+    const candidates = []
+    if (hasRepoVault()) candidates.push(await loadRepoToken(password))
+    if (hasVault()) candidates.push(await loadToken(password))
+    for (const t of candidates.filter(Boolean)) {
+      try {
+        const who = await makeClient(t).whoami()
+        onReady({ token: t, user: who.login })
+        return
+      } catch (err) {
+        setError(`A stored token no longer works: ${err.message}. Paste a new one.`)
       }
     }
     setBusy(false)
@@ -49,9 +53,17 @@ export default function Login({ onReady }) {
     setBusy(true)
     setError('')
     try {
-      const who = await makeClient(token.trim()).whoami()
-      await saveToken(password, token.trim())
-      onReady({ token: token.trim(), user: who.login })
+      const t = token.trim()
+      const client = makeClient(t)
+      const who = await client.whoami()
+      await saveToken(password, t)
+      if (remember === 'all') {
+        setNote('Storing the encrypted token in the site…')
+        const vault = await encryptToken(password, t)
+        await client.write('src/admin/vault.json', JSON.stringify(vault, null, 2) + '\n', 'Admin: store encrypted access token')
+        setNote('')
+      }
+      onReady({ token: t, user: who.login, storedInRepo: remember === 'all' })
     } catch (err) {
       setError(err.message)
       setBusy(false)
@@ -90,6 +102,22 @@ export default function Login({ onReady }) {
                 <li>Repository access: only {ADMIN.owner}/{ADMIN.repo}.</li>
                 <li>Permissions → Repository → Contents: Read and write. Generate and paste it here.</li>
               </ol>
+              <fieldset className="mt-4 space-y-2 text-sm">
+                <legend className="text-xs font-semibold uppercase tracking-eyebrow text-teal-deep">Remember it</legend>
+                <label className="flex items-start gap-2">
+                  <input type="radio" name="remember" checked={remember === 'all'} onChange={() => setRemember('all')} className="mt-1" />
+                  <span>
+                    <strong>On all devices</strong> — stored encrypted in the site itself, so from now on every device only needs the password. About two minutes to take effect.
+                  </span>
+                </label>
+                <label className="flex items-start gap-2">
+                  <input type="radio" name="remember" checked={remember === 'device'} onChange={() => setRemember('device')} className="mt-1" />
+                  <span>
+                    <strong>This browser only</strong>
+                  </span>
+                </label>
+              </fieldset>
+              {note && <p className="mt-3 text-xs text-teal-deep">{note}</p>}
             </>
           )}
           {error && (

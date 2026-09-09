@@ -16,6 +16,8 @@ export default function ProductShowcase({ className = '' }) {
   const base = import.meta.env.BASE_URL
   const front = `${base}product/front.png`
   const back = `${base}product/back.png`
+  const bundle = `${base}product/net-bundle.png`
+  const wrinkles = `${base}product/wrinkles.png`
 
   useEffect(() => {
     const el = ref.current
@@ -44,7 +46,7 @@ export default function ProductShowcase({ className = '' }) {
       {use3D && inView && (
         <div className="absolute inset-0">
           <Suspense fallback={null}>
-            <ProductPackage front={front} back={back} paused={false} />
+            <ProductPackage front={front} back={back} bundle={bundle} wrinkles={wrinkles} paused={false} />
           </Suspense>
         </div>
       )}

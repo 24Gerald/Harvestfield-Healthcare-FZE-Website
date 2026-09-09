@@ -35,8 +35,8 @@ export default function AdminApp() {
     { id: 'media', label: 'Media' },
   ]
   const signOut = () => {
-    if (confirm('Sign out? You will need the password again. Choose "forget token" in the next prompt to also remove the stored token from this browser.')) {
-      if (confirm('Also forget the GitHub token on this browser?')) clearVault()
+    if (confirm('Sign out?')) {
+      if (!session.storedInRepo && confirm('Also forget the GitHub token on this browser?')) clearVault()
       setSession(null)
     }
   }
