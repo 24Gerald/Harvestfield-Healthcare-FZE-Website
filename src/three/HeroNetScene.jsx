@@ -443,13 +443,12 @@ export function HeroCanvas({ lite = false, mosquitoes = true }) {
   const maxDpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2)
   const [dpr, setDpr] = useState(maxDpr)
 
-  // Check for the model as soon as the canvas mounts and start fetching it if present.
+  // Start fetching the model as soon as we know the file exists (no-op otherwise).
+  const modelUrl = `${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`
+  const modelOk = useAssetAvailable(modelUrl, HERO_MOSQUITO_MODEL.enabled)
   useEffect(() => {
-    if (!HERO_MOSQUITO_MODEL.enabled) return
-    checkModelAvailable().then(() => {
-      if (modelAvailable) useGLTF.preload(`${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`)
-    })
-  }, [])
+    if (modelOk) useGLTF.preload(modelUrl)
+  }, [modelOk, modelUrl])
 
   return (
     <Canvas

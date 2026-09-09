@@ -38,7 +38,8 @@ function MosquitoGlyph({ x, y, className = '', fill = '#dff2f4' }) {
   // Silhouette with proper anatomy: head + proboscis, humped thorax, tapered abdomen,
   // six jointed legs trailing back, two long veined wings. Faces right (toward the net).
   return (
-    <g className={`hf-mosquito ${className}`} transform={`translate(${x} ${y})`} fill={fill} stroke={fill} strokeLinecap="round" strokeLinejoin="round">
+    <g transform={`translate(${x} ${y})`}>
+      <g className={`hf-mosquito ${className}`} fill={fill} stroke={fill} strokeLinecap="round" strokeLinejoin="round">
       <g fill="none" strokeWidth="1.1" opacity="0.8">
         <path d="M6 4 L-2 14 L-14 20" />
         <path d="M4 5 L-8 12 L-22 12" />
@@ -59,6 +60,7 @@ function MosquitoGlyph({ x, y, className = '', fill = '#dff2f4' }) {
       <g className="hf-wing" opacity="0.4">
         <path d="M0 -2 C2 -12 12 -20 20 -18 C14 -10 6 -5 0 -2 Z" />
       </g>
+      </g>
     </g>
   )
 }
@@ -76,8 +78,10 @@ export default function NetIllustration({ variant = 'render', animated = true, m
             <rect width={W} height={H} fill="url(#hf-hero-fade)" />
           </mask>
         </defs>
-        <g mask="url(#hf-hero-mask)" className={animated ? 'hf-net-breathe' : ''} transform="skewY(-7)">
-          <Lattice stroke="#a9d3d8" opacity="0.8" />
+        <g mask="url(#hf-hero-mask)" transform="skewY(-7)">
+          <g className={animated ? 'hf-net-breathe' : ''}>
+            <Lattice stroke="#a9d3d8" opacity="0.8" />
+          </g>
         </g>
         {/* Mosquitoes drift in from the left and are stopped at the lattice. */}
         {mosquitoes && (
