@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Design tokens — Harvestfield Healthcare FZE
+   Tailwind v4 reads these from @theme and exposes them as utilities
+   (bg-teal-deep, text-ink, font-sans, tracking-eyebrow …).
+   ------------------------------------------------------------------ */
+@theme {
+  --color-teal-deep: #10515b; /* primary brand — backgrounds, headers, CTAs */
+  --color-teal-deeper: #0b3b43; /* gradient partner for teal-deep on dark blocks (derived) */
+  --color-teal-tint: #10515b1a; /* 10% teal-deep — soft section backgrounds */
+  --color-teal-tint-solid: #e7eeef; /* flattened tint for surfaces that must be opaque */
+  --color-teal-soft: #a9d3d8; /* light teal for lines/accents on dark blocks (derived) */
+  --color-white: #ffffff;
+  --color-black: #000000; /* sparingly — logo variant, high-contrast text only */
+  --color-ink: #1a1a1a; /* body copy on white */
+  --color-muted: #5c6b6d; /* secondary/supporting text */
+
+  --font-sans: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --tracking-heading: -0.01em;
+  --tracking-eyebrow: 0.08em;
+
+  --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1); /* no bounce — clinical, calm */
+
+  --breakpoint-xs: 23.4375rem; /* 375px */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold tracking-heading;
+    text-wrap: balance;
+  }
+
+  h1 {
+    line-height: 1.05;
+  }
+
+  h2 {
+    line-height: 1.15;
+  }
+
+  ::selection {
+    background: var(--color-teal-deep);
+    color: var(--color-white);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-teal-deep);
+    outline-offset: 3px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-white);
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-eyebrow;
+  }
+
+  .container-site {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+
+  .section-pad {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+}
+
+/* Lightweight SVG/CSS hero fallback (mobile + reduced-motion).
+   Mirrors the 3D concept: mosquitoes drift toward the net, are stopped, drift back. */
+@keyframes hf-approach {
+  0% {
+    transform: translate(-140px, 0) rotate(-4deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  45% {
+    transform: translate(-10px, -12px) rotate(2deg);
+  }
+  50% {
+    transform: translate(-16px, -8px) rotate(-3deg); /* soft stop at the net surface */
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-150px, 18px) rotate(-6deg);
+    opacity: 0;
+  }
+}
+
+@keyframes hf-breathe {
+  0%,
+  100% {
+    transform: scaleX(1) skewY(0deg);
+  }
+  50% {
+    transform: scaleX(1.012) skewY(0.4deg);
+  }
+}
+
+@keyframes hf-flutter {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.55);
+  }
+}
+
+.hf-mosquito {
+  animation: hf-approach 9s var(--ease-brand) infinite;
+  will-change: transform, opacity;
+}
+
+.hf-mosquito--b {
+  animation-delay: -4.5s;
+  animation-duration: 11s;
+}
+
+.hf-net-breathe {
+  transform-origin: center;
+  animation: hf-breathe 7s ease-in-out infinite;
+}
+
+.hf-wing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hf-flutter 0.12s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-mosquito,
+  .hf-net-breathe,
+  .hf-wing {
+    animation: none;
+  }
+  .hf-mosquito {
+    opacity: 0.7;
+    transform: translate(-40px, 0);
+  }
+}

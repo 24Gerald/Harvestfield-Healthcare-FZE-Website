@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://harvestfieldhealthcare.com/sitemap.xml

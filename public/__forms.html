@@ -1,0 +1,24 @@
+<!--
+  Static form definition for Netlify Forms detection.
+
+  Netlify discovers forms by parsing the HTML in the deployed `dist/` folder at
+  build time. Because the React form in src/sections/RequestSupply.jsx renders
+  client-side, it is invisible to that parser — this file is the copy Netlify
+  actually reads. Keep the `name` and field names identical to the React form.
+
+  This page is never linked to and is safe to leave in place.
+-->
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><title>Form definitions</title><meta name="robots" content="noindex" /></head>
+  <body>
+    <form name="request-supply" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="request-supply" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="fullName" />
+      <input type="text" name="organization" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>
