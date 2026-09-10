@@ -136,6 +136,42 @@ export const net = {
   meshNote: 'Both active ingredients are bound into the polyester fibre itself, so every intersection of the mesh carries them.',
 }
 
+export const management = {
+  id: 'management',
+  eyebrow: 'Management',
+  title: 'The people behind the factory.',
+  intro: 'Harvestfield Healthcare FZE is led by the family that has distributed health products across Nigeria for 26 years, now building the capability to manufacture them at home.',
+  readMore: 'Read full profile',
+  readLess: 'Show less',
+  people: [
+    {
+      name: 'Martins A. Awofisayo',
+      role: 'Chairman',
+      photo: 'chairman',
+      initials: 'MA',
+      // First paragraph is shown by default; the rest opens under "Read full profile".
+      bio: [
+        "Martins A. Awofisayo holds a 1984 Master's degree in Business Analysis from the University of Lancaster, United Kingdom. He worked with the London office of the Nigerian Universities Office as Recruitment Manager from 1984 to 1987, during which he served as Secretary to the Recruitment Committee of the Committee of Vice-Chancellors of Nigerian Universities, responsible for recruiting foreign nationals as lecturers for Nigerian universities.",
+        'He returned to Nigeria in 1987 and joined Continental Pharmaceuticals Limited, Lagos, as Operations Manager, rising to Deputy General Manager between 1997 and 2000. In the year 2000, he established Harvestfield Industries Limited to market agrochemicals and public health products in Nigeria.',
+        'He currently serves as a Council Member of CropLife Nigeria and General Secretary of the Insecticide Treated Nets Association of Nigeria. He was Vice Chairman of the World Malaria Day Celebrations (2005–2015) of the Federal Ministry of Health, and is a member of the Development Partners Committee, comprising representatives of the WHO, UNICEF and DFID on the Roll Back Malaria Programme in Nigeria, an advisory body to the Federal Ministry of Health on malaria control.',
+      ],
+    },
+    {
+      name: 'Isaac Awofisayo',
+      role: 'Managing Director',
+      photo: 'managing-director',
+      initials: 'IA',
+      bio: [
+        "Isaac Awofisayo is the Managing Director of Harvestfield Healthcare FZE, where he leads the company's strategy, operations and long-term development as it builds a diversified healthcare manufacturing business in Nigeria.",
+        'He brings more than 15 years of experience across corporate and investment banking, strategy, healthcare and manufacturing. Before moving into industry, Isaac spent more than a decade with Barclays in the United Kingdom, latterly as a Relationship Director within Barclays Corporate & Investment Bank, where he managed complex corporate relationships, financing and credit requirements, including cross-border transactions.',
+        "At Harvestfield Healthcare, Isaac leads the development of new healthcare manufacturing platforms, international technical and commercial partnerships, investment and business development, and the continued strengthening of the company's manufacturing and regulatory capabilities. His focus is on building a commercially strong Nigerian healthcare company capable of manufacturing high-quality healthcare products to international standards while developing local technical expertise.",
+        "Isaac also serves as Managing Director of the Harvestfield Free Trade Zone, overseeing its strategic development as a platform for manufacturing and investment, and as Head of Strategy at Harvestfield Industries Limited, contributing to the Group's strategy, investments, partnerships and new business development.",
+        'He holds an MSc in International Business Management from the University of Surrey, United Kingdom.',
+      ],
+    },
+  ],
+}
+
 export const supply = {
   id: 'supply',
   eyebrow: 'Supply',
