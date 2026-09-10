@@ -39,9 +39,9 @@ export default function TheNet() {
   return (
     <section id={net.id} className="scroll-mt-20 bg-white">
       <div className="container-site section-pad">
-        <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-x-16 lg:gap-y-10">
           {/* Copy */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-6 lg:col-start-1 lg:row-start-1">
             <Reveal>
               <Eyebrow className="text-teal-deep">{net.eyebrow}</Eyebrow>
             </Reveal>
@@ -82,8 +82,8 @@ export default function TheNet() {
             </ul>
           </div>
 
-          {/* Illustration + benefits */}
-          <div className="lg:col-span-6">
+          {/* Illustration */}
+          <div className="lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1">
             <Reveal delay={0.1}>
               <motion.div
                 initial={reduce ? false : { clipPath: 'inset(0 0 0 100% round 24px)' }}
@@ -99,18 +99,20 @@ export default function TheNet() {
               <IngredientMesh ingredients={net.ingredients} />
               <p className="mt-3 text-xs text-muted">{net.meshNote}</p>
             </Reveal>
-            <ul className="mt-8 space-y-5">
-              {net.benefits.map((b, i) => (
-                <Reveal key={b.title} as="li" delay={0.15 + i * 0.1} className="flex gap-4">
-                  <DrawnCheck delay={0.25 + i * 0.1} />
-                  <div>
-                    <h3 className="text-base font-semibold text-teal-deep">{b.title}</h3>
-                    <p className="mt-1 text-sm text-muted md:text-base">{b.detail}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </ul>
           </div>
+
+          {/* Benefits */}
+          <ul className="space-y-5 lg:col-span-6 lg:col-start-1 lg:row-start-2">
+              {net.benefits.map((b, i) => (
+              <Reveal key={b.title} as="li" delay={0.15 + i * 0.1} className="flex gap-4">
+                <DrawnCheck delay={0.25 + i * 0.1} />
+                <div>
+                  <h3 className="text-base font-semibold text-teal-deep">{b.title}</h3>
+                  <p className="mt-1 text-sm text-muted md:text-base">{b.detail}</p>
+                </div>
+              </Reveal>
+              ))}
+          </ul>
         </div>
       </div>
     </section>

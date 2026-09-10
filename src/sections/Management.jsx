@@ -53,7 +53,7 @@ function PersonCard({ person: p }) {
   const [first, ...rest] = p.bio
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-teal-tint-solid ring-1 ring-teal-deep/10 shadow-[0_18px_40px_-28px_rgba(16,81,91,0.35)]">
+    <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-teal-tint-solid ring-1 ring-teal-deep/15 shadow-[0_18px_40px_-28px_rgba(16,81,91,0.45)]">
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-teal-soft/60 sm:aspect-[5/5] md:aspect-[4/5]">
         {photo ? (
           <img

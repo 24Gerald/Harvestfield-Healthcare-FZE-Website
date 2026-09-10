@@ -14,8 +14,8 @@ function Column({ data, delay, soft = false }) {
         <p className="mt-4 text-base text-white/80">{data.body}</p>
         <ul className="mt-6 space-y-2.5">
           {data.points.map((p, i) => (
-            <Reveal key={p} as="li" delay={delay + 0.15 + i * 0.07} className="flex items-center gap-3 text-sm text-white/85">
-              <span className="h-1.5 w-1.5 flex-none rounded-full bg-teal-soft" aria-hidden="true" />
+            <Reveal key={p} as="li" delay={delay + 0.15 + i * 0.07} className="flex items-start gap-3 text-sm leading-snug text-white/85">
+              <span className="mt-[7px] h-1.5 w-1.5 flex-none rounded-full bg-teal-soft" aria-hidden="true" />
               {p}
             </Reveal>
           ))}
@@ -29,7 +29,7 @@ function Column({ data, delay, soft = false }) {
                 e.preventDefault()
                 smoothScrollTo(data.cta.href)
               }}
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-white underline-offset-4 hover:underline"
+              className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white underline-offset-4 hover:underline"
             >
               {data.cta.label}
               <svg

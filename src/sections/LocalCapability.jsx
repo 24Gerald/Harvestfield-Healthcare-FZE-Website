@@ -37,38 +37,39 @@ export default function LocalCapability() {
           </Reveal>
         </div>
 
-        {/* Supporters */}
-        <div className="mt-14 border-t border-teal-deep/10 pt-10">
+        {/* Supporters — one compact row of three on desktop, stacked on phones. */}
+        <div className="mt-12 border-t border-teal-deep/10 pt-8">
           <Reveal>
             <Eyebrow as="h3" className="text-muted">
               {c.supportersLabel}
             </Eyebrow>
           </Reveal>
-          <ul className="mt-6 flex flex-wrap gap-4 sm:gap-6">
+          <ul className="mt-5 grid gap-3 md:grid-cols-3 md:gap-4">
             {c.supporters.map((s, i) => {
               const logo = partnerLogo(s.logo)
               return (
-                <Reveal key={s.name} as="li" delay={0.1 + i * 0.1} className="w-full sm:w-auto">
+                <Reveal key={s.name} as="li" delay={0.1 + i * 0.08}>
                   <motion.a
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${s.fullName} (opens in a new tab)`}
-                    className="group flex h-full items-center gap-5 rounded-2xl bg-white p-5 shadow-[0_1px_0_rgba(16,81,91,0.08)] transition-shadow hover:shadow-[0_18px_40px_-20px_rgba(16,81,91,0.35)] sm:min-w-[300px]"
-                    whileHover={reduce ? undefined : { y: -4 }}
+                    className="group flex h-full items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-[0_1px_0_rgba(16,81,91,0.08)] transition-shadow hover:shadow-[0_14px_32px_-20px_rgba(16,81,91,0.35)]"
+                    whileHover={reduce ? undefined : { y: -3 }}
                     transition={{ duration: 0.3, ease: EASE_OUT }}
                   >
-                    <span className="flex h-24 w-32 flex-none items-center justify-center overflow-hidden rounded-xl bg-white">
+                    <span className="flex h-12 w-16 flex-none items-center justify-center">
                       {logo ? (
-                        <img src={logo} alt={s.name} className="max-h-24 max-w-full object-contain" draggable="false" />
+                        <img src={logo} alt="" className="max-h-full max-w-full object-contain" draggable="false" />
                       ) : (
-                        <span className="text-xl font-bold tracking-tight text-teal-deep">{s.name}</span>
+                        <span className="text-sm font-bold tracking-tight text-teal-deep">{s.name}</span>
                       )}
                     </span>
                     <span className="min-w-0">
-                      <span className="block font-semibold text-teal-deep group-hover:underline group-hover:underline-offset-4">{s.name}</span>
-                      <span className="mt-1 block text-sm text-muted">{s.fullName}</span>
-                      <span className="mt-2 block text-xs text-teal-deep/70">Visit site ↗</span>
+                      <span className="block text-sm font-semibold text-teal-deep group-hover:underline group-hover:underline-offset-4">
+                        {s.name} <span aria-hidden="true" className="text-teal-deep/60">↗</span>
+                      </span>
+                      <span className="mt-0.5 block text-xs leading-snug text-muted">{s.fullName}</span>
                     </span>
                   </motion.a>
                 </Reveal>
