@@ -232,10 +232,7 @@ export const purpose = {
   body: 'Building means more than manufacturing. It means the plant, the quality systems, the regulatory capability, the technical skill and the careers that go with them. Nets are what we make. The purpose is what we are building around them.',
 }
 
-/* Section 12 — Leadership.
-   The Chairman card is withheld: the existing biography covers 1984 to 1987
-   and stops, and the specification is explicit that this section must not be
-   built with that text. */
+/* Section 12 — Leadership. */
 export const management = {
   id: 'management',
   eyebrow: 'Leadership',
@@ -244,18 +241,33 @@ export const management = {
     'Harvestfield Healthcare is led by people who have spent their careers putting health products into Nigerian households, and who are now responsible for making them.',
   readMore: 'Read full profile',
   readLess: 'Show less',
-  // TODO(md-office): BLOCKING for the Chairman. Needs his professional record
-  // since 1987, particularly his role in building the Harvestfield Group.
-  // The Managing Director's prior experience and education are also outstanding.
+  // Only the first paragraph of each bio shows before "Read full profile", so
+  // it has to carry the substance. The Chairman's bio previously opened on his
+  // 1984-87 posting, which is why the record after 1987 read as missing — it
+  // was there, but two clicks deep. Ordered here by weight, not chronology.
   people: [
+    {
+      name: 'Martins A. Awofisayo',
+      role: 'Chairman',
+      photo: 'chairman',
+      initials: 'MA',
+      bio: [
+        'Martins A. Awofisayo established Harvestfield Industries Limited in 2000 to market agrochemicals and public health products in Nigeria, building it into the distribution business that Harvestfield Healthcare now manufactures behind. He came to it from Continental Pharmaceuticals Limited, Lagos, which he joined in 1987 as Operations Manager and left as Deputy General Manager.',
+        'He serves as a Council Member of CropLife Nigeria and General Secretary of the Insecticide Treated Nets Association of Nigeria. He was Vice Chairman of the World Malaria Day Celebrations (2005–2015) of the Federal Ministry of Health, and is a member of the Development Partners Committee, comprising representatives of the WHO, UNICEF and DFID on the Roll Back Malaria Programme in Nigeria, an advisory body to the Federal Ministry of Health on malaria control.',
+        "He holds a 1984 Master's degree in Business Analysis from the University of Lancaster, United Kingdom, and worked with the London office of the Nigerian Universities Office as Recruitment Manager from 1984 to 1987, serving as Secretary to the Recruitment Committee of the Committee of Vice-Chancellors of Nigerian Universities, responsible for recruiting foreign nationals as lecturers for Nigerian universities.",
+      ],
+    },
     {
       name: 'Isaac Awofisayo',
       role: 'Managing Director',
       photo: 'managing-director',
       initials: 'IA',
       bio: [
-        'Isaac Awofisayo is Managing Director of Harvestfield Healthcare FZE. He leads the company’s strategy and operations, and is responsible for its development as a healthcare manufacturing business in Nigeria.',
-        'He oversaw the establishment of the manufacturing operation in the Harvestfield Free Trade Zone and its progress through international and national regulatory approval.',
+        'Isaac Awofisayo is Managing Director of Harvestfield Healthcare FZE. He leads the company’s strategy and operations, and is responsible for its development as a healthcare manufacturing business in Nigeria. He oversaw the establishment of the manufacturing operation in the Harvestfield Free Trade Zone and its progress through international and national regulatory approval.',
+        'He brings more than 15 years of experience across corporate and investment banking, strategy, healthcare and manufacturing. Before moving into industry, Isaac spent more than a decade with Barclays in the United Kingdom, latterly as a Relationship Director within Barclays Corporate & Investment Bank, where he managed complex corporate relationships, financing and credit requirements, including cross-border transactions.',
+        'At Harvestfield Healthcare, Isaac leads the development of new healthcare manufacturing platforms, international technical and commercial partnerships, investment and business development, and the continued strengthening of the company’s manufacturing and regulatory capabilities. His focus is on building a commercially strong Nigerian healthcare company capable of manufacturing high-quality healthcare products to international standards while developing local technical expertise.',
+        'Isaac also serves as Managing Director of the Harvestfield Free Trade Zone, overseeing its strategic development as a platform for manufacturing and investment, and as Head of Strategy at Harvestfield Industries Limited, contributing to the Group’s strategy, investments, partnerships and new business development.',
+        'He holds an MSc in International Business Management from the University of Surrey, United Kingdom.',
       ],
     },
   ],
