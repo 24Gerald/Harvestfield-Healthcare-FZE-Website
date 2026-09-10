@@ -34,14 +34,16 @@ export default function Certified() {
                   whileHover={reduce ? undefined : { y: -6 }}
                   transition={{ duration: 0.35, ease: EASE_OUT }}
                 >
-                  <span className="flex h-24 w-24 items-center justify-center rounded-full bg-white p-2 shadow-[0_10px_30px_-12px_rgba(16,81,91,0.45)] ring-1 ring-teal-deep/10">
+                  {/* One mark height across all three cards, contained and left-aligned, so a
+                      round seal and a wide lockup line up on the same baseline. */}
+                  <span className="flex h-16 w-full items-center md:h-20">
                     {logo ? (
-                      <img src={logo} alt={it.logoAlt} className="max-h-full max-w-full object-contain" draggable="false" />
+                      <img src={logo} alt={it.logoAlt} className="max-h-full w-auto max-w-[170px] object-contain object-left md:max-w-[200px]" draggable="false" />
                     ) : (
-                      <span className="text-center text-[11px] font-bold uppercase leading-tight tracking-wide text-teal-deep">{it.key}</span>
+                      <span className="text-[11px] font-bold uppercase leading-tight tracking-wide text-teal-deep">{it.key}</span>
                     )}
                   </span>
-                  <div className="mt-6 flex flex-1 flex-col">
+                  <div className="mt-7 flex flex-1 flex-col">
                     <p className="eyebrow text-teal-deep/70">{it.kicker}</p>
                     <h3 className="mt-2 text-xl font-bold text-teal-deep">{it.title}</h3>
                     <p className="mt-3 text-sm leading-relaxed text-muted">{it.body}</p>
