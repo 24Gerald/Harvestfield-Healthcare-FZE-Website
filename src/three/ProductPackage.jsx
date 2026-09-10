@@ -14,7 +14,7 @@
  *   - image-based lighting (RoomEnvironment) so the plastic picks up reflections
  *
  * Artwork: public/product/front.png, back.png; helpers net-bundle.png, wrinkles.png
- * (all from scripts/make-product-placeholder.py — swap in real print files).
+ * (all from scripts/make-product-artwork.py — swap in real print files).
  */
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
@@ -23,8 +23,8 @@ import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
 const PACK = { w: 2.2, h: 2.75, puff: 0.3, seal: 0.13, cornerR: 0.16 }
-const FILM_ALPHA = 0.72 // bare (unprinted) film opacity
-const SEAL_ALPHA = 0.82 // fused double-layer seal is a touch more opaque
+const FILM_ALPHA = 0.9 // bare (unprinted) film opacity — a real poly bag reads near-solid
+const SEAL_ALPHA = 0.97 // fused double-layer seal is opaque
 
 /* ---------- small value-noise for lumps and crinkles ---------- */
 const hash = (x, y) => {
@@ -59,7 +59,7 @@ function noise2(x, y) {
  *   aOutside signed distance to the wavy rounded outline (> 0 is cut away)
  * UVs are clamped to the body so the artwork stops at the seal.
  */
-function pouchGeometry(w, h, puff, seal, cornerR, { lumps = 0.05, crinkle = 0.006, seed = 0, segments = 110 } = {}) {
+function pouchGeometry(w, h, puff, seal, cornerR, { lumps = 0.03, crinkle = 0.0026, seed = 0, segments = 132 } = {}) {
   const W = w + 2 * seal
   const H = h + 2 * seal
   const g = new THREE.PlaneGeometry(W, H, segments, Math.round(segments * (H / W)))
@@ -94,7 +94,7 @@ function pouchGeometry(w, h, puff, seal, cornerR, { lumps = 0.05, crinkle = 0.00
     const dy = Math.max(ay - hh, 0)
     const d = Math.hypot(dx, dy)
     const toe = 1 - smoothstep(0, seal * 0.55, d) // extra softening of the fold
-    const flange = smoothstep(-0.01, seal * 0.4, d)
+    const flange = smoothstep(0, seal * 0.45, d)
 
     const lump = (noise2(x * 1.6 + seed, y * 1.6 + seed) - 0.5) * lumps + (noise2(x * 3.2 + seed * 2, y * 3.2 + seed) - 0.5) * lumps * 0.5
     const crk = (noise2(x * 28 + seed, y * 28 + seed) - 0.5) * crinkle
@@ -213,13 +213,17 @@ function patchFilmShader(shader) {
       float edge = 1.0 - smoothstep(-aaw, aaw, vOutside);
       if (edge <= 0.002) discard;
       // fused seal: whiter, slightly more opaque than bare film
-      vec3 sealTint = vec3(0.965, 0.965, 0.945);
+      vec3 sealTint = vec3(0.945, 0.945, 0.935);
       diffuseColor.rgb = mix(diffuseColor.rgb, sealTint, vFlange);
       diffuseColor.a = mix(diffuseColor.a, ${SEAL_ALPHA.toFixed(3)}, vFlange) * edge;
       // crimp lines across the top seal
       float crimp = 0.5 + 0.5 * sin(vLocal.y * 290.0 + sin(vLocal.x * 40.0) * 0.6);
       crimp = smoothstep(0.35, 0.85, crimp);
-      diffuseColor.rgb *= 1.0 - 0.13 * crimp * vTop * vFlange;`,
+      diffuseColor.rgb *= 1.0 - 0.1 * crimp * vTop * vFlange;
+      // a hair of shading in the last millimetre of the cut edge, so the
+      // silhouette reads as a folded edge rather than a flat cutout
+      float rim = 1.0 - smoothstep(0.0, aaw * 6.0, -vOutside);
+      diffuseColor.rgb *= 1.0 - 0.09 * rim;`,
     )
     .replace(
       '#include <roughnessmap_fragment>',
@@ -233,13 +237,21 @@ function makeFilmMaterial(map, alphaMap, bumpMap) {
     map,
     alphaMap,
     bumpMap,
-    bumpScale: 0.004,
+    color: 0xffffff,
+    bumpScale: 0.0017,
     transparent: true,
-    roughness: 0.36,
+    // matte poly film: broad soft highlights, not a glossy varnish, so the
+    // printed green keeps its density
+    // A poly bag is a weak reflector. Left at the dielectric default the broad
+    // rough specular lobe piled white onto the ink and turned the pack green to
+    // sage, so the specular is dialled right down and the sheen comes from the
+    // clearcoat instead.
+    roughness: 0.46,
     metalness: 0,
-    clearcoat: 0.5,
-    clearcoatRoughness: 0.4,
-    envMapIntensity: 0.65,
+    specularIntensity: 0.5,
+    clearcoat: 0.28,
+    clearcoatRoughness: 0.3,
+    envMapIntensity: 0.45,
     depthWrite: false,
     side: THREE.FrontSide,
   })
@@ -252,7 +264,7 @@ function Environment() {
   const { gl, scene } = useThree()
   useEffect(() => {
     const pmrem = new THREE.PMREMGenerator(gl)
-    const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    const env = pmrem.fromScene(new RoomEnvironment(), 0.02).texture
     scene.environment = env
     return () => {
       scene.environment = null
@@ -357,15 +369,20 @@ export default function ProductPackage({ front, back, bundle, wrinkles, active =
       dpr={dpr}
       frameloop={active ? 'always' : 'never'}
       camera={{ position: [0, 0.05, 5.95], fov: 34 }}
-      gl={{ alpha: true, antialias: true, powerPreference: 'low-power', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
+      gl={{ alpha: true, antialias: true, powerPreference: 'low-power', toneMapping: THREE.NeutralToneMapping, toneMappingExposure: 1.02 }}
       style={{ touchAction: 'pan-y', cursor: 'grab' }}
     >
       <PerformanceMonitor onDecline={() => setDpr(1)} />
       <Environment />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[3, 4, 5]} intensity={1.2} />
-      <directionalLight position={[-4, 1, 3]} intensity={0.45} />
-      <directionalLight position={[0, -2, -4]} intensity={0.7} color="#a9d3d8" />
+      <ambientLight intensity={0.42} />
+      {/* key */}
+      <directionalLight position={[3.2, 4.2, 5.5]} intensity={1.05} />
+      {/* fill */}
+      <directionalLight position={[-4.5, 1.2, 3.5]} intensity={0.34} />
+      {/* rim, to lift the silhouette off the panel */}
+      <directionalLight position={[-1.5, 2.5, -5]} intensity={0.5} />
+      {/* soft bounce from below */}
+      <directionalLight position={[0, -3.5, 1.5]} intensity={0.16} />
       <Suspense fallback={null}>
         <Pack front={front} back={back} bundle={bundle} wrinkles={wrinkles} paused={!active} pose={pose} />
       </Suspense>

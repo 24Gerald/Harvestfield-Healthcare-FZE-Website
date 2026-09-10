@@ -132,7 +132,7 @@ export const net = {
       detail: 'Cut, sewn and packed in Ogun State, so supply moves in days rather than shipping seasons.',
     },
   ],
-  designerNote: 'Synera DuoForte pack. Designed by GDM Health Products. Manufactured by Harvestfield Healthcare FZE.',
+  designerNote: 'Synera DuoForte pack. Developed by GDM Health Products. Manufactured by Harvestfield Healthcare FZE.',
   meshNote: 'Both active ingredients are bound into the polyester fibre itself, so every intersection of the mesh carries them.',
 }
 
