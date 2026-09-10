@@ -13,7 +13,7 @@ import { FORM_BACKEND, FORM_ENDPOINT_URL, site } from '../data/siteConfig'
 
 export const FORM_NAME = 'request-supply'
 
-/** @typedef {{ fullName: string, organization?: string, email: string, message: string, 'bot-field'?: string }} SupplyRequest */
+/** @typedef {{ fullName: string, organization?: string, email: string, topic?: string, message: string, 'bot-field'?: string }} SupplyRequest */
 
 /** @param {SupplyRequest} values */
 export async function submitSupplyRequest(values) {
@@ -54,13 +54,14 @@ async function submitViaFormSubmit(values) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
-      _subject: `Supply request — ${values.organization || values.fullName}`,
+      _subject: `${values.topic || 'Supply request'} — ${values.organization || values.fullName}`,
       _template: 'table',
       _captcha: 'false',
       _replyto: values.email,
       name: values.fullName,
       organization: values.organization || '—',
       email: values.email,
+      topic: values.topic || '—',
       message: values.message,
     }),
   })
@@ -72,11 +73,12 @@ async function submitViaFormSubmit(values) {
 /* ---------- mailto: fallback ---------------------------------------------
    No server involved — opens the visitor's mail client pre-filled.          */
 async function submitViaMailto(values) {
-  const subject = encodeURIComponent(`Supply request — ${values.organization || values.fullName}`)
+  const subject = encodeURIComponent(`${values.topic || 'Supply request'} — ${values.organization || values.fullName}`)
   const bodyText = [
     `Name: ${values.fullName}`,
-    `Organization: ${values.organization || '—'}`,
+    `Organisation: ${values.organization || '—'}`,
     `Email: ${values.email}`,
+    `About: ${values.topic || '—'}`,
     '',
     values.message,
   ].join('\n')

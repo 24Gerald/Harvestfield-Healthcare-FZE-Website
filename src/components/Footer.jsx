@@ -20,7 +20,7 @@ export default function Footer() {
               <HarvestfieldLogo className="h-12" />
             </a>
             <p className="mt-5 max-w-sm text-sm text-white/75">
-              New-generation dual-insecticide Synera DuoForte mosquito nets, cut, sewn and packed in Nigeria.
+              A Nigerian healthcare manufacturer producing Synera DuoForte dual-insecticide nets in Ogun State.
             </p>
             <a
               href={PARENT.url}

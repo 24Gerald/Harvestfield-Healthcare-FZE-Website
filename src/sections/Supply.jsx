@@ -58,6 +58,14 @@ function Column({ data, delay, soft = false }) {
   )
 }
 
+/**
+ * "Supply" — two routes, both actionable.
+ *
+ * The second panel used to address households directly, describing a consumer
+ * proposition that does not exist yet and could not be acted on. It now invites
+ * distributors instead, which is a real commercial route and stops the site
+ * promising households something they cannot buy.
+ */
 export default function Supply() {
   return (
     <section id={supply.id} className="on-dark scroll-mt-20 bg-teal-deep text-white">
@@ -72,7 +80,7 @@ export default function Supply() {
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-2 md:gap-8">
           <Column data={supply.programs} delay={0.05} />
-          <Column data={supply.families} delay={0.12} soft />
+          <Column data={supply.distributors} delay={0.12} soft />
         </div>
       </div>
     </section>

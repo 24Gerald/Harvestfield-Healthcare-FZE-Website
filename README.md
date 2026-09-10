@@ -42,9 +42,10 @@ With those variables set, the admin panel runs in **server mode**: password only
 ```
 src/
   components/   Nav, Footer, Button, Eyebrow, Reveal (scroll fade), HarvestfieldMark (logo), NetIllustration (SVG)
-  sections/     Hero, StatStrip, Factory, TheNet, Supply, FAQ, RequestSupply — one file per page section, in order
+  sections/     Hero, WhoWeAre, Today, Malaria, TheNet, Factory, Gallery, Certified, TrustedBy, Heritage,
+                LocalCapability, Purpose, Management, Supply, FAQ, RequestSupply — one file per section, in page order
   three/        HeroNetScene.jsx (all 3D scene code), HeroBackground.jsx (lazy mount + fallbacks)
-  data/         siteConfig.js, content.js (all copy), stats.js, faq.js
+  data/         siteConfig.js, content.js (all copy), faq.js
   lib/          formAdapter.js (form backend switch)
   pages/        Home.jsx, Legal.jsx (/legal stub)
   styles/       index.css (Tailwind + design tokens + SVG fallback keyframes)
@@ -58,7 +59,7 @@ Every placeholder is marked with a `TODO:` comment in the code. `grep -rn "TODO"
 | What | Where | How to replace |
 | --- | --- | --- |
 | **Logo** | `src/assets/logo-full-white.png`, `src/assets/logo-mark-white.png`, `public/favicon.png` | Client PNGs (white, for dark backgrounds). Replace with the vector master when available; a teal-on-white variant is still needed for any future light-background use. |
-| **Stat figures** | `src/data/stats.js` | `value` is the big number, optional `unit` sits beside it, `label` beneath. |
+| **"Where we are today" statements** | `src/data/content.js` (`today.items`) | Each item is a bold `lead` sentence with a `detail` line beneath. |
 | **Section copy** | `src/data/content.js`, `src/data/faq.js` | All headings, body text, CTA labels and FAQ answers are here. The approved concept site was unreachable from the build environment, so body copy was written from the brief — paste the concept text over it. |
 | **Photography / product render** | `src/sections/TheNet.jsx`, `src/sections/Factory.jsx` | The Net section uses `<NetIllustration variant="render" />`; swap it for an `<img>` with descriptive `alt` text. The Factory process strip uses line icons (no photos exist yet); add images inside each step card if wanted. |
 | **OG image** | `index.html`, `public/og-placeholder.svg` | Replace with a 1200×630 PNG/JPG and update the two `og:image` / `twitter:image` URLs. |
@@ -68,7 +69,7 @@ Every placeholder is marked with a `TODO:` comment in the code. `grep -rn "TODO"
 | **Certified-by section** | `src/assets/partners/{iso,who,nafdac}.png`, `certified` in `src/data/content.js` | Client-supplied marks. Replace by dropping a new file in with the same name. Confirm each certification claim before launch. |
 | **Management portraits** | `src/assets/management/chairman.jpg`, `managing-director.jpg` | Drop the portraits in (any of jpg/png/webp); initials show in the frame until then. Bios live in `management` in `src/data/content.js`. |
 | **Factory photo slider** | `src/assets/gallery/` or the admin panel's Gallery tab | Drop JPG/PNG/WebP photos in (numbered `01-…`, `02-…` for order); the “Inside the factory” slider is hidden until at least one exists. |
-| **Supporter logos (Local manufacturing section)** | `src/assets/partners/` | Drop `pvac.png` and `oguninvest.png` (or .svg) in this folder; they are picked up automatically. Until then the names show as wordmarks. |
+| **Copy held pending sign-off** | `src/data/content.js` | Every held item carries a `TODO(md-office)` comment naming what is needed. The two ISO placeholders in `certified.items` render literally on the page until they are filled in — that is deliberate, so they cannot ship unnoticed. |
 | **Partner logos** | `src/assets/gdm-logo-white.png`, `trustedBy` in `src/data/content.js` | Add a partner: drop the logo in `src/assets/`, register it in `TrustedBy.jsx`'s `logos` map, add an entry with `url`. |
 | **Mosquito 3D model** | `public/models/mosquito/`, `HERO_MOSQUITO_MODEL` in `src/data/siteConfig.js` | The hero flies a real glTF model at the net when one is present. Unzip a Sketchfab glTF download (scene.gltf, scene.bin, textures/) into `public/models/mosquito/`. Missing or broken file → procedural mosquito, automatically. Adjust `rotation`/`length` in the config so the head faces the net; attribution appears in the footer once the model loads. |
 | **Mosquito video** | `public/video/`, `HERO_MOSQUITO_VIDEO` in `src/data/siteConfig.js` | Drop `mosquito.webm` (VP9 with alpha) and `mosquito.mov` (HEVC with alpha, for Safari) into `public/video/` and the hero flies the footage at the net instead of the 3D mosquitoes. Black-background footage without alpha: set `blend: 'screen'`. Nothing renders until a file exists. |

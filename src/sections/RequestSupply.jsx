@@ -36,6 +36,7 @@ export default function RequestSupply() {
         fullName: data.fullName,
         organization: data.organization,
         email: data.email,
+        topic: data.topic,
         message: data.message,
       })
       setStatus('success')
@@ -136,6 +137,21 @@ export default function RequestSupply() {
                   <input name="email" type="email" required autoComplete="email" inputMode="email" className={inputClass} />
                 </label>
                 <label className="mt-5 block text-sm font-semibold text-teal-deep">
+                  {copy.fields.topic}
+                  {/* Native select control: the platform draws its own indicator, which is
+                      also the one every browser and screen reader already handles correctly. */}
+                  <select name="topic" required defaultValue="" className={`${inputClass} pr-10`}>
+                    <option value="" disabled>
+                      {copy.fields.topicPlaceholder}
+                    </option>
+                    {copy.fields.topicOptions.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="mt-5 block text-sm font-semibold text-teal-deep">
                   {copy.fields.message}
                   <textarea name="message" required rows={5} placeholder={copy.fields.messagePlaceholder} className={inputClass} />
                 </label>
@@ -150,7 +166,7 @@ export default function RequestSupply() {
                   </p>
                 )}
 
-                <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mt-8">
                   <Button type="submit" disabled={status === 'submitting'} aria-busy={status === 'submitting'} className="min-w-[10.5rem] disabled:opacity-80">
                     {status === 'submitting' ? (
                       <>
@@ -166,7 +182,6 @@ export default function RequestSupply() {
                       copy.submit
                     )}
                   </Button>
-                  <p className="text-xs text-muted">We reply within {site.replyTime}.</p>
                 </div>
               </motion.form>
             )}

@@ -7,7 +7,7 @@ import { managementPhoto } from '../lib/managementPhotos'
 import { EASE_OUT } from '../lib/motion'
 
 /**
- * "Management" — the Chairman and Managing Director. Each card shows a 4:5
+ * "Leadership" — one card per person. Each shows a 4:5
  * portrait (optional file in src/assets/management/, initials until it
  * exists), name, role and the first paragraph of the bio; the rest expands
  * in place under "Read full profile". Photos are cropped from the top with
@@ -33,7 +33,8 @@ export default function Management() {
           )}
         </div>
 
-        <ul className="mt-10 grid gap-5 md:mt-12 md:grid-cols-2 md:gap-6">
+        {/* One card while the Chairman biography is outstanding; two once it lands. */}
+        <ul className={`mt-10 grid gap-5 md:mt-12 md:gap-6 ${c.people.length > 1 ? 'md:grid-cols-2' : 'max-w-2xl'}`}>
           {c.people.map((p, i) => (
             <Reveal key={p.name} as="li" delay={0.1 + i * 0.12} className="h-full">
               <PersonCard person={p} />

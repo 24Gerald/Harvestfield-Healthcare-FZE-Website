@@ -4,7 +4,7 @@ import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 import { renderInline } from '../components/InlineMarkup'
 import { factory } from '../data/content'
-import { EASE_OUT } from '../lib/motion'
+import { EASE_OUT, smoothScrollTo } from '../lib/motion'
 
 /* Line icons for the four process steps — icons, not photos (no factory photography yet).
    Each icon is a list of strokes so every stroke can draw itself in. */
@@ -96,11 +96,41 @@ export default function Factory() {
               <h2 className="mt-4 text-3xl font-bold text-teal-deep sm:text-4xl lg:text-5xl">{factory.title}</h2>
             </Reveal>
           </div>
-          <Reveal delay={0.15} className="space-y-5 text-base text-ink/85 md:text-lg lg:col-span-7 lg:pt-2">
-            {factory.body.map((p) => (
-              <p key={p}>{renderInline(p)}</p>
-            ))}
-          </Reveal>
+          <div className="lg:col-span-7 lg:pt-2">
+            <Reveal delay={0.15} className="space-y-5 text-base text-ink/85 md:text-lg">
+              {factory.body.map((p) => (
+                <p key={p}>{renderInline(p)}</p>
+              ))}
+            </Reveal>
+            {factory.link && (
+              <Reveal delay={0.3}>
+                <a
+                  href={factory.link.href}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    smoothScrollTo(factory.link.href)
+                  }}
+                  className="group mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-teal-deep underline-offset-4 hover:underline"
+                >
+                  {factory.link.label}
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    className="transition-transform duration-300 ease-brand group-hover:translate-x-1"
+                  >
+                    <path d="M2 7h10M8 3l4 4-4 4" />
+                  </svg>
+                </a>
+              </Reveal>
+            )}
+          </div>
         </div>
 
         {/* Process strip */}

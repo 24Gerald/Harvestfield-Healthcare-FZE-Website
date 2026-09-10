@@ -6,42 +6,28 @@ import IngredientMesh from '../components/IngredientMesh'
 import { net } from '../data/content'
 import { EASE_OUT } from '../lib/motion'
 
-/** Check mark whose stroke draws in when the benefit scrolls into view. */
-function DrawnCheck({ delay = 0 }) {
-  const reduce = useReducedMotion()
-  return (
-    <span className="mt-1 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full bg-teal-deep text-white" aria-hidden="true">
-      <motion.svg
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        initial={reduce ? false : 'hidden'}
-        whileInView="show"
-        viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-      >
-        <motion.path
-          d="M2.5 7.5l3 3 6-7"
-          variants={{ hidden: { pathLength: 0 }, show: { pathLength: 1 } }}
-          transition={{ duration: 0.6, ease: EASE_OUT, delay }}
-        />
-      </motion.svg>
-    </span>
-  )
-}
-
+/**
+ * "The Net" — condensed to the two active-ingredient panels, the resistance
+ * argument and the interactive pack. The three benefit tiles and the full
+ * specification strip are held in src/data/content.js for the Synera DuoForte
+ * page: the technical detail earns a page of its own, and at full length here
+ * it obstructed the visitor forming a view of the company.
+ *
+ * The mesh diagram sits with the ingredient cards it annotates rather than
+ * under the pack, which also evens out the two column heights.
+ *
+ * The attribution line sits directly under the copy, not in the footnotes:
+ * GDM own the product, Harvestfield manufacture it, and the site says so where
+ * the claim is made.
+ */
 export default function TheNet() {
   const reduce = useReducedMotion()
   return (
     <section id={net.id} className="scroll-mt-20 bg-white">
       <div className="container-site section-pad">
-        <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-x-16 lg:gap-y-10">
+        <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Copy */}
-          <div className="lg:col-span-6 lg:col-start-1 lg:row-start-1">
+          <div className="lg:col-span-6">
             <Reveal>
               <Eyebrow className="text-teal-deep">{net.eyebrow}</Eyebrow>
             </Reveal>
@@ -72,18 +58,18 @@ export default function TheNet() {
               ))}
             </div>
 
-            {/* Spec chips */}
-            <ul className="mt-6 flex flex-wrap gap-2" aria-label="Specifications">
-              {net.specs.map((s, i) => (
-                <Reveal key={s} as="li" variant="pop" delay={0.3 + i * 0.08} duration={0.45} className="rounded-full bg-teal-tint px-4 py-1.5 text-sm font-medium text-teal-deep">
-                  {s}
-                </Reveal>
-              ))}
-            </ul>
+            <Reveal delay={0.3}>
+              <p className="mt-6 border-l-2 border-teal-soft pl-4 text-sm leading-relaxed text-muted">{net.attribution}</p>
+            </Reveal>
+
+            <Reveal delay={0.35} className="mt-8">
+              <IngredientMesh ingredients={net.ingredients} />
+              <p className="mt-3 text-xs text-muted">{net.meshNote}</p>
+            </Reveal>
           </div>
 
-          {/* Illustration */}
-          <div className="lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1">
+          {/* Pack and mesh */}
+          <div className="lg:col-span-6">
             <Reveal delay={0.1}>
               <motion.div
                 initial={reduce ? false : { clipPath: 'inset(0 0 0 100% round 24px)' }}
@@ -95,24 +81,7 @@ export default function TheNet() {
               </motion.div>
               <p className="mt-3 text-xs text-muted">{net.designerNote}</p>
             </Reveal>
-            <Reveal delay={0.2} className="mt-6">
-              <IngredientMesh ingredients={net.ingredients} />
-              <p className="mt-3 text-xs text-muted">{net.meshNote}</p>
-            </Reveal>
           </div>
-
-          {/* Benefits */}
-          <ul className="space-y-5 lg:col-span-6 lg:col-start-1 lg:row-start-2">
-              {net.benefits.map((b, i) => (
-              <Reveal key={b.title} as="li" delay={0.15 + i * 0.1} className="flex gap-4">
-                <DrawnCheck delay={0.25 + i * 0.1} />
-                <div>
-                  <h3 className="text-base font-semibold text-teal-deep">{b.title}</h3>
-                  <p className="mt-1 text-sm text-muted md:text-base">{b.detail}</p>
-                </div>
-              </Reveal>
-              ))}
-          </ul>
         </div>
       </div>
     </section>

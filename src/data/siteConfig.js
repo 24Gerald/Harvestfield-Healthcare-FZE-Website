@@ -14,7 +14,6 @@ export const site = {
   // Notification address for form submissions once email forwarding is confirmed.
   // Netlify Forms: add this under Site settings → Forms → Form notifications.
   contactEmail: 'info@harvestfieldhealthcare.com',
-  replyTime: 'two working days',
 }
 
 /**
@@ -98,12 +97,15 @@ export const HERO_MOSQUITO_VIDEO = {
   replace3D: true,
 }
 
+// Section anchors, in page order. The specification's five-page navigation
+// (About | Synera DuoForte | Manufacturing and quality | News | Contact) waits
+// on those pages being built — linking to them now would be four dead links.
 export const navLinks = [
-  { label: 'The Factory', href: '#factory' },
   { label: 'The Net', href: '#net' },
+  { label: 'The Factory', href: '#factory' },
   { label: 'Supply', href: '#supply' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Blog', href: '/blog', route: true },
 ]
 
-export const CTA = { label: 'Request Supply', href: '#request-supply' }
+export const CTA = { label: 'Request supply', href: '#request-supply' }

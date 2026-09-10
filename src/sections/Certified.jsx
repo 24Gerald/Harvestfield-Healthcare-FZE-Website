@@ -6,22 +6,30 @@ import { EASE_OUT } from '../lib/motion'
 import { partnerLogo } from '../lib/partnerLogos'
 
 /**
- * "Certified by" — three quality credentials, each with the certifier's mark.
+ * "Quality and regulatory" — three credentials, each with the certifier's mark.
  * Marks live in src/assets/partners/ (see the README there); a text wordmark
  * stands in until a file exists.
+ *
+ * The wording of the three cards carries regulatory risk and must not be
+ * changed without sign-off — see the note in src/data/content.js.
  */
 export default function Certified() {
   const reduce = useReducedMotion()
   return (
     <section id={c.id} className="on-dark scroll-mt-20 bg-teal-deep text-white">
       <div className="container-site section-pad">
-        <div className="max-w-2xl">
+        <div className="max-w-3xl">
           <Reveal>
             <Eyebrow className="text-white/70">{c.eyebrow}</Eyebrow>
           </Reveal>
           <Reveal variant="rise" delay={0.08} duration={0.8}>
-            <h2 className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">{c.title}</h2>
+            <h2 className="mt-4 max-w-2xl text-3xl font-bold text-white sm:text-4xl lg:text-5xl">{c.title}</h2>
           </Reveal>
+          {c.body && (
+            <Reveal delay={0.15}>
+              <p className="mt-6 text-base text-white/80 md:text-lg">{c.body}</p>
+            </Reveal>
+          )}
         </div>
 
         <ul className="mt-12 grid gap-6 md:grid-cols-3">
