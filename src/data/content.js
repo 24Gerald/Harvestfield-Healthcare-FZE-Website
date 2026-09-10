@@ -11,7 +11,7 @@
 export const hero = {
   eyebrow: 'Harvestfield Healthcare FZE',
   title: 'Protection, made close to the fight.',
-  subtitle: 'New-generation dual-insecticide mosquito nets, cut, sewn and packed in Nigeria.',
+  subtitle: 'New-generation dual-insecticide Synera DuoForte mosquito nets, cut, sewn and packed in Nigeria.',
   primaryCta: { label: 'Request Supply', href: '#request-supply' },
   secondaryCta: { label: 'See the Net', href: '#net' },
 }
@@ -29,13 +29,14 @@ export const localCapability = {
   eyebrow: 'Local manufacturing',
   title: ['Global innovation.', 'Local capability.', 'Lasting impact.'],
   body: [
-    'Harvestfield Healthcare is strengthening local capability for the manufacture and supply of essential public-health solutions in Nigeria.',
+    'Harvestfield Healthcare FZE is strengthening local capability for the manufacture and supply of essential public-health solutions in Nigeria.',
     'Through its collaboration with GDM Health Products, Harvestfield Healthcare undertakes local manufacturing operations for Synera DuoForte, bringing key stages of finished-net production closer to the communities and malaria-control programmes they are designed to serve.',
     'The initiative supports a broader commitment to local manufacturing, stronger health supply chains and sustainable industrial development in Nigeria.',
-    "Supported by an ecosystem of public and private-sector stakeholders, including PVAC and OgunInvest, this work contributes to Nigeria's ambition to expand domestic healthcare manufacturing and build a more resilient healthcare value chain.",
+    "Working alongside public and private-sector stakeholders, including PVAC and OgunInvest, this work contributes to Nigeria's ambition to expand domestic healthcare manufacturing and build a more resilient healthcare value chain.",
   ],
-  supportersLabel: 'Supported by',
+  supportersLabel: 'Working alongside',
   supporters: [
+    { name: 'Harvestfield Industries', fullName: 'Harvestfield Industries Free Trade Zone, Ogun State', logo: 'harvestfield-industries', url: 'https://www.harvestfield-ng.com' },
     { name: 'PVAC', fullName: 'Presidential Initiative on Healthcare Value Chain', logo: 'pvac', url: 'https://pvac.gov.ng/' },
     { name: 'OgunInvest', fullName: 'Ogun State Investment Promotion Agency', logo: 'oguninvest', url: 'https://invest.ogunstate.gov.ng/index' },
   ],
@@ -46,14 +47,14 @@ export const factory = {
   eyebrow: 'The Factory',
   title: 'Brought home to Nigeria.',
   body: [
-    'For 26 years Harvestfield has distributed health products across Nigeria. Now we make them here too. Inside the Harvestfield Industries Free Trade Zone in Ogun State, netting arrives in bulk and leaves as finished, packed mosquito nets, ready for the programs and families who need them.',
+    'For 26 years [Harvestfield](https://www.harvestfield-ng.com) has distributed health products across Nigeria. Now we make them here too. Inside the [Harvestfield Industries Free Trade Zone](https://www.harvestfield-ng.com) in Ogun State, netting arrives in bulk and leaves as finished, packed Synera DuoForte mosquito nets, ready for the programs and families who need them.',
     'Manufacturing in-country closes the distance between a decision and a delivery. No shipping windows, no port delays, no waiting on a factory a continent away.',
   ],
   process: [
     { step: 'Netting in', detail: 'Treated polyester knit arrives at the zone in bulk rolls.' },
     { step: 'Cut', detail: 'Panels are cut to size for each net format.' },
     { step: 'Sew', detail: 'Panels are seamed, hemmed and fitted with hanging loops.' },
-    { step: 'Pack and ship', detail: 'Nets are folded, bagged, batch-checked and dispatched.' },
+    { step: 'Pack and ship', detail: 'Synera DuoForte nets are folded, bagged, batch-checked and dispatched.' },
   ],
 }
 
@@ -101,19 +102,19 @@ export const net = {
 export const supply = {
   id: 'supply',
   eyebrow: 'Supply',
-  title: 'Two ways to get nets where they are needed.',
+  title: 'Two ways to get Synera DuoForte nets where they are needed.',
   programs: {
     title: 'For Programs',
     audience: 'Ministries, funds and NGOs',
-    body: 'Source dual-insecticide nets in-country, with quality assurance on every batch and delivery measured in days. We work with procurement teams on volumes, packaging and timelines.',
+    body: 'Source Synera DuoForte dual-insecticide nets in-country, with quality assurance on every batch and delivery measured in days. We work with procurement teams on volumes, packaging and timelines.',
     points: ['In-country manufacturing', 'QA on every batch', 'Delivery in days, not months'],
     cta: { label: 'Request Supply', href: '#request-supply' },
   },
   families: {
     title: 'For Families',
     audience: 'Retail and household buyers',
-    body: 'The same net that protects programs will be available through retail distributors across Nigeria. We are building that network now.',
-    points: ['Same dual-insecticide net', 'Rated for 3 years of use', 'Made in Nigeria'],
+    body: 'The same Synera DuoForte net that protects programs will be available through retail distributors across Nigeria. We are building that network now.',
+    points: ['Same Synera DuoForte dual-insecticide net', 'Rated for 3 years of use', 'Made in Nigeria'],
     // No distributor list exists yet — route to the form rather than a dead page.
     cta: { label: 'Distributor network launching soon — write to us', href: '#request-supply' },
   },

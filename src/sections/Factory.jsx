@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
+import { renderInline } from '../components/InlineMarkup'
 import { factory } from '../data/content'
 import { EASE_OUT } from '../lib/motion'
 
@@ -97,7 +98,7 @@ export default function Factory() {
           </div>
           <Reveal delay={0.15} className="space-y-5 text-base text-ink/85 md:text-lg lg:col-span-7 lg:pt-2">
             {factory.body.map((p) => (
-              <p key={p}>{p}</p>
+              <p key={p}>{renderInline(p)}</p>
             ))}
           </Reveal>
         </div>

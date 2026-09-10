@@ -1,8 +1,10 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
+import { renderInline } from '../components/InlineMarkup'
 import { localCapability as c } from '../data/content'
 import { EASE_OUT } from '../lib/motion'
+import { partnerLogo } from '../lib/partnerLogos'
 
 /**
  * "Local manufacturing" — the local-capability story and the public/private
@@ -10,12 +12,6 @@ import { EASE_OUT } from '../lib/motion'
  * src/assets/partners/ (see README.txt there); a wordmark stands in until a
  * logo file exists. Each supporter links out to its own site.
  */
-const logoFiles = import.meta.glob('../assets/partners/*.{png,svg,jpg,jpeg,webp}', { eager: true, import: 'default' })
-const logoFor = (key) => {
-  const hit = Object.keys(logoFiles).find((path) => path.toLowerCase().includes(key.toLowerCase()))
-  return hit ? logoFiles[hit] : null
-}
-
 export default function LocalCapability() {
   const reduce = useReducedMotion()
   return (
@@ -36,7 +32,7 @@ export default function LocalCapability() {
           </div>
           <Reveal delay={0.15} className="space-y-5 text-base text-ink/85 md:text-lg lg:col-span-7 lg:pt-2">
             {c.body.map((p) => (
-              <p key={p}>{p}</p>
+              <p key={p}>{renderInline(p)}</p>
             ))}
           </Reveal>
         </div>
@@ -50,7 +46,7 @@ export default function LocalCapability() {
           </Reveal>
           <ul className="mt-6 flex flex-wrap gap-4 sm:gap-6">
             {c.supporters.map((s, i) => {
-              const logo = logoFor(s.logo)
+              const logo = partnerLogo(s.logo)
               return (
                 <Reveal key={s.name} as="li" delay={0.1 + i * 0.1} className="w-full sm:w-auto">
                   <motion.a

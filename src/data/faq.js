@@ -7,9 +7,9 @@
 export const faqs = [
   {
     id: 'resistance',
-    question: 'Do these nets work against insecticide-resistant mosquitoes?',
+    question: 'Do Synera DuoForte nets work against insecticide-resistant mosquitoes?',
     answer:
-      'Yes. Every net carries two active ingredients. Alpha-cypermethrin delivers fast knockdown, and chlorfenapyr works through a different mode of action that pyrethroid-resistant mosquitoes have not adapted to. Together they stop the mosquito populations that single-insecticide nets increasingly let through.',
+      'Yes. Every Synera DuoForte net carries two active ingredients. Alpha-cypermethrin delivers fast knockdown, and chlorfenapyr works through a different mode of action that pyrethroid-resistant mosquitoes have not adapted to. Together they stop the mosquito populations that single-insecticide nets increasingly let through.',
   },
   {
     id: 'safety',
@@ -25,7 +25,7 @@ export const faqs = [
   },
   {
     id: 'lifespan',
-    question: 'How long does a net last?',
+    question: 'How long does a Synera DuoForte net last?',
     answer:
       'Each net is rated for three years of use and washing. Wash gently in cool water with mild soap, dry in the shade, and avoid scrubbing or bleach so the active ingredients stay effective for the full life of the net.',
   },

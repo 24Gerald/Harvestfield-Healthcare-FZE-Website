@@ -3,10 +3,14 @@ import { HarvestfieldLogo } from './HarvestfieldMark'
 import { navLinks, site, HERO_MOSQUITO_MODEL } from '../data/siteConfig'
 import { useModelStatus } from '../lib/modelStatus'
 import { smoothScrollTo } from '../lib/motion'
+import { partnerLogo } from '../lib/partnerLogos'
+
+const PARENT = { name: 'Harvestfield Industries', url: 'https://www.harvestfield-ng.com' }
 
 export default function Footer() {
   const modelLoaded = useModelStatus() === 'loaded'
   const credit = HERO_MOSQUITO_MODEL.credit
+  const parentLogo = partnerLogo('harvestfield-industries', 'white')
   return (
     <footer className="on-dark bg-teal-deep text-white">
       <div className="container-site py-14 md:py-16">
@@ -16,8 +20,22 @@ export default function Footer() {
               <HarvestfieldLogo className="h-12" />
             </a>
             <p className="mt-5 max-w-sm text-sm text-white/75">
-              New-generation dual-insecticide mosquito nets, cut, sewn and packed in Nigeria.
+              New-generation dual-insecticide Synera DuoForte mosquito nets, cut, sewn and packed in Nigeria.
             </p>
+            <a
+              href={PARENT.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${PARENT.name} (opens in a new tab)`}
+              className="group mt-7 inline-flex items-center gap-3 text-sm text-white/75 hover:text-white"
+            >
+              {parentLogo ? (
+                <img src={parentLogo} alt={PARENT.name} className="h-10 w-auto opacity-90 transition-opacity group-hover:opacity-100" draggable="false" />
+              ) : (
+                <span className="rounded-md border border-white/25 px-2.5 py-1 text-xs font-semibold tracking-wide text-white/85">{PARENT.name}</span>
+              )}
+              <span>A {PARENT.name} company ↗</span>
+            </a>
           </div>
 
           <nav aria-label="Footer">
@@ -58,7 +76,7 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {site.name}. {site.parent}
+            © {new Date().getFullYear()} {site.name}.
             {modelLoaded && credit && (
               <>
                 {' '}
