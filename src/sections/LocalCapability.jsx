@@ -62,9 +62,9 @@ export default function LocalCapability() {
                     whileHover={reduce ? undefined : { y: -4 }}
                     transition={{ duration: 0.3, ease: EASE_OUT }}
                   >
-                    <span className="flex h-20 w-28 flex-none items-center justify-center overflow-hidden rounded-xl bg-white">
+                    <span className="flex h-24 w-32 flex-none items-center justify-center overflow-hidden rounded-xl bg-white">
                       {logo ? (
-                        <img src={logo} alt={s.name} className="max-h-20 max-w-full object-contain" draggable="false" />
+                        <img src={logo} alt={s.name} className="max-h-24 max-w-full object-contain" draggable="false" />
                       ) : (
                         <span className="text-xl font-bold tracking-tight text-teal-deep">{s.name}</span>
                       )}
