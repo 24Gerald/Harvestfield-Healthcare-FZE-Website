@@ -13,3 +13,11 @@ export function partnerLogo(key, variant) {
   const hit = (variant && find(`${k}-${variant}`)) || find(k)
   return hit ? files[hit] : null
 }
+
+/** Optional photos for the "Certified by" cards: src/assets/certified/<key>-photo.* */
+const photos = import.meta.glob('../assets/certified/*.{png,jpg,jpeg,webp}', { eager: true, import: 'default' })
+export function certifiedPhoto(key) {
+  const needle = `${key.toLowerCase()}-photo`
+  const hit = Object.keys(photos).find((p) => p.split('/').pop().toLowerCase().includes(needle))
+  return hit ? photos[hit] : null
+}

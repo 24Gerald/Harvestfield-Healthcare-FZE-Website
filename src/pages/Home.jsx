@@ -3,6 +3,7 @@ import StatStrip from '../sections/StatStrip'
 import TrustedBy from '../sections/TrustedBy'
 import Factory from '../sections/Factory'
 import TheNet from '../sections/TheNet'
+import Certified from '../sections/Certified'
 import LocalCapability from '../sections/LocalCapability'
 import Supply from '../sections/Supply'
 import FAQ from '../sections/FAQ'
@@ -16,6 +17,7 @@ export default function Home() {
       <TrustedBy />
       <Factory />
       <TheNet />
+      <Certified />
       <LocalCapability />
       <Supply />
       <FAQ />

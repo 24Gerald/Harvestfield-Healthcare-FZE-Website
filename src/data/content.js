@@ -42,6 +42,39 @@ export const localCapability = {
   ],
 }
 
+export const certified = {
+  id: 'certified',
+  eyebrow: 'Certified by',
+  title: 'Quality built into every stage.',
+  // TODO(client): confirm each claim and the exact certificate numbers before launch.
+  items: [
+    {
+      key: 'iso',
+      kicker: 'International Quality',
+      title: 'ISO Certified',
+      body: 'Quality management audited to the international standard, from netting in to nets out.',
+      photo: 'HHC QC / production inspection',
+      logoAlt: 'ISO certified company',
+    },
+    {
+      key: 'who',
+      kicker: 'Globally Validated',
+      title: 'WHO Prequalified',
+      body: 'Synera DuoForte is WHO-prequalified, the benchmark for nets supplied to malaria-control programmes.',
+      photo: 'LLIN laboratory / testing scene',
+      logoAlt: 'World Health Organization',
+    },
+    {
+      key: 'nafdac',
+      kicker: 'Manufactured to Standard',
+      title: 'NAFDAC GMP',
+      body: "Made under Good Manufacturing Practice, overseen by NAFDAC, Nigeria's regulator for medicines and health products.",
+      photo: 'HHC factory / production line',
+      logoAlt: 'NAFDAC — National Agency for Food and Drug Administration and Control',
+    },
+  ],
+}
+
 export const factory = {
   id: 'factory',
   eyebrow: 'The Factory',
