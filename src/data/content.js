@@ -53,7 +53,6 @@ export const certified = {
       kicker: 'International Quality',
       title: 'ISO Certified',
       body: 'Quality management audited to the international standard, from netting in to nets out.',
-      photo: 'HHC QC / production inspection',
       logoAlt: 'ISO certified company',
     },
     {
@@ -61,7 +60,6 @@ export const certified = {
       kicker: 'Globally Validated',
       title: 'WHO Prequalified',
       body: 'Synera DuoForte is WHO-prequalified, the benchmark for nets supplied to malaria-control programmes.',
-      photo: 'LLIN laboratory / testing scene',
       logoAlt: 'World Health Organization',
     },
     {
@@ -69,7 +67,6 @@ export const certified = {
       kicker: 'Manufactured to Standard',
       title: 'NAFDAC GMP',
       body: "Made under Good Manufacturing Practice, overseen by NAFDAC, Nigeria's regulator for medicines and health products.",
-      photo: 'HHC factory / production line',
       logoAlt: 'NAFDAC — National Agency for Food and Drug Administration and Control',
     },
   ],
