@@ -423,3 +423,23 @@
     animation: none;
   }
 }
+
+/* Logo variant of the marquee (src/sections/LocalCapability.jsx): auto-width
+   pills instead of fixed picture tiles. Same seam maths — each tile carries its
+   gap as margin, so translating the track by -50% lands copy two exactly where
+   copy one began. */
+.hf-marquee--logos {
+  --hf-gap: 12px;
+}
+.hf-marquee--logos .hf-marquee-tile {
+  width: auto;
+  height: auto;
+  border-radius: 9999px;
+  background: var(--color-white);
+  box-shadow: 0 1px 0 rgba(16, 81, 91, 0.08);
+}
+/* Photo tiles crop to fill; a logo must never crop, so it is contained instead.
+   This needs to out-specify the .hf-marquee-tile img rule above. */
+.hf-marquee--logos .hf-marquee-tile img {
+  object-fit: contain;
+}

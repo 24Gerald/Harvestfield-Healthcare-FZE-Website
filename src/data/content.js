@@ -17,10 +17,10 @@ export const hero = {
 }
 
 export const trustedBy = {
-  eyebrow: 'Trusted by',
-  body: 'Synera DuoForte is designed by GDM Health Products and manufactured under licence by Harvestfield Healthcare FZE.',
+  eyebrow: 'Developed by',
+  body: 'Synera DuoForte is developed by GDM Health Products and manufactured under licence by Harvestfield Healthcare FZE.',
   partners: [
-    { name: 'GDM Health Products', role: 'Designer of Synera DuoForte', logo: 'gdm', url: 'https://www.gdmedhealth.com/' },
+    { name: 'GDM Health Products', role: 'Developer of Synera DuoForte', logo: 'gdm', url: 'https://www.gdmedhealth.com/' },
   ],
 }
 
@@ -34,7 +34,7 @@ export const localCapability = {
     'The initiative supports a broader commitment to local manufacturing, stronger health supply chains and sustainable industrial development in Nigeria.',
     "Working alongside public and private-sector stakeholders, including PVAC and OgunInvest, this work contributes to Nigeria's ambition to expand domestic healthcare manufacturing and build a more resilient healthcare value chain.",
   ],
-  supportersLabel: 'Working alongside',
+  supportersLabel: 'Supported by',
   supporters: [
     { name: 'Harvestfield Industries', fullName: 'Harvestfield Industries Free Trade Zone, Ogun State', logo: 'harvestfield-industries', url: 'https://www.harvestfield-ng.com' },
     { name: 'PVAC', fullName: 'Presidential Initiative on Healthcare Value Chain', logo: 'pvac', url: 'https://pvac.gov.ng/' },

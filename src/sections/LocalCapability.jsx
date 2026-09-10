@@ -1,9 +1,8 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 import { renderInline } from '../components/InlineMarkup'
 import { localCapability as c } from '../data/content'
-import { EASE_OUT } from '../lib/motion'
 import { partnerLogo } from '../lib/partnerLogos'
 
 /**
@@ -12,6 +11,56 @@ import { partnerLogo } from '../lib/partnerLogos'
  * src/assets/partners/ (see README.txt there); a wordmark stands in until a
  * logo file exists. Each supporter links out to its own site.
  */
+const MIN_TILES = 9 // enough pills in one copy to outrun any screen width
+
+function SupporterTicker({ supporters, reduce }) {
+  const set = []
+  while (set.length < MIN_TILES) set.push(...supporters)
+  const copies = reduce ? [supporters] : [set, set]
+
+  return (
+    <div
+      className={`hf-marquee hf-marquee--logos ${reduce ? 'hf-marquee--static' : ''}`}
+      style={{ '--hf-marquee-dur': `${set.length * 6}s` }}
+      role="region"
+      aria-label={supporters.map((s) => s.fullName).join(', ')}
+    >
+      <div className="hf-marquee-track">
+        {copies.map((list, copy) => (
+          <ul key={copy} className="hf-marquee-set" aria-hidden={copy > 0 ? 'true' : undefined}>
+            {list.map((s, i) => {
+              const logo = partnerLogo(s.logo)
+              return (
+                <li key={`${copy}-${i}`} className="hf-marquee-tile">
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabIndex={copy > 0 ? -1 : undefined}
+                    aria-label={`${s.fullName} (opens in a new tab)`}
+                    className="group flex items-center gap-3 px-5 py-2.5"
+                  >
+                    <span className="flex h-9 w-16 flex-none items-center justify-center">
+                      {logo ? (
+                        <img src={logo} alt="" className="h-full w-full object-contain" draggable="false" />
+                      ) : (
+                        <span className="text-xs font-bold tracking-tight text-teal-deep">{s.name}</span>
+                      )}
+                    </span>
+                    <span className="whitespace-nowrap text-sm font-semibold text-teal-deep group-hover:underline group-hover:underline-offset-4">
+                      {s.name}
+                    </span>
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function LocalCapability() {
   const reduce = useReducedMotion()
   return (
@@ -37,45 +86,17 @@ export default function LocalCapability() {
           </Reveal>
         </div>
 
-        {/* Supporters — one compact row of three on desktop, stacked on phones. */}
-        <div className="mt-12 border-t border-teal-deep/10 pt-8">
+        {/* Supported by — a slow logo ticker, so three partners take one slim row
+            instead of a block of cards. Pauses on hover, static under reduced motion. */}
+        <div className="mt-10 border-t border-teal-deep/10 pt-7">
           <Reveal>
             <Eyebrow as="h3" className="text-muted">
               {c.supportersLabel}
             </Eyebrow>
           </Reveal>
-          <ul className="mt-5 grid gap-3 md:grid-cols-3 md:gap-4">
-            {c.supporters.map((s, i) => {
-              const logo = partnerLogo(s.logo)
-              return (
-                <Reveal key={s.name} as="li" delay={0.1 + i * 0.08}>
-                  <motion.a
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${s.fullName} (opens in a new tab)`}
-                    className="group flex h-full items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-[0_1px_0_rgba(16,81,91,0.08)] transition-shadow hover:shadow-[0_14px_32px_-20px_rgba(16,81,91,0.35)]"
-                    whileHover={reduce ? undefined : { y: -3 }}
-                    transition={{ duration: 0.3, ease: EASE_OUT }}
-                  >
-                    <span className="flex h-12 w-16 flex-none items-center justify-center">
-                      {logo ? (
-                        <img src={logo} alt="" className="max-h-full max-w-full object-contain" draggable="false" />
-                      ) : (
-                        <span className="text-sm font-bold tracking-tight text-teal-deep">{s.name}</span>
-                      )}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-sm font-semibold text-teal-deep group-hover:underline group-hover:underline-offset-4">
-                        {s.name} <span aria-hidden="true" className="text-teal-deep/60">↗</span>
-                      </span>
-                      <span className="mt-0.5 block text-xs leading-snug text-muted">{s.fullName}</span>
-                    </span>
-                  </motion.a>
-                </Reveal>
-              )
-            })}
-          </ul>
+          <Reveal className="mt-5" duration={0.7}>
+            <SupporterTicker supporters={c.supporters} reduce={reduce} />
+          </Reveal>
         </div>
       </div>
     </section>

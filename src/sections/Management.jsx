@@ -33,7 +33,7 @@ export default function Management() {
           )}
         </div>
 
-        <ul className="mt-12 grid gap-8 md:mt-16 md:grid-cols-2 md:gap-10 lg:gap-14">
+        <ul className="mt-10 grid gap-5 md:mt-12 md:grid-cols-2 md:gap-6">
           {c.people.map((p, i) => (
             <Reveal key={p.name} as="li" delay={0.1 + i * 0.12} className="h-full">
               <PersonCard person={p} />
@@ -53,8 +53,8 @@ function PersonCard({ person: p }) {
   const [first, ...rest] = p.bio
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-teal-tint-solid ring-1 ring-teal-deep/15 shadow-[0_18px_40px_-28px_rgba(16,81,91,0.45)]">
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-teal-soft/60 sm:aspect-[5/5] md:aspect-[4/5]">
+    <article className="flex h-full gap-5 rounded-3xl bg-teal-tint-solid p-5 ring-1 ring-teal-deep/15 shadow-[0_18px_40px_-28px_rgba(16,81,91,0.45)] sm:gap-6 sm:p-6">
+      <div className="relative aspect-[4/5] w-24 flex-none self-start overflow-hidden rounded-2xl bg-teal-soft/60 sm:w-28 lg:w-32">
         {photo ? (
           <img
             src={photo}
@@ -66,18 +66,16 @@ function PersonCard({ person: p }) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center" role="img" aria-label={`${p.name} (portrait to follow)`}>
-            <span className="flex h-28 w-28 items-center justify-center rounded-full bg-white/80 text-3xl font-bold tracking-wide text-teal-deep md:h-32 md:w-32 md:text-4xl">
-              {p.initials}
-            </span>
+            <span className="text-xl font-bold tracking-wide text-teal-deep sm:text-2xl">{p.initials}</span>
           </div>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-6 md:p-8">
-        <h3 className="text-2xl font-bold leading-tight text-teal-deep md:text-[1.75rem]">{p.name}</h3>
-        <p className="eyebrow mt-2 text-muted">{p.role}</p>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <h3 className="text-lg font-bold leading-tight text-teal-deep sm:text-xl">{p.name}</h3>
+        <p className="eyebrow mt-1 text-muted">{p.role}</p>
 
-        <div className="mt-5 space-y-4 text-[15px] leading-relaxed text-ink/85 md:text-base">
+        <div className="mt-3 space-y-3 text-sm leading-relaxed text-ink/85">
           <p>{first}</p>
           <AnimatePresence initial={false}>
             {open && (
@@ -106,7 +104,7 @@ function PersonCard({ person: p }) {
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-controls={id}
-            className="group mt-6 inline-flex w-fit items-center gap-2 rounded-full text-sm font-semibold text-teal-deep underline decoration-teal-soft decoration-2 underline-offset-4 transition-colors hover:decoration-teal-deep"
+            className="group mt-4 inline-flex w-fit items-center gap-2 rounded-full text-sm font-semibold text-teal-deep underline decoration-teal-soft decoration-2 underline-offset-4 transition-colors hover:decoration-teal-deep"
           >
             {open ? c.readLess : c.readMore}
             <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`}>
