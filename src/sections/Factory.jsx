@@ -5,16 +5,45 @@ import Eyebrow from '../components/Eyebrow'
 import { factory } from '../data/content'
 import { EASE_OUT } from '../lib/motion'
 
-/* Simple line icons for the four process steps — icons, not photos (no factory photography yet). */
+/* Line icons for the four process steps — icons, not photos (no factory photography yet).
+   Each icon is a list of strokes so every stroke can draw itself in. */
+const P = (d) => ({ tag: 'path', d })
+const C = (cx, cy, r) => ({ tag: 'circle', cx, cy, r })
 const icons = {
-  'Netting in': <path d="M4 8h24v16H4zM4 12h24M4 16h24M4 20h24M10 8v16M16 8v16M22 8v16" />,
-  Cut: <path d="M8 6l16 20M24 6L8 26M12 8a3 3 0 100 .01M20 24a3 3 0 100 .01" />,
-  Sew: <path d="M6 24c4-6 6-6 10 0s6 6 10 0M14 6l4 4-4 4M18 10H6" />,
-  'Pack and ship': <path d="M4 12l12-6 12 6v10l-12 6-12-6zM4 12l12 6 12-6M16 18v10" />,
+  // A roll of netting with the mesh showing, and the unrolled tail below.
+  'Netting in': [
+    P('M4 12h20a5 5 0 010 10H4'),
+    P('M4 12v10M9 12v10M14 12v10M19 12v10'),
+    P('M4 17h20M24 17a5 5 0 00-5-5'),
+    P('M4 27h18'),
+  ],
+  // Tailor's scissors: two tapered blades crossing at the pivot, finger rings at the back.
+  Cut: [
+    P('M15.5 15.2 26.2 4.6c.9-.9 2.3.4 1.5 1.4L18.3 17.2'),
+    P('M15.5 16.8 26.2 27.4c.9.9 2.3-.4 1.5-1.4L18.3 14.8'),
+    P('M14.2 14.9 11.2 11.6'),
+    P('M14.2 17.1l-3 3.3'),
+    C(8.7, 8.6, 3.4),
+    C(8.7, 23.4, 3.4),
+    C(15.6, 16, 1.4),
+  ],
+  // Sewing needle with a threaded eye, a loose loop of thread, and the stitches it leaves.
+  Sew: [
+    P('M6.5 25.5 22.8 9.2c.9-.9 2.4-.7 3 .3.5.8.3 1.8-.4 2.5L9.6 28.6'),
+    P('M22.6 12.5c-.7-.7-.7-1.7 0-2.4s1.7-.7 2.4 0'),
+    P('M23.8 11.3c3.1 2.4 3.9 5.6 1.6 8.2s-6.1 3-8.7 6.5'),
+    P('M4 20.5h2.4M8.9 20.5h2.4M4 15.5h2.4M8.9 15.5h2.4'),
+  ],
+  // Sealed carton seen in slight perspective, with the tape line across the lid.
+  'Pack and ship': [
+    P('M4 12l12-6 12 6v10l-12 6-12-6z'),
+    P('M4 12l12 6 12-6M16 18v10'),
+    P('M10 9l12 6'),
+  ],
 }
 
 /** Step icon whose strokes draw themselves in when the card appears. */
-function DrawnIcon({ children, delay = 0 }) {
+function DrawnIcon({ strokes, delay = 0 }) {
   const reduce = useReducedMotion()
   return (
     <motion.svg
@@ -30,12 +59,18 @@ function DrawnIcon({ children, delay = 0 }) {
       whileInView="show"
       viewport={{ once: true, margin: '0px 0px -10% 0px' }}
     >
-      <motion.g
-        variants={{ hidden: { pathLength: 0, opacity: 0.3 }, show: { pathLength: 1, opacity: 1 } }}
-        transition={{ duration: 1.1, ease: EASE_OUT, delay }}
-      >
-        {children}
-      </motion.g>
+      {strokes.map((st, i) => {
+        const Tag = st.tag === 'circle' ? motion.circle : motion.path
+        const { tag: _tag, ...attrs } = st
+        return (
+          <Tag
+            key={i}
+            {...attrs}
+            variants={{ hidden: { pathLength: 0, opacity: 0.25 }, show: { pathLength: 1, opacity: 1 } }}
+            transition={{ duration: 0.9, ease: EASE_OUT, delay: delay + i * 0.08 }}
+          />
+        )
+      })}
     </motion.svg>
   )
 }
@@ -87,7 +122,7 @@ export default function Factory() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-teal-tint text-teal-deep ring-4 ring-teal-tint-solid">
-                      <DrawnIcon delay={0.2 + i * 0.12}>{icons[step.step]}</DrawnIcon>
+                      <DrawnIcon strokes={icons[step.step]} delay={0.2 + i * 0.12} />
                     </span>
                     <span className="text-xs font-semibold text-muted">0{i + 1}</span>
                   </div>

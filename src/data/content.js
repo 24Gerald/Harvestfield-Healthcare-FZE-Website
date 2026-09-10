@@ -24,6 +24,23 @@ export const trustedBy = {
   ],
 }
 
+export const localCapability = {
+  id: 'local-manufacturing',
+  eyebrow: 'Local manufacturing',
+  title: ['Global innovation.', 'Local capability.', 'Lasting impact.'],
+  body: [
+    'Harvestfield Healthcare is strengthening local capability for the manufacture and supply of essential public-health solutions in Nigeria.',
+    'Through its collaboration with GDM Health Products, Harvestfield Healthcare undertakes local manufacturing operations for Synera DuoForte, bringing key stages of finished-net production closer to the communities and malaria-control programmes they are designed to serve.',
+    'The initiative supports a broader commitment to local manufacturing, stronger health supply chains and sustainable industrial development in Nigeria.',
+    "Supported by an ecosystem of public and private-sector stakeholders, including PVAC and OgunInvest, this work contributes to Nigeria's ambition to expand domestic healthcare manufacturing and build a more resilient healthcare value chain.",
+  ],
+  supportersLabel: 'Supported by',
+  supporters: [
+    { name: 'PVAC', fullName: 'Presidential Initiative on Healthcare Value Chain', logo: 'pvac', url: 'https://pvac.gov.ng/' },
+    { name: 'OgunInvest', fullName: 'Ogun State Investment Promotion Agency', logo: 'oguninvest', url: 'https://invest.ogunstate.gov.ng/index' },
+  ],
+}
+
 export const factory = {
   id: 'factory',
   eyebrow: 'The Factory',
