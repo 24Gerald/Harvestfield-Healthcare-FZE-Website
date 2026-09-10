@@ -30,7 +30,9 @@ export default function Footer() {
               className="group mt-7 inline-flex items-center gap-3 text-sm text-white/75 hover:text-white"
             >
               {parentLogo ? (
-                <img src={parentLogo} alt={PARENT.name} className="h-10 w-auto opacity-90 transition-opacity group-hover:opacity-100" draggable="false" />
+                <span className="inline-flex items-center rounded-lg bg-white px-2.5 py-1.5 transition-opacity group-hover:opacity-90">
+                  <img src={parentLogo} alt={PARENT.name} className="h-8 w-auto" draggable="false" />
+                </span>
               ) : (
                 <span className="rounded-md border border-white/25 px-2.5 py-1 text-xs font-semibold tracking-wide text-white/85">{PARENT.name}</span>
               )}
