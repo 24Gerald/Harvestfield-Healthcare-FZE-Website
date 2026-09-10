@@ -2,6 +2,7 @@ import Hero from '../sections/Hero'
 import StatStrip from '../sections/StatStrip'
 import TrustedBy from '../sections/TrustedBy'
 import Factory from '../sections/Factory'
+import Gallery from '../sections/Gallery'
 import TheNet from '../sections/TheNet'
 import Certified from '../sections/Certified'
 import LocalCapability from '../sections/LocalCapability'
@@ -16,6 +17,7 @@ export default function Home() {
       <StatStrip />
       <TrustedBy />
       <Factory />
+      <Gallery />
       <TheNet />
       <Certified />
       <LocalCapability />

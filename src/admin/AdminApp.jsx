@@ -13,7 +13,7 @@ import DeployStatus from './components/DeployStatus'
 import { ToastProvider, Btn } from './components/ui'
 
 /**
- * Blog admin. Views: posts (dashboard) · editor · media. State-driven, no router,
+ * Blog admin. Views: posts (dashboard) · editor · media · gallery. State-driven, no router,
  * so it works under any path (/admin/) on GitHub Pages and Netlify alike.
  */
 export default function AdminApp() {
@@ -47,6 +47,7 @@ export default function AdminApp() {
   const nav = [
     { id: 'posts', label: 'Posts' },
     { id: 'media', label: 'Media' },
+    { id: 'gallery', label: 'Gallery' },
   ]
   const signOut = () => {
     if (confirm('Sign out?')) {
@@ -110,6 +111,18 @@ export default function AdminApp() {
                   onSaved={() => setRefreshKey((k) => k + 1)}
                   onDeployed={() => setTimeout(() => setDeployBump((b) => b + 1), 4000)}
                 />
+              </motion.div>
+            )}
+            {view.name === 'gallery' && (
+              <motion.div key="gallery" exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
+                <h1 className="text-3xl font-bold text-teal-deep">Gallery</h1>
+                <p className="mt-1 max-w-2xl text-sm text-muted">
+                  Photos for the “Inside the factory” slider on the home page. They roll past in the order shown here (file-name order), so choose the
+                  photo you want first, first. Each change rebuilds the site; allow a couple of minutes for it to go live.
+                </p>
+                <div className="mt-6">
+                  <MediaLibrary client={client} dir={ADMIN.galleryDir} sequence imagesOnly maxEdge={1400} />
+                </div>
               </motion.div>
             )}
             {view.name === 'media' && (

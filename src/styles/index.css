@@ -351,3 +351,75 @@
   border: 0;
   border-top: 1px solid color-mix(in oklab, var(--color-teal-deep) 15%, transparent);
 }
+
+/* Factory photo slider (src/sections/Gallery.jsx).
+   Two identical copies of the strip; translating by -50% of the track puts
+   copy two exactly where copy one started, so the loop is seamless. Each tile
+   carries its gap as margin (not flex gap) so that half-width is exact. */
+.hf-marquee {
+  --hf-gap: 14px;
+  --hf-tile: clamp(150px, calc((100vw - 7 * var(--hf-gap)) / 6.5), 250px);
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+}
+.hf-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: hf-marquee var(--hf-marquee-dur, 60s) linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.hf-marquee:hover .hf-marquee-track,
+.hf-marquee:focus-within .hf-marquee-track {
+  animation-play-state: paused;
+}
+.hf-marquee-set {
+  display: flex;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hf-marquee-tile {
+  flex: none;
+  width: var(--hf-tile);
+  height: calc(var(--hf-tile) * 9 / 16);
+  margin-right: var(--hf-gap);
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--color-teal-tint-solid);
+}
+.hf-marquee-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@keyframes hf-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+/* Reduced motion: no auto-roll, a plain scrollable row instead. */
+.hf-marquee--static {
+  overflow-x: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+  scrollbar-width: thin;
+}
+.hf-marquee--static .hf-marquee-track {
+  animation: none;
+  padding-inline: 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hf-marquee-track {
+    animation: none;
+  }
+}

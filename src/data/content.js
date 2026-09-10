@@ -88,6 +88,13 @@ export const factory = {
   ],
 }
 
+export const gallery = {
+  id: 'inside-the-factory',
+  eyebrow: 'Inside the factory',
+  title: 'Where Synera DuoForte nets take shape.',
+  ariaLabel: 'Photos from the Harvestfield Healthcare FZE factory, scrolling continuously. Hover to pause.',
+}
+
 export const net = {
   id: 'net',
   eyebrow: 'The Net',
