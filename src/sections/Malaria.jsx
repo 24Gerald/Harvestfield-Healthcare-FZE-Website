@@ -57,6 +57,15 @@ export default function Malaria() {
                 </svg>
               </a>
             </Reveal>
+            {c.source && (
+              <Reveal delay={0.35}>
+                <p className="mt-6 text-xs text-white/55">
+                  <a href={c.source.href} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:text-white/80 hover:underline">
+                    {c.source.label}
+                  </a>
+                </p>
+              </Reveal>
+            )}
           </div>
         </div>
       </div>

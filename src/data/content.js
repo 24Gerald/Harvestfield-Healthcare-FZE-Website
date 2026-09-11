@@ -16,7 +16,7 @@ export const hero = {
   eyebrow: 'Harvestfield Healthcare FZE',
   title: 'Protection, made close to the fight.',
   subtitle:
-    'Harvestfield Healthcare is a Nigerian healthcare manufacturer producing Synera DuoForte dual-insecticide nets at its facility in Ogun State. Advanced malaria protection, made in the country carrying the world’s heaviest malaria burden.',
+    'Harvestfield Healthcare is a Nigerian healthcare manufacturer producing Synera DuoForte dual-insecticide nets at its facility in Nigeria. Advanced malaria protection, made in the country carrying the world’s heaviest malaria burden.',
   primaryCta: { label: 'Request supply', href: '#request-supply' },
   secondaryCta: { label: 'See the net', href: '#net' },
 }
@@ -29,9 +29,8 @@ export const whoWeAre = {
 /* Section 3 — Where we are today. Replaces the four-figure statistics strip. */
 export const today = {
   title: 'Where we are today.',
-  // TODO(md-office): item 2 needs the WHO site-inclusion wording in the exact
-  // terms of the listing, and the NAFDAC certification description. Item 3
-  // needs the 26-year record and the 42 million figure confirmed publishable.
+  // TODO(md-office): item 2 still needs the WHO site-inclusion wording in the
+  // exact terms of the listing — the client is coming back on it.
   items: [
     {
       lead: 'In commercial production since September 2026.',
@@ -40,7 +39,7 @@ export const today = {
     {
       lead: 'An approved manufacturing site.',
       detail:
-        'Our facility is included as an approved manufacturing site under the WHO prequalification held for Synera DuoForte, and is certified by NAFDAC.',
+        'Our facility is included as an approved manufacturing site under the WHO prequalification held for Synera DuoForte, and is GMP certified by NAFDAC.',
     },
     {
       lead: '26 years in Nigerian vector control.',
@@ -58,14 +57,17 @@ export const malaria = {
   id: 'why-this-matters',
   eyebrow: 'Why this matters',
   title: 'Resistance is winning wherever it goes unanswered.',
-  // TODO(md-office): both claims to be sourced to the current WHO World Malaria
-  // Report and dated, or kept qualitative as written here. No percentage is
-  // published without a visible source and year.
+  // Claims are kept qualitative; the source line below cites the WHO 2025
+  // Nigeria country profile. No percentage is published here.
   body: [
     'Nigeria carries a larger share of the world’s malaria cases and deaths than any other country. For two decades the standard defence has been a net treated with a single class of insecticide, and across much of the country mosquitoes have adapted to it. A net that a resistant mosquito survives protects less than the household sleeping under it believes.',
     'Nets carrying two active ingredients that work through different modes of action are the response, and they now account for the large majority of nets supplied into sub-Saharan Africa. Synera DuoForte is one of them.',
   ],
   link: { label: 'How Synera DuoForte works', href: '#net' },
+  source: {
+    label: 'Source: WHO, Malaria 2025 — Nigeria country profile',
+    href: 'https://www.who.int/publications/m/item/malaria-2025-nigeria-country-profile',
+  },
 }
 
 /* Section 5 — The net. Condensed; benefits and the full spec strip move to the
@@ -75,8 +77,8 @@ export const net = {
   eyebrow: 'The Net',
   productName: 'Synera DuoForte',
   title: 'Built for the mosquito we actually face.',
-  // TODO(md-office): all product claims below require written GDM approval,
-  // including loadings, the three-year rating and the fibre-binding description.
+  // Loadings, the three-year rating and the fibre-binding description confirmed
+  // by the client (Sept 2026).
   body: [
     'Synera DuoForte carries alpha-cypermethrin for fast knockdown and chlorfenapyr, a pyrrole working through a mode of action that pyrethroid-resistant mosquitoes have not adapted to. Both are bound into the polyester fibre itself, so every intersection of the mesh carries them, and the net is rated for three years of use and washing.',
   ],
@@ -120,7 +122,7 @@ export const net = {
 export const factory = {
   id: 'factory',
   eyebrow: 'The Factory',
-  title: 'Made in Ogun State, Nigeria — not shipped in.',
+  title: 'Made in Nigeria — not shipped in.',
   body: [
     'Our facility sits inside the [Harvestfield Industries Free Trade Zone](https://www.harvestfield-ng.com) in Ogun State, Nigeria, on a site the group owns and operates. Netting arrives in bulk panels and leaves as finished, packed Synera DuoForte nets, ready for the programmes and families waiting for them.',
     'Manufacturing in-country closes the distance between a decision and a delivery. No shipping windows, no port delays, and no waiting on a production slot in another hemisphere. For a programme that needs nets in a specific state in a specific month, that is the difference between a campaign that runs on time and one that does not.',
@@ -149,10 +151,8 @@ export const certified = {
   eyebrow: 'Quality and regulatory',
   title: 'Quality decides, and it is not a close call.',
   body: 'In healthcare manufacturing, quality is not a feature of the product. It is the condition of being allowed to supply at all. Where output and quality genuinely conflict here, quality wins, and the people responsible for quality can stop a line without asking permission first.',
-  // TODO(md-office): BLOCKING. Do not publish until documentary evidence is in
-  // hand for all three credentials, and complete the two ISO placeholders
-  // rather than deleting them. "NAFDAC GMP" was removed pending confirmation
-  // that it is the correct term for this product class.
+  // ISO standard and NAFDAC GMP confirmed by the client (Sept 2026). The WHO
+  // card still awaits the exact wording of the listing.
   items: [
     {
       key: 'who',
@@ -165,14 +165,14 @@ export const certified = {
       key: 'nafdac',
       kicker: 'Nationally regulated',
       title: 'NAFDAC',
-      body: 'Our facility is certified by NAFDAC, Nigeria’s regulator for medicines and health products.',
+      body: 'Our facility is GMP certified by NAFDAC, Nigeria’s regulator for medicines and health products.',
       logoAlt: 'NAFDAC — National Agency for Food and Drug Administration and Control',
     },
     {
       key: 'iso',
       kicker: 'International quality',
       title: 'ISO',
-      body: 'Our quality management system is certified to [ISO STANDARD] by [CERTIFICATION BODY].',
+      body: 'Our quality management system is certified to ISO 9001:2015 – Quality Management Systems.',
       logoAlt: 'ISO certified company',
     },
   ],
@@ -182,8 +182,7 @@ export const certified = {
 export const trustedBy = {
   eyebrow: 'Technology partner',
   title: 'The technology is GDM’s. The manufacturing is ours.',
-  // TODO(md-office): confirm the description of the arrangement against the
-  // executed agreement, and confirm GDM approves the description and logo use.
+  // Arrangement description confirmed by the client (Sept 2026).
   body: [
     'Synera DuoForte was developed and is owned by GDM Health Products, and it holds WHO prequalification in their name. Harvestfield Healthcare manufactures it in Nigeria under the agreed manufacturing arrangement, inside their regulatory listing and to their specification.',
     'Being accepted into a prequalified product’s manufacturing arrangement is not a commercial formality. It requires a facility, a quality system and documentation that satisfy both the technology owner and the prequalification requirements. That is the standard our plant was built to meet.',
@@ -201,7 +200,7 @@ export const heritage = {
   id: 'harvestfield-group',
   eyebrow: 'The Harvestfield Group',
   title: 'Twenty-six years delivering nets. Now we make them.',
-  // TODO(md-office): the 26-year record and the 42 million figure confirmed publishable.
+  // The 26-year record and the 42 million figure confirmed publishable (Sept 2026).
   body: [
     'Harvestfield has worked in Nigerian vector control for 26 years and has put over 42 million mosquito nets into households in all 36 states. We know which states run campaigns when, which routes are difficult in the rainy season, and what happens to a programme when a shipment lands late.',
     'Manufacturing is the next step along the same chain, and it is a harder one. It required a plant built to be inspected, a quality system that holds up under audit, and people trained to run both. We began it with a clear view of the standard we would have to meet, because we have spent 26 years on the receiving end of other people’s.',
@@ -279,9 +278,8 @@ export const supply = {
   id: 'supply',
   eyebrow: 'Supply',
   title: 'Two ways to get Synera DuoForte where it is needed.',
-  // TODO(md-office): confirm batch documentation may be offered to procurement
-  // teams in these terms, and that the distribution network may be described
-  // as being built.
+  // Batch documentation wording confirmed; the distribution network is
+  // established (client, Sept 2026).
   programs: {
     title: 'For programmes',
     audience: 'Ministries, malaria programmes, funds and NGOs',
@@ -292,7 +290,7 @@ export const supply = {
   distributors: {
     title: 'For distributors',
     audience: 'Health product distribution in Nigeria',
-    body: 'We are building a distribution network to make Synera DuoForte available to households across Nigeria, alongside the group’s existing national reach. If you distribute health products in Nigeria, we would like to hear from you.',
+    body: 'Our established distribution network makes Synera DuoForte available to households across Nigeria, alongside the group’s existing national reach. If you distribute health products in Nigeria, we would like to hear from you.',
     points: ['National reach behind it', 'The same net supplied to programmes', 'Made in Nigeria'],
     cta: { label: 'Talk to us about distribution', href: '#request-supply' },
   },

@@ -37,6 +37,17 @@ export default function Nav() {
     else navigate(`/${href}`)
   }
 
+  // Route links may carry a hash (Leadership → /about#management). Already on
+  // that page the location would not change and nothing would scroll, so
+  // handle it here; otherwise navigate and let ScrollToTop ease to the hash.
+  const goRoute = (e, href) => {
+    e.preventDefault()
+    setOpen(false)
+    const [path, hash] = href.split('#')
+    if (hash && pathname === path) smoothScrollTo(`#${hash}`)
+    else navigate(href)
+  }
+
   // Close the menu on resize to desktop (lg — five labels plus the button need it) and lock body scroll while open.
   useEffect(() => {
     if (!open) return
@@ -60,11 +71,11 @@ export default function Nav() {
       transition={{ duration: 0.45, ease: EASE_OUT }}
     >
       <nav aria-label="Primary" className="container-site flex h-16 items-center justify-between md:h-20">
-        <a href="/" onClick={(e) => (onHome ? go(e, '#top') : (e.preventDefault(), navigate('/')))} className="rounded-sm" aria-label="Harvestfield Healthcare — home">
+        <a href="/" onClick={(e) => (onHome ? go(e, '#top') : (e.preventDefault(), navigate('/')))} className="flex-none rounded-sm" aria-label="Harvestfield Healthcare — home">
           <HarvestfieldLogo className="h-9 md:h-11" />
         </a>
 
-        <ul className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setHovered(null)}>
+        <ul className="hidden items-center gap-0.5 xl:gap-1 lg:flex" onMouseLeave={() => setHovered(null)}>
           {navLinks.map((l) => (
             <li key={l.href} className="relative">
               {hovered === l.href && !reduce && (
@@ -77,9 +88,10 @@ export default function Nav() {
               {l.route ? (
                 <Link
                   to={l.href}
+                  onClick={(e) => goRoute(e, l.href)}
                   onMouseEnter={() => setHovered(l.href)}
                   onFocus={() => setHovered(l.href)}
-                  className={`relative block whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 hover:text-white ${pathname.startsWith(l.href) ? 'text-white' : 'text-white/85'}`}
+                  className={`relative block whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-white xl:px-4 ${pathname === l.href.split('#')[0] ? 'text-white' : 'text-white/85'}`}
                 >
                   {l.label}
                 </Link>
@@ -99,7 +111,7 @@ export default function Nav() {
         </ul>
 
         <div className="hidden lg:block">
-          <Button href={CTA.href} variant="solidOnDark" className="whitespace-nowrap px-5 py-2.5">
+          <Button href={CTA.href} variant="solidOnDark" className="whitespace-nowrap px-4 py-2.5 xl:px-5">
             {CTA.label}
           </Button>
         </div>
@@ -133,7 +145,7 @@ export default function Nav() {
                 <li key={l.href}>
                   <motion.a
                     href={l.route ? l.href : l.href}
-                    onClick={(e) => (l.route ? (setOpen(false), e.preventDefault(), navigate(l.href)) : go(e, l.href))}
+                    onClick={(e) => (l.route ? goRoute(e, l.href) : go(e, l.href))}
                     className="block py-3 text-base font-medium text-white/90"
                     initial={reduce ? false : { opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
