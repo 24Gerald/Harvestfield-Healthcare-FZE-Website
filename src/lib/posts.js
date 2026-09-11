@@ -2,8 +2,12 @@
  * Blog posts live in the repository as JSON files in content/posts/, written by
  * the admin panel (/admin) through the GitHub API. Vite bundles them at build
  * time, so every commit from the panel triggers a redeploy and the post is live
- * about two minutes later. Drafts (published: false) and future-dated posts are
- * excluded from the public build.
+ * about two minutes later. Only posts with published: true and a publishedAt in
+ * the past are included in the public build.
+ *
+ * Note: a post stops being public when the NEXT build runs, not when it is
+ * saved as a draft. If a draft is still visible on the live site, the site is
+ * serving a stale build — check the host has redeployed.
  *
  * Post shape: { title, slug, publishedAt, published, excerpt, author, cover, coverAlt, body (HTML) }
  */
@@ -13,7 +17,10 @@ const all = Object.values(modules)
   .filter((p) => p && p.slug)
   .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
 
-export const posts = all.filter((p) => p.published !== false && new Date(p.publishedAt) <= new Date())
+// Fail closed: a post is public only if it says so. `published !== false` would
+// treat a file with the key missing — hand-written, or written by an older
+// schema — as live, which is the wrong default for a publication flag.
+export const posts = all.filter((p) => p.published === true && new Date(p.publishedAt) <= new Date())
 
 export const getPost = (slug) => posts.find((p) => p.slug === slug) || null
 
