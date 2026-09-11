@@ -15,7 +15,7 @@ export default function BlogPost() {
   return (
     <article className="bg-white">
       <div className="container-site pb-24 pt-32 md:pt-40">
-        <Link to="/blog" className="text-sm font-semibold text-teal-deep underline-offset-4 hover:underline">
+        <Link to="/news" className="text-sm font-semibold text-teal-deep underline-offset-4 hover:underline">
           ← All posts
         </Link>
         {!post ? (

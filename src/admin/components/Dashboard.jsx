@@ -87,7 +87,7 @@ export default function Dashboard({ client, onNew, onEdit, refreshKey }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold text-teal-deep group-hover:underline group-hover:underline-offset-4">{p.data.title || 'Untitled'}</p>
-                  <p className="mt-0.5 truncate text-xs text-muted">{fmtDate(p.data.publishedAt)} · /blog/{p.data.slug}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted">{fmtDate(p.data.publishedAt)} · /news/{p.data.slug}</p>
                 </div>
                 <span className={`flex-none rounded-full px-2.5 py-1 text-xs font-semibold ${p.data.published ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
                   {p.data.published ? 'Published' : 'Draft'}

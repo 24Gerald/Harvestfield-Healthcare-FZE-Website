@@ -4,9 +4,14 @@ import Nav from './components/Nav'
 import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
 import Home from './pages/Home'
+import Product from './pages/Product'
+import Manufacturing from './pages/Manufacturing'
+import About from './pages/About'
+import Contact from './pages/Contact'
 import Privacy from './pages/Privacy'
 import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
+import { pages } from './data/content'
 import { smoothScrollTo } from './lib/motion'
 
 /** Scroll to top on route change; if the new location carries a hash (e.g. /#factory from the blog), ease to it. */
@@ -20,6 +25,12 @@ function ScrollToTop() {
     }
   }, [pathname, hash])
   return null
+}
+
+/** /blog/<slug> → /news/<slug>, keeping the slug. */
+function BlogRedirect() {
+  const { pathname } = useLocation()
+  return <Navigate to={pathname.replace(/^\/blog/, pages.news.path)} replace />
 }
 
 // Normal hosting uses real URLs. Set VITE_ROUTER=memory for sandboxed previews
@@ -41,8 +52,15 @@ export default function App() {
       <main id="main">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path={pages.product.path} element={<Product />} />
+          <Route path={pages.manufacturing.path} element={<Manufacturing />} />
+          <Route path={pages.about.path} element={<About />} />
+          <Route path={pages.contact.path} element={<Contact />} />
+          <Route path={pages.news.path} element={<Blog />} />
+          <Route path={`${pages.news.path}/:slug`} element={<BlogPost />} />
+          {/* News replaced the blog; links already shared keep working. */}
+          <Route path="/blog" element={<Navigate to={pages.news.path} replace />} />
+          <Route path="/blog/:slug" element={<BlogRedirect />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/legal" element={<Navigate to="/privacy" replace />} />
           {/* Unknown routes fall back to the home page; Netlify serves index.html for every path. */}

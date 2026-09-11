@@ -97,15 +97,16 @@ export const HERO_MOSQUITO_VIDEO = {
   replace3D: true,
 }
 
-// Section anchors, in page order. The specification's five-page navigation
-// (About | Synera DuoForte | Manufacturing and quality | News | Contact) waits
-// on those pages being built — linking to them now would be four dead links.
+// The five-page navigation from the build specification (Part 3). Labels and
+// paths live with the page copy in content.js so the two cannot drift apart.
 export const navLinks = [
-  { label: 'The Net', href: '#net' },
-  { label: 'The Factory', href: '#factory' },
-  { label: 'Supply', href: '#supply' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Blog', href: '/blog', route: true },
+  { label: 'About', href: '/about', route: true },
+  { label: 'Synera DuoForte', href: '/synera-duoforte', route: true },
+  { label: 'Manufacturing and quality', href: '/manufacturing', route: true },
+  { label: 'News', href: '/news', route: true },
+  { label: 'Contact', href: '/contact', route: true },
 ]
 
-export const CTA = { label: 'Request supply', href: '#request-supply' }
+// Primary button. The home page has its own request form; the Contact page
+// carries the same form for every other page, so the button routes there.
+export const CTA = { label: 'Request supply', href: '/contact' }

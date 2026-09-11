@@ -59,11 +59,11 @@ function Item({ item, open, onToggle, index }) {
   )
 }
 
-export default function FAQ() {
+export default function FAQ({ tone = 'white' }) {
   const [openId, setOpenId] = useState(faqs[0]?.id ?? null)
 
   return (
-    <section id={faqSection.id} className="scroll-mt-20 bg-white">
+    <section id={faqSection.id} className={`scroll-mt-20 ${tone === 'tint' ? 'bg-teal-tint-solid' : 'bg-white'}`}>
       <div className="container-site section-pad">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">

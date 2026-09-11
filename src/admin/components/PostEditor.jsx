@@ -213,7 +213,7 @@ export default function PostEditor({ client, initial, onSaved, onBack, onDeploye
           </div>
 
           <div className="space-y-4 rounded-2xl border border-teal-deep/15 p-4 sm:p-5">
-            <Field label="URL slug" hint={`${ADMIN.siteUrl}/blog/${post.slug || '…'}`}>
+            <Field label="URL slug" hint={`${ADMIN.siteUrl}/news/${post.slug || '…'}`}>
               <input className={inputClass} value={post.slug} onChange={(e) => { setSlugTouched(true); set({ slug: slugify(e.target.value) }) }} />
             </Field>
             <Field label="Publish date" hint="Future dates keep the post hidden until the next site build after that time.">

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion'
 import { smoothScrollTo, SPRING_MAGNET } from '../lib/motion'
 
@@ -31,10 +32,12 @@ const MAGNET_RADIUS = 6 // px the button follows the cursor
  *   1. Magnetic pull — the button leans a few pixels toward the cursor (desktop only).
  *   2. Press — a slight scale-down on pointer down.
  *   3. Ripple — an ink spread from the exact click point.
- * In-page `href="#…"` links scroll with an eased animation instead of a jump.
+ * In-page `href="#…"` links scroll with an eased animation instead of a jump,
+ * and site-relative `href="/…"` links route without reloading the page.
  */
 export default function Button({ href, variant = 'solid', className = '', onClick, children, ...rest }) {
   const reduce = useReducedMotion()
+  const navigate = useNavigate()
   const ref = useRef(null)
   const [ripples, setRipples] = useState([])
 
@@ -65,9 +68,13 @@ export default function Button({ href, variant = 'solid', className = '', onClic
   }
   const handleClick = (e) => {
     onClick?.(e)
-    if (href && href.startsWith('#') && !e.defaultPrevented) {
+    if (!href || e.defaultPrevented) return
+    if (href.startsWith('#')) {
       e.preventDefault()
       smoothScrollTo(href, { offset: 0 })
+    } else if (href.startsWith('/') && !href.startsWith('//')) {
+      e.preventDefault()
+      navigate(href)
     }
   }
 

@@ -37,12 +37,12 @@ export default function Nav() {
     else navigate(`/${href}`)
   }
 
-  // Close the mobile menu on resize to desktop and lock body scroll while open.
+  // Close the menu on resize to desktop (lg — five labels plus the button need it) and lock body scroll while open.
   useEffect(() => {
     if (!open) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    const mq = window.matchMedia('(min-width: 768px)')
+    const mq = window.matchMedia('(min-width: 1024px)')
     const close = () => mq.matches && setOpen(false)
     mq.addEventListener('change', close)
     return () => {
@@ -64,7 +64,7 @@ export default function Nav() {
           <HarvestfieldLogo className="h-9 md:h-11" />
         </a>
 
-        <ul className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHovered(null)}>
+        <ul className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setHovered(null)}>
           {navLinks.map((l) => (
             <li key={l.href} className="relative">
               {hovered === l.href && !reduce && (
@@ -79,7 +79,7 @@ export default function Nav() {
                   to={l.href}
                   onMouseEnter={() => setHovered(l.href)}
                   onFocus={() => setHovered(l.href)}
-                  className={`relative block rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 hover:text-white ${pathname.startsWith(l.href) ? 'text-white' : 'text-white/85'}`}
+                  className={`relative block whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 hover:text-white ${pathname.startsWith(l.href) ? 'text-white' : 'text-white/85'}`}
                 >
                   {l.label}
                 </Link>
@@ -98,15 +98,15 @@ export default function Nav() {
           ))}
         </ul>
 
-        <div className="hidden md:block">
-          <Button href={CTA.href} variant="solidOnDark" className="px-5 py-2.5">
+        <div className="hidden lg:block">
+          <Button href={CTA.href} variant="solidOnDark" className="whitespace-nowrap px-5 py-2.5">
             {CTA.label}
           </Button>
         </div>
 
         <button
           type="button"
-          className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full md:hidden"
+          className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? 'Close menu' : 'Open menu'}
@@ -122,7 +122,7 @@ export default function Nav() {
         {open && (
           <motion.div
             id="mobile-menu"
-            className="border-t border-white/10 bg-teal-deep md:hidden"
+            className="border-t border-white/10 bg-teal-deep lg:hidden"
             initial={reduce ? false : { opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? undefined : { opacity: 0, y: -8 }}

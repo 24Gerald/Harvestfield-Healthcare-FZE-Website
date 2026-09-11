@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { HarvestfieldLogo } from './HarvestfieldMark'
-import { navLinks, site, HERO_MOSQUITO_MODEL } from '../data/siteConfig'
+import { navLinks, CTA, site, HERO_MOSQUITO_MODEL } from '../data/siteConfig'
 import { useModelStatus } from '../lib/modelStatus'
 import { smoothScrollTo } from '../lib/motion'
 import { partnerLogo } from '../lib/partnerLogos'
@@ -45,15 +45,21 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5">
               {navLinks.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} onClick={(e) => { e.preventDefault(); smoothScrollTo(l.href) }} className="text-sm text-white/85 hover:text-white">
-                    {l.label}
-                  </a>
+                  {l.route ? (
+                    <Link to={l.href} className="text-sm text-white/85 hover:text-white">
+                      {l.label}
+                    </Link>
+                  ) : (
+                    <a href={l.href} onClick={(e) => { e.preventDefault(); smoothScrollTo(l.href) }} className="text-sm text-white/85 hover:text-white">
+                      {l.label}
+                    </a>
+                  )}
                 </li>
               ))}
               <li>
-                <a href="#request-supply" onClick={(e) => { e.preventDefault(); smoothScrollTo('#request-supply') }} className="text-sm text-white/85 hover:text-white">
-                  Request Supply
-                </a>
+                <Link to={CTA.href} className="text-sm text-white/85 hover:text-white">
+                  {CTA.label}
+                </Link>
               </li>
             </ul>
           </nav>

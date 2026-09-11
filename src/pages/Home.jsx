@@ -12,14 +12,13 @@ import LocalCapability from '../sections/LocalCapability'
 import Purpose from '../sections/Purpose'
 import Management from '../sections/Management'
 import Supply from '../sections/Supply'
-import FAQ from '../sections/FAQ'
 import RequestSupply from '../sections/RequestSupply'
 
 /**
  * Homepage order follows the build specification's flow: hero, who we are,
  * where we are today, the malaria problem, the net, made here, to what
  * standard, with whom, why us, what it means for Nigeria, why we exist, who
- * runs it, how to engage.
+ * runs it, how to engage. The FAQ lives on the Synera DuoForte page.
  *
  * Backgrounds alternate dark / tint / white down the page, so no two adjacent
  * sections share a band.
@@ -41,7 +40,6 @@ export default function Home() {
       <Purpose />
       <Management />
       <Supply />
-      <FAQ />
       <RequestSupply />
     </>
   )

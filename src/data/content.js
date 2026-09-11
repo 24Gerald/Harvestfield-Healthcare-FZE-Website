@@ -336,10 +336,72 @@ export const requestSupply = {
   },
 }
 
+/* ---------------------------------------------------------------------------
+ * Phase 2 pages.
+ *
+ * The specification (Part 3) names five pages plus News and holds their copy
+ * "pending approval of homepage positioning". These pages are built from that
+ * structure using copy that is already approved or already on the site — the
+ * standfirsts below come from the specification's own "What it does" column —
+ * so no new claim is introduced anywhere. The detailed Phase 2 copy is still
+ * owed for anything beyond what is composed here.
+ * ------------------------------------------------------------------------ */
+export const pages = {
+  product: {
+    path: '/synera-duoforte',
+    navLabel: 'Synera DuoForte',
+    eyebrow: 'The product',
+    title: 'Synera DuoForte.',
+    standfirst: 'Technical detail on the dual-insecticide net Harvestfield Healthcare manufactures in Nigeria, and the questions we are asked about it most.',
+    docTitle: 'Synera DuoForte | Dual-insecticide LLIN manufactured in Nigeria',
+  },
+  manufacturing: {
+    path: '/manufacturing',
+    navLabel: 'Manufacturing and quality',
+    eyebrow: 'Manufacturing and quality',
+    title: 'How the nets are made, and to what standard.',
+    standfirst: 'The facility, the process, the quality system and the regulatory position.',
+    docTitle: 'Manufacturing and quality | Harvestfield Healthcare FZE',
+  },
+  about: {
+    path: '/about',
+    navLabel: 'About',
+    eyebrow: 'About Harvestfield Healthcare',
+    title: 'A Nigerian healthcare manufacturer.',
+    standfirst: 'The company, the group behind it, what it is building and the people running it.',
+    docTitle: 'About | Harvestfield Healthcare FZE',
+  },
+  news: {
+    path: '/news',
+    navLabel: 'News',
+    eyebrow: 'News',
+    title: 'Milestones.',
+    standfirst: 'Production, programme supply and the science behind dual-insecticide nets.',
+    docTitle: 'News | Harvestfield Healthcare FZE',
+  },
+  contact: {
+    path: '/contact',
+    navLabel: 'Contact',
+    eyebrow: 'Contact',
+    title: 'Tell us what you need.',
+    standfirst: 'Routes for programme supply, distribution, media and career enquiries.',
+    docTitle: 'Contact and request supply | Harvestfield Healthcare FZE',
+  },
+}
+
+/* Closing band on every Phase 2 page, routing back to the form. */
+export const pageCta = {
+  title: 'Supplying a malaria programme, or distributing in Nigeria?',
+  body: 'Tell us the volumes, the timelines and where the nets need to be.',
+  cta: { label: 'Request supply', href: '/contact' },
+}
+
+/* News. Replaces the blog (specification, Part 3); /blog still redirects here
+   so any link already shared keeps working. */
 export const blog = {
-  eyebrow: 'Blog',
-  title: 'Notes from the factory floor.',
-  intro: 'Updates on production, malaria programme supply and the science behind dual-insecticide nets.',
-  soonTitle: 'First posts coming soon.',
-  soonBody: 'We are setting up the blog. Check back shortly, or write to us if you have a question in the meantime.',
+  eyebrow: 'News',
+  title: 'Milestones.',
+  intro: 'Production, malaria programme supply and the science behind dual-insecticide nets.',
+  soonTitle: 'First entries coming soon.',
+  soonBody: 'We are setting this up. Check back shortly, or write to us if you have a question in the meantime.',
 }
