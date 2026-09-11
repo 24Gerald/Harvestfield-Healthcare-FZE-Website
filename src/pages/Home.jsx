@@ -13,6 +13,8 @@ import Purpose from '../sections/Purpose'
 import Management from '../sections/Management'
 import Supply from '../sections/Supply'
 import RequestSupply from '../sections/RequestSupply'
+import { pages } from '../data/content'
+import { usePageMeta } from '../lib/pageMeta'
 
 /**
  * Homepage order follows the build specification's flow: hero, who we are,
@@ -24,6 +26,8 @@ import RequestSupply from '../sections/RequestSupply'
  * sections share a band.
  */
 export default function Home() {
+  usePageMeta(pages.home)
+
   return (
     <>
       <Hero />

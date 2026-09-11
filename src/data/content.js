@@ -347,6 +347,11 @@ export const requestSupply = {
  * owed for anything beyond what is composed here.
  * ------------------------------------------------------------------------ */
 export const pages = {
+  home: {
+    path: '/',
+    docTitle: 'Harvestfield Healthcare FZE | LLIN manufacturing in Nigeria',
+    description: 'Harvestfield Healthcare FZE is a wholly Nigerian-owned healthcare manufacturer producing Synera DuoForte dual-insecticide nets at its facility in Ogun State, Nigeria for malaria programmes in Nigeria and West Africa.',
+  },
   product: {
     path: '/synera-duoforte',
     navLabel: 'Synera DuoForte',
@@ -354,6 +359,7 @@ export const pages = {
     title: 'Synera DuoForte.',
     standfirst: 'Technical detail on the dual-insecticide net Harvestfield Healthcare manufactures in Nigeria, and the questions we are asked about it most.',
     docTitle: 'Synera DuoForte | Dual-insecticide LLIN manufactured in Nigeria',
+    description: 'Synera DuoForte carries alpha-cypermethrin and chlorfenapyr, bound into the polyester fibre and rated for three years. Developed by GDM Health Products, manufactured in Nigeria by Harvestfield Healthcare FZE.',
   },
   manufacturing: {
     path: '/manufacturing',
@@ -362,6 +368,7 @@ export const pages = {
     title: 'How the nets are made, and to what standard.',
     standfirst: 'The facility, the process, the quality system and the regulatory position.',
     docTitle: 'Manufacturing and quality | Harvestfield Healthcare FZE',
+    description: 'How Synera DuoForte nets are manufactured at the Harvestfield Industries Free Trade Zone in Ogun State, Nigeria, and the quality system and regulatory position behind them.',
   },
   about: {
     path: '/about',
@@ -370,6 +377,7 @@ export const pages = {
     title: 'A Nigerian healthcare manufacturer.',
     standfirst: 'The company, the group behind it, what it is building and the people running it.',
     docTitle: 'About | Harvestfield Healthcare FZE',
+    description: 'Harvestfield Healthcare FZE is a wholly Nigerian-owned healthcare manufacturer within the Harvestfield Group, which has worked in Nigerian vector control for 26 years.',
   },
   news: {
     path: '/news',
@@ -378,14 +386,16 @@ export const pages = {
     title: 'Milestones.',
     standfirst: 'Production, programme supply and the science behind dual-insecticide nets.',
     docTitle: 'News | Harvestfield Healthcare FZE',
+    description: 'Milestones from Harvestfield Healthcare FZE: production, malaria programme supply and the science behind dual-insecticide nets.',
   },
   contact: {
     path: '/contact',
     navLabel: 'Contact',
     eyebrow: 'Contact',
-    title: 'Tell us what you need.',
+    title: 'Contact and request supply.',
     standfirst: 'Routes for programme supply, distribution, media and career enquiries.',
     docTitle: 'Contact and request supply | Harvestfield Healthcare FZE',
+    description: 'Request Synera DuoForte supply, talk to us about distribution, or reach us for media and career enquiries. Harvestfield Healthcare FZE, Ogun State, Nigeria.',
   },
 }
 

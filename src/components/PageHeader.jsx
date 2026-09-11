@@ -1,20 +1,18 @@
-import { useEffect } from 'react'
 import Reveal from './Reveal'
 import Eyebrow from './Eyebrow'
 import SplitText from './SplitText'
-import { site } from '../data/siteConfig'
+import { usePageMeta } from '../lib/pageMeta'
 
 /**
  * Top band for every page other than the home page. The nav is fixed and
  * transparent over a dark hero, so a page that opened on a white section would
  * put white nav text on white; this band keeps that contract on all pages.
  *
- * Also sets the document title, since the site is a single HTML shell.
+ * Also sets the page's title, description, canonical and Open Graph tags,
+ * since the site is a single HTML shell.
  */
 export default function PageHeader({ page }) {
-  useEffect(() => {
-    document.title = page.docTitle || `${page.title} | ${site.shortName}`
-  }, [page])
+  usePageMeta(page)
 
   return (
     <section className="on-dark bg-teal-deep text-white">
