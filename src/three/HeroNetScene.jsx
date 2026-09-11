@@ -450,7 +450,7 @@ export default function HeroNetScene({ lite = false, mosquitoes = true }) {
 /* ---------------------------------------------------------------------------
    HeroCanvas — the R3F canvas with lights and a performance guard
    ------------------------------------------------------------------------ */
-export function HeroCanvas({ lite = false, mosquitoes = true }) {
+export function HeroCanvas({ lite = false, mosquitoes = true, onReady }) {
   const maxDpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, lite ? 1.5 : 2)
   const [dpr, setDpr] = useState(maxDpr)
   const cameraPos = lite ? [0, 0.6, 10.5] : [0, 0.4, 8.5]
@@ -470,7 +470,10 @@ export function HeroCanvas({ lite = false, mosquitoes = true }) {
       frameloop="always"
       style={{ pointerEvents: 'none' }} // the hero text/buttons stay clickable
       aria-hidden="true"
-      onCreated={({ camera }) => camera.lookAt(0.6, 0.4, 0)}
+      onCreated={({ camera }) => {
+        camera.lookAt(0.6, 0.4, 0)
+        onReady?.()
+      }}
     >
       <PerformanceMonitor onDecline={() => setDpr(1)} onIncline={() => setDpr(maxDpr)} />
       <ambientLight intensity={0.7} />

@@ -9,9 +9,15 @@
  * The WebGL canvas is only mounted while the hero is on screen. Once the user
  * scrolls past, it is fully unmounted so the GPU context is released; scrolling
  * back up remounts it. The 3D bundle is a separate, dynamically imported chunk,
- * so it never blocks first paint — the gradient and text render immediately.
+ * so it never blocks first paint.
+ *
+ * The net must never be missing. The SVG illustration is drawn from first
+ * paint and only crossfades out once the WebGL canvas reports it has
+ * initialised; if the 3D layer throws at any point, the boundary below keeps
+ * the SVG in place. So a slow chunk, a blocked GPU or a lost context all
+ * degrade to the same finished picture rather than a bare gradient.
  */
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Component, lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import NetIllustration from '../components/NetIllustration'
 import HeroVideoMosquito from '../components/HeroVideoMosquito'
@@ -48,12 +54,43 @@ function useWebGLAvailable() {
   return ok
 }
 
+/** Catches a failure inside the 3D layer so the hero keeps its SVG net. */
+class SceneBoundary extends Component {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  componentDidCatch(err) {
+    console.warn('[hero] 3D layer failed, keeping the SVG net:', err?.message)
+    this.props.onFail?.()
+  }
+  render() {
+    return this.state.failed ? null : this.props.children
+  }
+}
+
 export default function HeroBackground({ hostRef }) {
   const reduce = useReducedMotion()
   const small = useIsSmallViewport()
   const webgl = useWebGLAvailable()
   const [inView, setInView] = useState(false)
   const observed = useRef(false)
+  // 'svg' → SVG shown; 'fading' → canvas is up, SVG crossfading out; 'canvas' → SVG unmounted
+  const [layer, setLayer] = useState('svg')
+  const [failed, setFailed] = useState(false)
+
+  const onCanvasReady = () => {
+    setLayer((cur) => (cur === 'svg' ? 'fading' : cur))
+  }
+  useEffect(() => {
+    if (layer !== 'fading') return
+    const t = setTimeout(() => setLayer('canvas'), 700)
+    return () => clearTimeout(t)
+  }, [layer])
+  // Scrolling away unmounts the canvas; when it comes back, start from the SVG again.
+  useEffect(() => {
+    if (!inView) setLayer('svg')
+  }, [inView])
 
   // Mount/unmount the scene with the hero's visibility.
   useEffect(() => {
@@ -68,8 +105,9 @@ export default function HeroBackground({ hostRef }) {
     return () => io.disconnect()
   }, [hostRef])
 
-  const useSvg = reduce || !webgl || (small && HERO_MOBILE_MODE === 'svg')
+  const useSvg = reduce || !webgl || failed || (small && HERO_MOBILE_MODE === 'svg')
   const lite = small && HERO_MOBILE_MODE === 'webgl-lite'
+  const showSvg = useSvg || layer !== 'canvas'
 
   // A supplied mosquito video replaces the 3D/SVG mosquitoes (the net stays).
   const base = import.meta.env.BASE_URL
@@ -82,18 +120,24 @@ export default function HeroBackground({ hostRef }) {
       {/* Always-on base: brand gradient. Guarantees a finished look before/without the 3D layer. */}
       <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_70%_20%,#15606b_0%,#10515b_45%,#0b3b43_100%)]" />
 
-      {useSvg ? (
-        <div className="absolute inset-y-0 right-[-10%] w-[120%] opacity-50 sm:right-[-5%] sm:w-[85%] md:w-[70%]">
+      {showSvg && (
+        <div
+          className={`absolute inset-y-0 right-[-10%] w-[120%] transition-opacity duration-700 ease-out sm:right-[-5%] sm:w-[85%] md:w-[70%] ${
+            layer === 'fading' && !useSvg ? 'opacity-0' : 'opacity-50'
+          }`}
+        >
           <NetIllustration variant="hero" animated={!reduce} mosquitoes={!hideMosquitoes} className="h-full w-full" />
         </div>
-      ) : (
-        inView && (
-          <div className="absolute inset-0 opacity-85">
+      )}
+
+      {!useSvg && inView && (
+        <div className="absolute inset-0 opacity-85">
+          <SceneBoundary onFail={() => setFailed(true)}>
             <Suspense fallback={null}>
-              <HeroCanvas lite={lite} mosquitoes={!hideMosquitoes} />
+              <HeroCanvas lite={lite} mosquitoes={!hideMosquitoes} onReady={onCanvasReady} />
             </Suspense>
-          </div>
-        )
+          </SceneBoundary>
+        </div>
       )}
 
       {/* Optional transparent mosquito video (renders nothing until a file exists) */}
