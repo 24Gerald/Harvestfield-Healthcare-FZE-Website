@@ -418,19 +418,21 @@ function CameraRig({ enabled, base }) {
    HeroNetScene — canopy + mosquitoes
    ------------------------------------------------------------------------ */
 // theta: 0 faces the camera; positive = toward screen-right when viewed from +z.
+// Scales are roughly half what they were: a mosquito reads as an insect at this
+// size rather than a graphic, which is what the photographic hero needs.
 const MOSQUITO_SET = [
-  { theta: 0.55, height: 0.9, drift: [0.35, 0.6], period: 11, phase: 0.0, scale: 0.578 },
-  { theta: -0.5, height: -0.6, drift: [0.3, 0.7], period: 13.5, phase: 0.45, scale: 0.495 },
-  { theta: 1.15, height: 1.7, drift: [0.35, 0.5], period: 12, phase: 0.75, scale: 0.44 },
+  { theta: 0.55, height: 0.9, drift: [0.35, 0.6], period: 11, phase: 0.0, scale: 0.27 },
+  { theta: -0.5, height: -0.6, drift: [0.3, 0.7], period: 13.5, phase: 0.45, scale: 0.23 },
+  { theta: 1.15, height: 1.7, drift: [0.35, 0.5], period: 12, phase: 0.75, scale: 0.2 },
 ]
 
 // Mobile: two mosquitoes working the gathered top around the hoop, above the text block.
 const MOBILE_SET = [
-  { theta: 0.6, height: 2.55, drift: [0.35, 0.3], period: 11, phase: 0.0, scale: 0.522 },
-  { theta: -0.45, height: 3.15, drift: [0.3, 0.25], period: 13, phase: 0.5, scale: 0.44 },
+  { theta: 0.6, height: 2.55, drift: [0.35, 0.3], period: 11, phase: 0.0, scale: 0.25 },
+  { theta: -0.45, height: 3.15, drift: [0.3, 0.25], period: 13, phase: 0.5, scale: 0.21 },
 ]
 
-export default function HeroNetScene({ lite = false, mosquitoes = true }) {
+export default function HeroNetScene({ lite = false, mosquitoes = true, net = true }) {
   const impacts = useRef([])
   const set = lite ? MOBILE_SET : MOSQUITO_SET
   // Desktop: canopy hangs on the right with the hoop below the nav, fabric running off the bottom.
@@ -441,7 +443,10 @@ export default function HeroNetScene({ lite = false, mosquitoes = true }) {
 
   return (
     <group position={position} rotation={rotation} scale={lite ? 0.8 : 0.92}>
-      <NetCanopy impacts={impacts} lite={lite} />
+      {/* Omitted over the photographic hero: the photograph carries the net. The
+          flight paths are unchanged, so the mosquitoes still work the same
+          volume — they simply have nothing to ripple. */}
+      {net && <NetCanopy impacts={impacts} lite={lite} />}
       {mosquitoes && set.map((m, i) => <Mosquito key={i} index={i} impacts={impacts} {...m} />)}
     </group>
   )
@@ -450,7 +455,7 @@ export default function HeroNetScene({ lite = false, mosquitoes = true }) {
 /* ---------------------------------------------------------------------------
    HeroCanvas — the R3F canvas with lights and a performance guard
    ------------------------------------------------------------------------ */
-export function HeroCanvas({ lite = false, mosquitoes = true, onReady }) {
+export function HeroCanvas({ lite = false, mosquitoes = true, net = true, onReady }) {
   const maxDpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, lite ? 1.5 : 2)
   const [dpr, setDpr] = useState(maxDpr)
   const cameraPos = lite ? [0, 0.6, 10.5] : [0, 0.4, 8.5]
@@ -480,7 +485,7 @@ export function HeroCanvas({ lite = false, mosquitoes = true, onReady }) {
       <directionalLight position={[2, 3, 5]} intensity={1.1} />
       {/* Rim light from behind: catches wing edges and legs so the dark body separates from the teal. */}
       <directionalLight position={[-3, 2, -4]} intensity={1.6} color="#a9d3d8" />
-      <HeroNetScene lite={lite} mosquitoes={mosquitoes} />
+      <HeroNetScene lite={lite} mosquitoes={mosquitoes} net={net} />
       <CameraRig enabled={!lite} base={cameraPos} />
     </Canvas>
   )

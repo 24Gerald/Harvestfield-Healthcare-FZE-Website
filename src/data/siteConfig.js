@@ -34,6 +34,30 @@ export const FORM_BACKEND = 'formsubmit'
 export const FORM_ENDPOINT_URL = '' // e.g. 'https://api.example.com/supply-requests'
 
 /**
+ * Photographic hero background.
+ *
+ * Drop the approved photograph at public/hero/ using the file name below and
+ * the hero switches to it automatically: the illustrated 3D net is replaced by
+ * the photograph, and only the mosquitoes are rendered over it. Until the file
+ * exists the hero keeps the 3D net, so the page is never left as a bare
+ * gradient. Any format works — .jpg, .webp or .png.
+ *
+ *   position — object-position for the photo, so the subject stays in frame as
+ *              the viewport changes shape. "72% 28%" keeps a subject on the
+ *              right, slightly above centre.
+ *   overlay  — 0-1. How much teal is laid over the photograph. The headline is
+ *              white, so this is what guarantees its contrast; lower it only
+ *              after checking the text against the image.
+ */
+export const HERO_BACKGROUND = {
+  enabled: true,
+  src: 'hero/hero-mother-and-child.jpg',
+  position: '72% 28%',
+  positionMobile: '64% 24%',
+  overlay: 0.52,
+}
+
+/**
  * Hero 3D scene behaviour on small viewports.
  *   'webgl-lite'  → the R3F scene with two mosquitoes, lower pixel-ratio cap, coarser
  *                   canopy mesh and no mouse parallax. Default.

@@ -1,6 +1,11 @@
 /**
  * Decides what sits behind the hero text and mounts it lazily.
  *
+ * With the approved photograph present (public/hero/, see HERO_BACKGROUND) the
+ * photograph is the background and the 3D layer renders the mosquitoes alone —
+ * the net is in the picture. Without it the hero falls back to the illustrated
+ * net, so the page is never a bare gradient:
+ *
  *   prefers-reduced-motion      → static gradient + non-animated SVG net
  *   small viewport / touch      → CSS/SVG animation (HERO_MOBILE_MODE='svg')
  *                                 or the R3F scene in "lite" mode
@@ -21,7 +26,7 @@ import { Component, lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import NetIllustration from '../components/NetIllustration'
 import HeroVideoMosquito from '../components/HeroVideoMosquito'
-import { HERO_MOBILE_MODE, HERO_MOBILE_BREAKPOINT, HERO_MOSQUITO_VIDEO } from '../data/siteConfig'
+import { HERO_BACKGROUND, HERO_MOBILE_MODE, HERO_MOBILE_BREAKPOINT, HERO_MOSQUITO_VIDEO } from '../data/siteConfig'
 import { useAssetAvailable } from '../lib/useAssetAvailable'
 
 const HeroCanvas = lazy(() => import('./HeroNetScene').then((m) => ({ default: m.HeroCanvas })))
@@ -78,6 +83,7 @@ export default function HeroBackground({ hostRef }) {
   // 'svg' → SVG shown; 'fading' → canvas is up, SVG crossfading out; 'canvas' → SVG unmounted
   const [layer, setLayer] = useState('svg')
   const [failed, setFailed] = useState(false)
+  const [photoLoaded, setPhotoLoaded] = useState(false)
 
   const onCanvasReady = () => {
     setLayer((cur) => (cur === 'svg' ? 'fading' : cur))
@@ -105,9 +111,15 @@ export default function HeroBackground({ hostRef }) {
     return () => io.disconnect()
   }, [hostRef])
 
+  const photoUrl = `${import.meta.env.BASE_URL}${HERO_BACKGROUND.src}`
+  const photo = useAssetAvailable(photoUrl, HERO_BACKGROUND.enabled)
+
   const useSvg = reduce || !webgl || failed || (small && HERO_MOBILE_MODE === 'svg')
   const lite = small && HERO_MOBILE_MODE === 'webgl-lite'
-  const showSvg = useSvg || layer !== 'canvas'
+  // The photograph replaces the net in every layer; only the mosquitoes remain,
+  // and under reduced motion or without WebGL the photograph stands alone.
+  const showSvg = !photo && (useSvg || layer !== 'canvas')
+  const showCanvas = !useSvg && inView
 
   // A supplied mosquito video replaces the 3D/SVG mosquitoes (the net stays).
   const base = import.meta.env.BASE_URL
@@ -120,6 +132,22 @@ export default function HeroBackground({ hostRef }) {
       {/* Always-on base: brand gradient. Guarantees a finished look before/without the 3D layer. */}
       <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_70%_20%,#15606b_0%,#10515b_45%,#0b3b43_100%)]" />
 
+      {photo && (
+        <img
+          src={photoUrl}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          fetchPriority="high"
+          onLoad={() => setPhotoLoaded(true)}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out ${photoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{ objectPosition: small ? HERO_BACKGROUND.positionMobile : HERO_BACKGROUND.position }}
+          draggable="false"
+        />
+      )}
+      {/* Teal wash over the photograph — what actually guarantees the white headline's contrast. */}
+      {photo && <div className="absolute inset-0 bg-teal-deep" style={{ opacity: HERO_BACKGROUND.overlay }} />}
+
       {showSvg && (
         <div
           className={`absolute inset-y-0 right-[-10%] w-[120%] transition-opacity duration-700 ease-out sm:right-[-5%] sm:w-[85%] md:w-[70%] ${
@@ -130,11 +158,11 @@ export default function HeroBackground({ hostRef }) {
         </div>
       )}
 
-      {!useSvg && inView && (
-        <div className="absolute inset-0 opacity-85">
+      {showCanvas && (
+        <div className={`absolute inset-0 ${photo ? '' : 'opacity-85'}`}>
           <SceneBoundary onFail={() => setFailed(true)}>
             <Suspense fallback={null}>
-              <HeroCanvas lite={lite} mosquitoes={!hideMosquitoes} onReady={onCanvasReady} />
+              <HeroCanvas lite={lite} mosquitoes={!hideMosquitoes} net={!photo} onReady={onCanvasReady} />
             </Suspense>
           </SceneBoundary>
         </div>
