@@ -100,6 +100,7 @@ export const HERO_MOSQUITO_VIDEO = {
 // The five-page navigation from the build specification (Part 3). Labels and
 // paths live with the page copy in content.js so the two cannot drift apart.
 export const navLinks = [
+  { label: 'Home', href: '/', route: true },
   { label: 'About', href: '/about', route: true },
   { label: 'Synera DuoForte', href: '/synera-duoforte', route: true },
   { label: 'Manufacturing and quality', href: '/manufacturing', route: true },

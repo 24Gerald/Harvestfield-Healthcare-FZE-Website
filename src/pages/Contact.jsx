@@ -1,5 +1,6 @@
 import PageHeader from '../components/PageHeader'
 import RequestSupply from '../sections/RequestSupply'
+import Supply from '../sections/Supply'
 import { pages } from '../data/content'
 
 /**
@@ -12,6 +13,7 @@ export default function Contact() {
     <>
       <PageHeader page={pages.contact} />
       <RequestSupply />
+      <Supply />
     </>
   )
 }

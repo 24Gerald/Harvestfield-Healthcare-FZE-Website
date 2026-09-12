@@ -91,7 +91,7 @@ export default function Nav() {
                   onClick={(e) => goRoute(e, l.href)}
                   onMouseEnter={() => setHovered(l.href)}
                   onFocus={() => setHovered(l.href)}
-                  className={`relative block whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-white xl:px-4 ${pathname === l.href.split('#')[0] ? 'text-white' : 'text-white/85'}`}
+                  className={`relative block whitespace-nowrap rounded-full px-2.5 py-2 text-[13px] font-medium transition-colors duration-200 hover:text-white xl:px-3.5 xl:text-sm ${pathname === l.href.split('#')[0] ? 'text-white' : 'text-white/85'}`}
                 >
                   {l.label}
                 </Link>

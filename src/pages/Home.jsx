@@ -3,27 +3,23 @@ import WhoWeAre from '../sections/WhoWeAre'
 import Today from '../sections/Today'
 import Malaria from '../sections/Malaria'
 import TheNet from '../sections/TheNet'
-import Factory from '../sections/Factory'
-import Gallery from '../sections/Gallery'
-import Certified from '../sections/Certified'
-import TrustedBy from '../sections/TrustedBy'
-import Heritage from '../sections/Heritage'
-import LocalCapability from '../sections/LocalCapability'
-import Purpose from '../sections/Purpose'
-import Management from '../sections/Management'
-import Supply from '../sections/Supply'
-import RequestSupply from '../sections/RequestSupply'
+import PageLinks from '../components/PageLinks'
+import PageCta from '../components/PageCta'
 import { pages } from '../data/content'
 import { usePageMeta } from '../lib/pageMeta'
 
 /**
- * Homepage order follows the build specification's flow: hero, who we are,
- * where we are today, the malaria problem, the net, made here, to what
- * standard, with whom, why us, what it means for Nigeria, why we exist, who
- * runs it, how to engage. The FAQ lives on the Synera DuoForte page.
+ * Home is home. Each section of the site lives on exactly one page, so the
+ * home page carries only what introduces the company — who we are, where we
+ * are today, why the product matters and the net itself, condensed — and then
+ * signposts the four pages that carry everything else:
  *
- * Backgrounds alternate dark / tint / white down the page, so no two adjacent
- * sections share a band.
+ *   Synera DuoForte ........ the net in full, and the FAQ
+ *   Manufacturing and quality  the factory, the photos, the credentials, GDM
+ *   About .................. the group, local manufacturing, purpose, leadership
+ *   Contact ................ the two supply routes and the request form
+ *
+ * Backgrounds alternate dark / tint / white down the page.
  */
 export default function Home() {
   usePageMeta(pages.home)
@@ -35,16 +31,8 @@ export default function Home() {
       <Today />
       <Malaria />
       <TheNet />
-      <Factory />
-      <Gallery />
-      <Certified />
-      <TrustedBy />
-      <Heritage />
-      <LocalCapability />
-      <Purpose />
-      <Management />
-      <Supply />
-      <RequestSupply />
+      <PageLinks />
+      <PageCta tone="white" />
     </>
   )
 }

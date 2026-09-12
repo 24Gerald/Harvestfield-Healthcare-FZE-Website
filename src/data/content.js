@@ -17,7 +17,7 @@ export const hero = {
   title: 'Protection, made close to the fight.',
   subtitle:
     'Harvestfield Healthcare is a Nigerian healthcare manufacturer producing Synera DuoForte dual-insecticide nets at its facility in Nigeria. Advanced malaria protection, made in the country carrying the world’s heaviest malaria burden.',
-  primaryCta: { label: 'Request supply', href: '#request-supply' },
+  primaryCta: { label: 'Request supply', href: '/contact' },
   secondaryCta: { label: 'See the net', href: '#net' },
 }
 

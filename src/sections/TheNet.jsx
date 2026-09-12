@@ -12,7 +12,8 @@ import { EASE_OUT } from '../lib/motion'
  *
  * Condensed (the home page) is the resistance argument, the two active
  * ingredient panels and the interactive pack, with a link onward. Full (the
- * Synera DuoForte page) adds the specification chips and the benefit tiles,
+ * Synera DuoForte page) adds the mesh diagram, the specification chips and
+ * the benefit tiles,
  * which the specification moves off the home page so the technical detail does
  * not obstruct a visitor forming a view of the company.
  *
@@ -141,10 +142,12 @@ export default function TheNet({ full = false }) {
               </Reveal>
             )}
 
-            <Reveal delay={0.4} className="mt-8">
-              <IngredientMesh ingredients={net.ingredients} />
-              <p className="mt-3 text-xs text-muted">{net.meshNote}</p>
-            </Reveal>
+            {full && (
+              <Reveal delay={0.4} className="mt-8">
+                <IngredientMesh ingredients={net.ingredients} />
+                <p className="mt-3 text-xs text-muted">{net.meshNote}</p>
+              </Reveal>
+            )}
           </div>
 
           {/* Pack */}

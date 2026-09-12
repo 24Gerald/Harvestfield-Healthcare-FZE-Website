@@ -548,7 +548,7 @@
 
   /* Third pass: the hero sized to its content, its two buttons side by side */
   main .section-pad { padding-block: 1.75rem; }
-  main #top { min-height: 0; }
+  main #top { min-height: 100svh; }
   main #top .pt-32 { padding-top: 5.5rem; }
   main #top .pb-20 { padding-bottom: 2rem; }
   main #top .flex-col { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
