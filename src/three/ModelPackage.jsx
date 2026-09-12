@@ -24,6 +24,23 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 const TARGET = 2.75
 const SPIN = 0.32 // rad/s, the same rate as the procedural pack
 
+/* Exposure control.
+ *
+ * The supplied material is glossy (roughness 0.2), so the film's wrinkles throw
+ * a lot of specular. With a full-strength key light and environment the top of
+ * the pack — where the light lands most squarely — clipped to white across a
+ * quarter of its area, losing the seal strip and the top of the printed panel.
+ * These values hold it in range: measured clipping above 247/255 in the top
+ * third fell from 25.8% to 8.4%, while the green panel's median moved only
+ * 107 -> 99, so the print stays saturated rather than going flat. The rest of
+ * the clipping is the seal strip's own near-white artwork.
+ *
+ * Changing any of these means re-capturing public/product/pack-still.webp, or
+ * the static fallback will be lit differently from the model. */
+const ENV_INTENSITY = 0.32 // environment reflection on the model's own materials
+const KEY_INTENSITY = 0.40 // main directional light
+const EXPOSURE = 0.90
+
 function Environment() {
   const { gl, scene } = useThree()
   useEffect(() => {
@@ -56,6 +73,9 @@ function Model({ url, paused, pose }) {
         o.material.map.anisotropy = 8
         o.material.map.colorSpace = THREE.SRGBColorSpace
       }
+      // glTF has no envMapIntensity, so three defaults it to 1 — far too strong
+      // against a RoomEnvironment probe for a material this glossy.
+      o.material.envMapIntensity = ENV_INTENSITY
     })
     const box = new THREE.Box3().setFromObject(obj)
     const size = box.getSize(new THREE.Vector3())
@@ -124,7 +144,7 @@ export default function ModelPackage({ url, active = true }) {
         antialias: true,
         powerPreference: 'low-power',
         toneMapping: THREE.NeutralToneMapping,
-        toneMappingExposure: 1.02,
+        toneMappingExposure: EXPOSURE,
         // Only while capturing the still: it costs memory, and toDataURL needs it.
         preserveDrawingBuffer: pose != null,
       }}
@@ -132,13 +152,14 @@ export default function ModelPackage({ url, active = true }) {
     >
       <PerformanceMonitor onDecline={() => setDpr(1)} />
       <Environment />
-      <ambientLight intensity={0.42} />
-      {/* key */}
-      <directionalLight position={[3.2, 4.2, 5.5]} intensity={1.05} />
+      <ambientLight intensity={0.56} />
+      {/* key — lower and less overhead than the procedural pack's, which was lit
+          for a matte film rather than this glossy one */}
+      <directionalLight position={[2.6, 2.2, 6.0]} intensity={KEY_INTENSITY} />
       {/* fill */}
-      <directionalLight position={[-4.5, 1.2, 3.5]} intensity={0.34} />
+      <directionalLight position={[-4.5, 1.2, 3.5]} intensity={0.3} />
       {/* rim, to lift the silhouette off the panel */}
-      <directionalLight position={[-1.5, 2.5, -5]} intensity={0.5} />
+      <directionalLight position={[-1.5, 2.5, -5]} intensity={0.38} />
       {/* soft bounce from below */}
       <directionalLight position={[0, -3.5, 1.5]} intensity={0.16} />
       <Suspense fallback={null}>
