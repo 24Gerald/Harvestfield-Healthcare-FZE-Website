@@ -5,7 +5,9 @@ uploading a file does not change the site on its own — send the path to your
 developer.
 
 Currently wired:
-  models/mosquito/scene.gltf   → the hero mosquitoes
+  models/Mosquito-net-package.glb  → the rotating pack in "The Net"
+                                    (PRODUCT_MODEL in src/data/siteConfig.js)
+  models/mosquito/scene.gltf     → the hero mosquitoes
                                  (HERO_MOSQUITO_MODEL in src/data/siteConfig.js;
                                   falls back to the procedural mosquito if absent)
 

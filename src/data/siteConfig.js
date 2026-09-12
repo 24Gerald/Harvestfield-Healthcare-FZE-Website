@@ -34,6 +34,20 @@ export const FORM_BACKEND = 'formsubmit'
 export const FORM_ENDPOINT_URL = '' // e.g. 'https://api.example.com/supply-requests'
 
 /**
+ * Supplied 3D model for the pack in "The Net" section.
+ *
+ * With this file present the rotating pack is the model; without it the site
+ * falls back to the procedural pouch built from the print artwork. Upload a
+ * .glb from the admin panel's 3D models tab and set `url` to the path it
+ * copies. The model is centred and scaled to the card at runtime, so it does
+ * not need to be exported at any particular size.
+ */
+export const PRODUCT_MODEL = {
+  enabled: true,
+  url: 'models/Mosquito-net-package.glb',
+}
+
+/**
  * Photographic hero background.
  *
  * Drop the approved photograph at public/hero/ using the file name below and
