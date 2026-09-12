@@ -12,6 +12,7 @@
 import { FORM_BACKEND, FORM_ENDPOINT_URL, site } from '../data/siteConfig'
 
 export const FORM_NAME = 'request-supply'
+export const PROPOSAL_FORM_NAME = 'supply-proposal'
 
 /** @typedef {{ fullName: string, organization?: string, email: string, topic?: string, message: string, 'bot-field'?: string }} SupplyRequest */
 
@@ -24,6 +25,43 @@ export async function submitSupplyRequest(values) {
       return submitToNetlify(values)
     case 'mailto':
       return submitViaMailto(values)
+    case 'endpoint':
+      return submitToEndpoint(values)
+    default:
+      throw new Error(`Unknown FORM_BACKEND "${FORM_BACKEND}"`)
+  }
+}
+
+/**
+ * Supply-proposal request. Same backends, its own form name and subject line so
+ * the two forms are distinguishable in the inbox and in Netlify's dashboard.
+ * @param {Record<string, string>} values
+ */
+export async function submitProposalRequest(values) {
+  const subject = `Supply proposal — ${values.organisation || values.contactName}`
+  switch (FORM_BACKEND) {
+    case 'formsubmit': {
+      const res = await fetch(`https://formsubmit.co/ajax/${site.contactEmail}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ _subject: subject, _template: 'table', _captcha: 'false', _replyto: values.email, ...values }),
+      })
+      if (!res.ok) throw new Error(`FormSubmit responded ${res.status}`)
+      const data = await res.json().catch(() => ({}))
+      if (data.success === 'false' || data.success === false) throw new Error(data.message || 'FormSubmit rejected the submission')
+      return
+    }
+    case 'netlify': {
+      const body = new URLSearchParams({ 'form-name': PROPOSAL_FORM_NAME, ...values }).toString()
+      const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
+      if (!res.ok) throw new Error(`Netlify Forms responded ${res.status}`)
+      return
+    }
+    case 'mailto': {
+      const lines = Object.entries(values).map(([k, v]) => `${k}: ${v || '—'}`).join('\n')
+      window.location.href = `mailto:${site.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`
+      return
+    }
     case 'endpoint':
       return submitToEndpoint(values)
     default:

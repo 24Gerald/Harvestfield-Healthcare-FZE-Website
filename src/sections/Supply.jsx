@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 import Button from '../components/Button'
@@ -6,12 +7,26 @@ import { supply } from '../data/content'
 import { smoothScrollTo } from '../lib/motion'
 
 function Column({ data, delay, soft = false }) {
+  const navigate = useNavigate()
+  // The soft link carries either an in-page anchor or a route; ease-scroll the
+  // first, navigate the second. It used to assume an anchor, so a route href
+  // was swallowed by the scroll handler and went nowhere.
+  const onSoftClick = (e) => {
+    e.preventDefault()
+    const href = data.cta.href
+    if (href.startsWith('#')) smoothScrollTo(href)
+    else navigate(href)
+  }
   return (
     <Reveal delay={delay} className="h-full">
       <TiltCard className="flex h-full flex-col rounded-3xl bg-white/[0.06] p-7 ring-1 ring-white/10 md:p-9">
         <p className="eyebrow text-white/60">{data.audience}</p>
         <h3 className="mt-3 text-2xl font-bold text-white md:text-3xl">{data.title}</h3>
-        <p className="mt-4 text-base text-white/80">{data.body}</p>
+        <div className="mt-4 space-y-3 text-base text-white/80">
+          {(Array.isArray(data.body) ? data.body : [data.body]).map((para) => (
+            <p key={para}>{para}</p>
+          ))}
+        </div>
         <ul className="mt-6 space-y-2.5">
           {data.points.map((p, i) => (
             <Reveal key={p} as="li" delay={delay + 0.15 + i * 0.07} className="flex items-start gap-3 text-sm leading-snug text-white/85">
@@ -25,10 +40,7 @@ function Column({ data, delay, soft = false }) {
           {soft ? (
             <a
               href={data.cta.href}
-              onClick={(e) => {
-                e.preventDefault()
-                smoothScrollTo(data.cta.href)
-              }}
+              onClick={onSoftClick}
               className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white underline-offset-4 hover:underline"
             >
               {data.cta.label}
@@ -62,9 +74,10 @@ function Column({ data, delay, soft = false }) {
  * "Supply" — two routes, both actionable.
  *
  * The second panel used to address households directly, describing a consumer
- * proposition that does not exist yet and could not be acted on. It now invites
- * distributors instead, which is a real commercial route and stops the site
- * promising households something they cannot buy.
+ * proposition that does not exist yet and could not be acted on. It now opens
+ * the private and institutional route — companies, foundations and NGOs running
+ * malaria prevention, CSR and community health programmes — and its CTA leads
+ * to the supply-proposal form rather than the general enquiry form.
  */
 export default function Supply() {
   return (
@@ -80,7 +93,7 @@ export default function Supply() {
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-2 md:gap-8">
           <Column data={supply.programs} delay={0.05} />
-          <Column data={supply.distributors} delay={0.12} soft />
+          <Column data={supply.institutional} delay={0.12} soft />
         </div>
       </div>
     </section>

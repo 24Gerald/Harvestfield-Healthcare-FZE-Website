@@ -25,11 +25,20 @@ export default function Certified() {
           <Reveal variant="rise" delay={0.08} duration={0.8}>
             <h2 className="mt-4 max-w-2xl text-3xl font-bold text-white sm:text-4xl lg:text-5xl">{c.title}</h2>
           </Reveal>
-          {c.body && (
-            <Reveal delay={0.15}>
-              <p className="mt-6 text-base text-white/80 md:text-lg">{c.body}</p>
+          {/* Last entry is the closing statement, set brighter and tighter than the paragraph above it. */}
+          {c.body?.map((para, i) => (
+            <Reveal key={para} delay={0.15 + i * 0.08}>
+              <p
+                className={
+                  i === c.body.length - 1
+                    ? 'mt-5 text-base font-semibold text-white md:text-lg'
+                    : 'mt-6 text-base text-white/80 md:text-lg'
+                }
+              >
+                {para}
+              </p>
             </Reveal>
-          )}
+          ))}
         </div>
 
         <ul className="mt-12 grid gap-6 md:grid-cols-3">

@@ -14,7 +14,7 @@
 /* Section 1 — Hero */
 export const hero = {
   eyebrow: 'Harvestfield Healthcare FZE',
-  title: 'Protection, made close to the fight.',
+  title: 'Protection, made close to the fight',
   subtitle:
     'Harvestfield Healthcare is a Nigerian healthcare manufacturer producing Synera DuoForte dual-insecticide nets at its facility in Nigeria. Advanced malaria protection, made in the country carrying the world’s heaviest malaria burden.',
   primaryCta: { label: 'Request supply', href: '/contact' },
@@ -28,7 +28,7 @@ export const whoWeAre = {
 
 /* Section 3 — Where we are today. Replaces the four-figure statistics strip. */
 export const today = {
-  title: 'Where we are today.',
+  title: 'Where we are today',
   // TODO(md-office): item 2 still needs the WHO site-inclusion wording in the
   // exact terms of the listing — the client is coming back on it.
   items: [
@@ -56,7 +56,7 @@ export const today = {
 export const malaria = {
   id: 'why-this-matters',
   eyebrow: 'Why this matters',
-  title: 'Resistance is winning wherever it goes unanswered.',
+  title: 'Resistance is winning wherever it goes unanswered',
   // Claims are kept qualitative; the source line below cites the WHO 2025
   // Nigeria country profile. No percentage is published here.
   body: [
@@ -76,7 +76,7 @@ export const net = {
   id: 'net',
   eyebrow: 'The Net',
   productName: 'Synera DuoForte',
-  title: 'Built for the mosquito we actually face.',
+  title: 'Built for the mosquito we actually face',
   // Loadings, the three-year rating and the fibre-binding description confirmed
   // by the client (Sept 2026).
   body: [
@@ -122,7 +122,7 @@ export const net = {
 export const factory = {
   id: 'factory',
   eyebrow: 'The Factory',
-  title: 'Made in Nigeria — not shipped in.',
+  title: 'Made in Nigeria',
   body: [
     'Our facility sits inside the [Harvestfield Industries Free Trade Zone](https://www.harvestfield-ng.com) in Ogun State, Nigeria, on a site the group owns and operates. Netting arrives in bulk panels and leaves as finished, packed Synera DuoForte nets, ready for the programmes and families waiting for them.',
     'Manufacturing in-country closes the distance between a decision and a delivery. No shipping windows, no port delays, and no waiting on a production slot in another hemisphere. For a programme that needs nets in a specific state in a specific month, that is the difference between a campaign that runs on time and one that does not.',
@@ -131,7 +131,7 @@ export const factory = {
     { step: 'Netting in', detail: 'Treated polyester knit arrives at the zone in bulk rolls.' },
     { step: 'Cut', detail: 'Panels are cut on site to size for each net format.' },
     { step: 'Sew', detail: 'Panels are seamed, hemmed and fitted with hanging loops.' },
-    { step: 'Pack and ship', detail: 'Synera DuoForte nets are folded, bagged, batch-checked and dispatched.' },
+    { step: 'Pack and deliver', detail: 'Synera DuoForte nets are folded, bagged, batch-checked and dispatched.' },
   ],
   link: { label: 'Inside the facility', href: '#inside-the-factory' },
 }
@@ -139,7 +139,7 @@ export const factory = {
 export const gallery = {
   id: 'inside-the-factory',
   eyebrow: 'Inside the factory',
-  title: 'Where Synera DuoForte nets take shape.',
+  title: 'Where Synera DuoForte nets take shape',
   ariaLabel: 'Photos from the Harvestfield Healthcare FZE factory, scrolling continuously. Hover to pause.',
 }
 
@@ -149,8 +149,12 @@ export const gallery = {
 export const certified = {
   id: 'certified',
   eyebrow: 'Quality and regulatory',
-  title: 'Quality decides, and it is not a close call.',
-  body: 'In healthcare manufacturing, quality is not a feature of the product. It is the condition of being allowed to supply at all. Where output and quality genuinely conflict here, quality wins, and the people responsible for quality can stop a line without asking permission first.',
+  title: 'Quality comes first every time',
+  // Second entry is set as the closing statement, not a paragraph.
+  body: [
+    'Every net we produce must meet the required standards before it leaves our facility. Our quality team has the authority to hold production, stop a line or reject a product when those standards are not met.',
+    'Production matters. Quality comes first.',
+  ],
   // ISO standard and NAFDAC GMP confirmed by the client (Sept 2026). The WHO
   // card still awaits the exact wording of the listing.
   items: [
@@ -181,7 +185,7 @@ export const certified = {
 /* Section 8 — The GDM relationship. Replaces the "Trusted by" strip. */
 export const trustedBy = {
   eyebrow: 'Technology partner',
-  title: 'The technology is GDM’s. The manufacturing is ours.',
+  title: 'The technology is GDM’s. The manufacturing is ours',
   // Arrangement description confirmed by the client (Sept 2026).
   body: [
     'Synera DuoForte was developed and is owned by GDM Health Products, and it holds WHO prequalification in their name. Harvestfield Healthcare manufactures it in Nigeria under the agreed manufacturing arrangement, inside their regulatory listing and to their specification.',
@@ -199,11 +203,13 @@ export const trustedBy = {
 export const heritage = {
   id: 'harvestfield-group',
   eyebrow: 'The Harvestfield Group',
-  title: 'Twenty-six years delivering nets. Now we make them.',
+  title: '26 years delivering nets. Now we make them',
   // The 26-year record and the 42 million figure confirmed publishable (Sept 2026).
   body: [
-    'Harvestfield has worked in Nigerian vector control for 26 years and has put over 42 million mosquito nets into households in all 36 states. We know which states run campaigns when, which routes are difficult in the rainy season, and what happens to a programme when a shipment lands late.',
-    'Manufacturing is the next step along the same chain, and it is a harder one. It required a plant built to be inspected, a quality system that holds up under audit, and people trained to run both. We began it with a clear view of the standard we would have to meet, because we have spent 26 years on the receiving end of other people’s.',
+    'For 26 years, Harvestfield has worked in vector control across Nigeria, delivering more than 42 million mosquito nets to households across all 36 states. That experience gives us something that cannot be built overnight: deep knowledge of the Nigerian market, nationwide distribution reach, and decades of experience getting products where they need to go.',
+    'Manufacturing is the natural next step.',
+    'We have built the facility, quality systems and local expertise to manufacture nets here in Nigeria to the standards international malaria programmes require. It brings production closer to the people we have spent more than two decades serving.',
+    'From delivering the nets to making them. The purpose remains the same.',
   ],
   parent: {
     name: 'Harvestfield Industries Limited',
@@ -216,7 +222,7 @@ export const heritage = {
 export const localCapability = {
   id: 'local-manufacturing',
   eyebrow: 'Local manufacturing',
-  title: 'A malaria supply chain that starts in Nigeria.',
+  title: 'A malaria supply chain that starts in Nigeria',
   body: [
     'Nigeria carries one of the heaviest malaria burdens in the world and has historically bought almost all of its control commodities abroad. That arrangement holds until a foreign budget is cut or a shipping route closes, and then the shortage arrives here.',
     'Manufacturing WHO-prequalified malaria commodities inside Nigeria changes that exposure. It shortens the supply chain, keeps manufacturing and regulatory capability in the country, creates skilled technical work, and leaves more of the value where the disease is.',
@@ -227,7 +233,7 @@ export const localCapability = {
 /* Section 11 — Purpose */
 export const purpose = {
   eyebrow: 'Our purpose',
-  title: 'To build what better health requires.',
+  title: 'To build what better health requires',
   body: 'Building means more than manufacturing. It means the plant, the quality systems, the regulatory capability, the technical skill and the careers that go with them. Nets are what we make. The purpose is what we are building around them.',
 }
 
@@ -239,7 +245,7 @@ export const purpose = {
 export const management = {
   id: 'management',
   eyebrow: 'Leadership',
-  title: 'The people running it.',
+  title: 'The people running it',
   intro:
     'Harvestfield Healthcare is led by people who have spent their careers putting health products into Nigerian households, and who are now responsible for making them.',
   readMore: 'Read full profile',
@@ -277,7 +283,7 @@ export const management = {
 export const supply = {
   id: 'supply',
   eyebrow: 'Supply',
-  title: 'Two ways to get Synera DuoForte where it is needed.',
+  title: 'Two ways to get Synera DuoForte where it is needed',
   // Batch documentation wording confirmed; the distribution network is
   // established (client, Sept 2026).
   programs: {
@@ -287,12 +293,15 @@ export const supply = {
     points: ['Manufactured in Nigeria', 'Batch-level quality assurance', 'Delivery in days, not months'],
     cta: { label: 'Request supply', href: '#request-supply' },
   },
-  distributors: {
-    title: 'For distributors',
-    audience: 'Health product distribution in Nigeria',
-    body: 'Our established distribution network makes Synera DuoForte available to households across Nigeria, alongside the group’s existing national reach. If you distribute health products in Nigeria, we would like to hear from you.',
-    points: ['National reach behind it', 'The same net supplied to programmes', 'Made in Nigeria'],
-    cta: { label: 'Talk to us about distribution', href: '#request-supply' },
+  institutional: {
+    title: 'Protect the communities you support',
+    audience: 'Private & institutional supply',
+    body: [
+      'Synera DuoForte is available to companies, foundations and organisations running malaria prevention, CSR and community health programmes across Nigeria.',
+      'Whether you are supporting one community or a large-scale initiative, talk to us about your requirements.',
+    ],
+    points: ['Made in Nigeria', 'Suitable for community and institutional programmes', 'Nationwide supply capability'],
+    cta: { label: 'Request a supply proposal', href: '/request-proposal' },
   },
 }
 
@@ -301,14 +310,14 @@ export const supply = {
 export const faqSection = {
   id: 'faq',
   eyebrow: 'FAQ',
-  title: 'Questions we hear most.',
+  title: 'Questions we hear most',
 }
 
 /* Section 14 — Request supply */
 export const requestSupply = {
   id: 'request-supply',
   eyebrow: 'Request supply',
-  title: 'Tell us what you need.',
+  title: 'Tell us what you need',
   context: [
     'We manufacture at the Harvestfield Industries Free Trade Zone, Ogun State, Nigeria.',
     'We supply federal and state malaria programmes, international funds and programmes, NGOs and distributors.',
@@ -325,7 +334,7 @@ export const requestSupply = {
   },
   submit: 'Send request',
   success: {
-    title: 'Thank you. Your request is in.',
+    title: 'Thank you. Your request is in',
     body: 'It has reached the team and we will come back to you.',
   },
   error: {
@@ -354,7 +363,7 @@ export const pages = {
     path: '/synera-duoforte',
     navLabel: 'Synera DuoForte',
     eyebrow: 'The product',
-    title: 'Synera DuoForte.',
+    title: 'Synera DuoForte',
     standfirst: 'Technical detail on the dual-insecticide net Harvestfield Healthcare manufactures in Nigeria, and the questions we are asked about it most.',
     docTitle: 'Synera DuoForte | Dual-insecticide LLIN manufactured in Nigeria',
     description: 'Synera DuoForte carries alpha-cypermethrin and chlorfenapyr, bound into the polyester fibre and rated for three years. Developed by GDM Health Products, manufactured in Nigeria by Harvestfield Healthcare FZE.',
@@ -363,7 +372,7 @@ export const pages = {
     path: '/manufacturing',
     navLabel: 'Manufacturing and quality',
     eyebrow: 'Manufacturing and quality',
-    title: 'How the nets are made, and to what standard.',
+    title: 'How the nets are made, and to what standard',
     standfirst: 'The facility, the process, the quality system and the regulatory position.',
     docTitle: 'Manufacturing and quality | Harvestfield Healthcare FZE',
     description: 'How Synera DuoForte nets are manufactured at the Harvestfield Industries Free Trade Zone in Ogun State, Nigeria, and the quality system and regulatory position behind them.',
@@ -372,7 +381,7 @@ export const pages = {
     path: '/about',
     navLabel: 'About',
     eyebrow: 'About Harvestfield Healthcare',
-    title: 'A Nigerian healthcare manufacturer.',
+    title: 'A Nigerian healthcare manufacturer',
     standfirst: 'The company, the group behind it, what it is building and the people running it.',
     docTitle: 'About | Harvestfield Healthcare FZE',
     description: 'Harvestfield Healthcare FZE is a wholly Nigerian-owned healthcare manufacturer within the Harvestfield Group, which has worked in Nigerian vector control for 26 years.',
@@ -381,7 +390,7 @@ export const pages = {
     path: '/news',
     navLabel: 'News',
     eyebrow: 'News',
-    title: 'Milestones.',
+    title: 'Milestones',
     standfirst: 'Production, programme supply and the science behind dual-insecticide nets.',
     docTitle: 'News | Harvestfield Healthcare FZE',
     description: 'Milestones from Harvestfield Healthcare FZE: production, malaria programme supply and the science behind dual-insecticide nets.',
@@ -390,10 +399,48 @@ export const pages = {
     path: '/contact',
     navLabel: 'Contact',
     eyebrow: 'Contact',
-    title: 'Contact and request supply.',
+    title: 'Contact and request supply',
     standfirst: 'Routes for programme supply, distribution, media and career enquiries.',
     docTitle: 'Contact and request supply | Harvestfield Healthcare FZE',
     description: 'Request Synera DuoForte supply, talk to us about distribution, or reach us for media and career enquiries. Harvestfield Healthcare FZE, Ogun State, Nigeria.',
+  },
+}
+
+/* The supply-proposal form, reached from the private & institutional panel. */
+export const proposal = {
+  path: '/request-proposal',
+  eyebrow: 'Private & institutional supply',
+  title: 'Request a supply proposal',
+  standfirst:
+    'Tell us about the programme you are running and the quantities you need, and we will come back with a written proposal.',
+  docTitle: 'Request a supply proposal | Harvestfield Healthcare FZE',
+  description:
+    'Request a written Synera DuoForte supply proposal for a malaria prevention, CSR or community health programme in Nigeria.',
+  fields: {
+    organisation: 'Organisation name',
+    contactName: 'Contact name',
+    jobTitle: 'Job title',
+    email: 'Business email',
+    phone: 'Phone number',
+    orgType: 'Organisation type',
+    orgTypeOptions: ['Company', 'Foundation', 'NGO', 'Other'],
+    purpose: 'Purpose',
+    purposeOptions: ['CSR programme', 'Community health programme', 'Employee programme', 'Donation', 'Other'],
+    quantity: 'Estimated number of nets required',
+    location: 'State(s) / delivery location',
+    deliveryDate: 'Required delivery date',
+    notes: 'Additional information',
+    notesPlaceholder: 'Anything else we should know about the programme, packaging or timelines.',
+    select: 'Select one',
+  },
+  submit: 'Submit request',
+  success: {
+    title: 'Thank you. Your request is in',
+    body: 'It has reached the team and we will come back to you with a proposal.',
+  },
+  error: {
+    title: 'Something went wrong.',
+    body: 'Your request was not sent. Please try again, or email us directly at',
   },
 }
 
@@ -408,8 +455,8 @@ export const pageCta = {
    so any link already shared keeps working. */
 export const blog = {
   eyebrow: 'News',
-  title: 'Milestones.',
+  title: 'Milestones',
   intro: 'Production, malaria programme supply and the science behind dual-insecticide nets.',
-  soonTitle: 'First entries coming soon.',
+  soonTitle: 'First entries coming soon',
   soonBody: 'We are setting this up. Check back shortly, or write to us if you have a question in the meantime.',
 }

@@ -36,7 +36,7 @@ const icons = {
     P('M4 20.5h2.4M8.9 20.5h2.4M4 15.5h2.4M8.9 15.5h2.4'),
   ],
   // Sealed carton seen in slight perspective, with the tape line across the lid.
-  'Pack and ship': [
+  'Pack and deliver': [
     P('M4 12l12-6 12 6v10l-12 6-12-6z'),
     P('M4 12l12 6 12-6M16 18v10'),
     P('M10 9l12 6'),
