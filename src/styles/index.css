@@ -443,3 +443,114 @@
 .hf-marquee--logos .hf-marquee-tile img {
   object-fit: contain;
 }
+
+/* ---------------------------------------------------------------------------
+   Mobile compaction (below md, 768px). Desktop is untouched by construction:
+   nothing here applies at md and above.
+
+   On a phone the page ran to nearly nineteen screens. Most of that was
+   desktop-scale rhythm carried down unchanged: 80px of padding at each end of
+   every section, 30px section headings, 24px card padding, 20px between
+   paragraphs. This layer halves the vertical rhythm on small screens while
+   keeping body copy at a readable size — a literal 50% zoom would put body
+   text at 8px, which nobody can read.
+
+   Scoped to `main` so the nav, footer and admin panel are not affected, and
+   written unlayered so it takes precedence over the utility classes it
+   adjusts. If a section needs its own mobile treatment, add a variant on the
+   component instead of widening this block.
+   ------------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  /* Section rhythm */
+  main .section-pad { padding-block: 2.25rem; }
+  main .py-16 { padding-block: 2rem; }
+  main .py-14 { padding-block: 1.75rem; }
+  main .py-12 { padding-block: 1.5rem; }
+
+  /* Type scale */
+  main h1 { font-size: 2rem; line-height: 1.1; }
+  main h2 { font-size: 1.5rem; line-height: 1.18; }
+  main h3 { font-size: 1.0625rem; }
+  main .text-lg, main .text-xl { font-size: 1rem; line-height: 1.5; }
+  main .text-base { font-size: 0.9375rem; line-height: 1.5; }
+  main .text-2xl { font-size: 1.25rem; }
+
+  /* Vertical spacing between blocks */
+  main .mt-16 { margin-top: 2rem; }
+  main .mt-12, main .mt-14 { margin-top: 1.5rem; }
+  main .mt-10 { margin-top: 1.25rem; }
+  main .mt-8 { margin-top: 1rem; }
+  main .mt-7, main .mt-6 { margin-top: 0.875rem; }
+  main .mt-5 { margin-top: 0.75rem; }
+  main .mt-4 { margin-top: 0.625rem; }
+  main [class*='space-y-5'] > :not([hidden]) ~ :not([hidden]),
+  main [class*='space-y-4'] > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
+
+  /* Grids and cards */
+  main .gap-12, main .gap-10 { gap: 1.5rem; }
+  main .gap-8 { gap: 1rem; }
+  main .gap-6, main .gap-5 { gap: 0.75rem; }
+  main .gap-y-9 { row-gap: 1rem; }
+  main .p-7, main .p-6 { padding: 1rem; }
+  main .p-5 { padding: 0.875rem; }
+  main .p-8, main .p-10 { padding: 1.25rem; }
+  main .rounded-3xl { border-radius: 1rem; }
+
+  /* Hero: a shorter opening screen; the net still shows behind the text */
+  main #top { min-height: 78svh; }
+  main #top .pt-32 { padding-top: 6rem; }
+  main #top .pb-20 { padding-bottom: 2.5rem; }
+  main #top h1 { font-size: 2.125rem; }
+
+  /* Sub-page headers */
+  main .pt-32 { padding-top: 6rem; }
+  main .pb-14 { padding-bottom: 2rem; }
+
+  /* Process steps two-up instead of a single tall column */
+  main ol[aria-label='Manufacturing process'] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  main ol[aria-label='Manufacturing process'] .h-12 { height: 2.5rem; width: 2.5rem; }
+
+  /* Certification marks: a shorter mark band */
+  main #certified .h-16 { height: 3rem; }
+
+  /* Buttons */
+  main a[class*='rounded-full'][class*='px-6'] { padding-block: 0.625rem; }
+
+  /* Second pass: body copy one step down, and the tallest blocks two-up */
+  main .section-pad { padding-block: 2rem; }
+  main .text-base { font-size: 0.875rem; line-height: 1.5; }
+  main .text-sm { font-size: 0.8125rem; line-height: 1.45; }
+  main #top { min-height: 72svh; }
+
+  /* "Where we are today": four statements as a 2x2 grid */
+  main [aria-labelledby='today-heading'] ul { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; }
+  main [aria-labelledby='today-heading'] ul .text-lg { font-size: 0.9375rem; line-height: 1.3; }
+
+  /* The net: both active-ingredient cards side by side */
+  main #net .grid.gap-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.625rem; }
+  main #net .grid.gap-4 .text-2xl { font-size: 1.125rem; }
+  main #net .grid.gap-4 .text-lg { font-size: 0.9375rem; }
+
+  /* Certification cards: shorter mark band, tighter copy */
+  main #certified .h-16 { height: 2.5rem; }
+  main #certified .mt-7 { margin-top: 0.75rem; }
+
+  /* Supply cards: tighter bullet list, no dead space above the button */
+  main #supply [class*='space-y-2'] > :not([hidden]) ~ :not([hidden]) { margin-top: 0.375rem; }
+  main #supply .flex-1 { display: none; }
+  main #supply .mt-8 + div { margin-top: 1rem; }
+
+  /* Leadership: smaller portrait beside the bio */
+  main #management .w-24 { width: 4.5rem; }
+
+  /* The pack showcase: square rather than portrait on a phone */
+  main #net .aspect-\[4\/5\] { aspect-ratio: 1 / 1; }
+
+  /* Third pass: the hero sized to its content, its two buttons side by side */
+  main .section-pad { padding-block: 1.75rem; }
+  main #top { min-height: 0; }
+  main #top .pt-32 { padding-top: 5.5rem; }
+  main #top .pb-20 { padding-bottom: 2rem; }
+  main #top .flex-col { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+  main #top .flex-col > a { flex: 1 1 auto; }
+}
