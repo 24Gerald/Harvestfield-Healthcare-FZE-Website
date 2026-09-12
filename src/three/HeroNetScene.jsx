@@ -433,9 +433,86 @@ const MOBILE_SET = [
   { theta: -0.45, height: 3.15, drift: [0.3, 0.25], period: 13, phase: 0.5, scale: 0.21 },
 ]
 
+/* ---------------------------------------------------------------------------
+   Roaming mosquitoes — used when the net is not rendered (photographic hero)
+   ------------------------------------------------------------------------ */
+/**
+ * Over the photograph there is no canopy to work, so a mosquito crosses the
+ * whole frame instead of orbiting one point. The path is a Lissajous figure
+ * with deliberately unrelated x and y frequencies, so it wanders the full
+ * width and height and takes a long time to repeat a route.
+ *
+ * The extent comes from useThree().viewport, which is the visible size in world
+ * units — so the swarm fills a wide desktop hero and a tall phone one without
+ * separate tuning.
+ */
+// Fraction of each half-extent kept clear of the frame edge. Proportional
+// rather than a fixed distance: half a world unit is nothing on a wide desktop
+// hero but a fifth of the width on a phone, which penned the swarm in.
+const ROAM_INSET = 0.06
+
+// fx / fy are the crossing rates; keeping their ratio irrational avoids a short
+// repeating loop. scale is the body size, already halved for realism.
+const ROAM_SET = [
+  { scale: 0.26, fx: 0.099, fy: 0.071, fz: 0.13, px: 0.0, py: 1.2, pz: 0.5 },
+  { scale: 0.22, fx: 0.074, fy: 0.108, fz: 0.11, px: 2.1, py: 4.0, pz: 2.2 },
+  { scale: 0.2, fx: 0.123, fy: 0.087, fz: 0.16, px: 4.3, py: 2.6, pz: 4.1 },
+  { scale: 0.24, fx: 0.083, fy: 0.126, fz: 0.09, px: 5.6, py: 0.4, pz: 1.3 },
+  { scale: 0.18, fx: 0.112, fy: 0.063, fz: 0.14, px: 1.4, py: 5.2, pz: 3.4 },
+]
+
+function RoamingMosquito({ index = 0, scale = 0.24, fx, fy, fz, px, py, pz, color = MOSQUITO_COLOR }) {
+  const group = useRef()
+  const anim = useRef({ flutter: 0, depth: 0, probe: 0 })
+  const { viewport, camera } = useThree()
+  const scratch = useMemo(() => ({ pos: new THREE.Vector3(), next: new THREE.Vector3() }), [])
+
+  const pathAt = (t, out) => {
+    // Depth first: the frustum narrows with distance, so the usable width and
+    // height at this z are viewport (measured at z=0) scaled by the distance
+    // ratio. Without this a mosquito drifting toward the camera slides out of
+    // frame — which on a narrow phone hero left most of the swarm off screen.
+    const z = Math.sin(t * fz * 6.283 + pz) * 1.4
+    const k = Math.max((camera.position.z - z) / camera.position.z, 0.1)
+    const hw = (viewport.width / 2) * k * (1 - ROAM_INSET)
+    const hh = (viewport.height / 2) * k * (1 - ROAM_INSET)
+    const x = Math.sin(t * fx * 6.283 + px) * hw * 0.94 + Math.sin(t * fx * 15.4 + px) * hw * 0.05
+    const y = Math.sin(t * fy * 6.283 + py) * hh * 0.88 + Math.cos(t * fy * 11.2 + py) * hh * 0.07
+    return out.set(x, y, z)
+  }
+
+  useFrame((state) => {
+    const g = group.current
+    if (!g) return
+    const t = state.clock.elapsedTime
+    pathAt(t, scratch.pos)
+    pathAt(t + 0.12, scratch.next)
+    g.position.copy(scratch.pos)
+    g.lookAt(scratch.next)
+    const a = anim.current
+    a.probe = 0
+    a.flutter = Math.sin(t * 95 + index) * 0.55
+    // Nearer the camera reads as "closer to the viewer" for the body shading.
+    a.depth = THREE.MathUtils.clamp((scratch.pos.z + 1.5) / 3, 0, 1)
+  })
+
+  return (
+    <group ref={group} scale={scale} renderOrder={1}>
+      <MosquitoBody anim={anim} color={color} />
+    </group>
+  )
+}
+
 export default function HeroNetScene({ lite = false, mosquitoes = true, net = true }) {
   const impacts = useRef([])
   const set = lite ? MOBILE_SET : MOSQUITO_SET
+
+  // Photographic hero: no canopy, so the mosquitoes cross the whole frame. The
+  // full set on a phone too — the bodies are procedural and tiny, so the saving
+  // from cutting one was not worth a thinner swarm on the smaller screen.
+  if (!net) {
+    return <>{mosquitoes && ROAM_SET.map((m, i) => <RoamingMosquito key={i} index={i} {...m} />)}</>
+  }
   // Desktop: canopy hangs on the right with the hoop below the nav, fabric running off the bottom.
   // Mobile (lite): centred, hoop in the upper fifth; the MOBILE_SET mosquitoes work the
   // narrow gathered top so the action sits above the text block rather than behind it.

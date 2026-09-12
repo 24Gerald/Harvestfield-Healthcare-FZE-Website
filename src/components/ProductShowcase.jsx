@@ -57,7 +57,7 @@ export default function ProductShowcase({ className = '' }) {
   return (
     <div
       ref={ref}
-      className={`relative aspect-[4/5] overflow-hidden rounded-3xl bg-[radial-gradient(80%_70%_at_50%_40%,#e7eeef_0%,#d5e2e4_100%)] ${className}`}
+      className={`relative aspect-[4/5] overflow-hidden rounded-3xl bg-[radial-gradient(85%_75%_at_50%_38%,#1a5f6b_0%,#103f48_55%,#0a2f36_100%)] ${className}`}
       onPointerEnter={() => setReady(true)}
     >
       {/* Pre-rendered still of the 3D pack: loading state and fallback, so the
@@ -65,7 +65,7 @@ export default function ProductShowcase({ className = '' }) {
       <img
         src={still}
         alt="Synera DuoForte pack, front"
-        className={`absolute left-1/2 top-1/2 max-h-[84%] w-auto max-w-[82%] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_28px_40px_rgba(16,81,91,0.22)] transition-opacity duration-700 ${use3D && mounted ? 'opacity-0' : 'opacity-100'}`}
+        className={`absolute left-1/2 top-1/2 max-h-[84%] w-auto max-w-[82%] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_28px_44px_rgba(0,0,0,0.45)] transition-opacity duration-700 ${use3D && mounted ? 'opacity-0' : 'opacity-100'}`}
         loading="lazy"
       />
       {use3D && mounted && (
@@ -79,7 +79,7 @@ export default function ProductShowcase({ className = '' }) {
           </Suspense>
         </div>
       )}
-      <p className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/70 px-3 py-1 text-[11px] font-medium text-teal-deep backdrop-blur-sm">
+      <p className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm">
         {use3D ? 'Drag to turn the pack' : 'Synera DuoForte pack'}
       </p>
       {ready && null}
