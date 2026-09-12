@@ -7,19 +7,26 @@ import { partnerLogo } from '../lib/partnerLogos'
 
 const PARENT = { name: 'Harvestfield Industries', url: 'https://www.harvestfield-ng.com' }
 
+/**
+ * Below md the footer runs horizontal rather than stacking three columns:
+ * logo and parent-company chip on one row, the site links as a wrapped row,
+ * the address on one line. From md up the layout is unchanged — every mobile
+ * class here has an md: counterpart restoring the original value.
+ */
 export default function Footer() {
   const modelLoaded = useModelStatus() === 'loaded'
   const credit = HERO_MOSQUITO_MODEL.credit
   const parentLogo = partnerLogo('harvestfield-industries', 'white')
   return (
     <footer className="on-dark bg-teal-deep text-white">
-      <div className="container-site py-14 md:py-16">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
-          <div>
-            <a href="#top" onClick={(e) => { e.preventDefault(); smoothScrollTo('#top') }} aria-label="Harvestfield Healthcare — back to top" className="inline-block">
-              <HarvestfieldLogo className="h-12" />
+      <div className="container-site py-10 md:py-16">
+        <div className="grid gap-7 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10">
+          {/* Mobile: logo and parent chip share a row, tagline beneath; md: the original stack */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-4 md:block">
+            <a href="#top" onClick={(e) => { e.preventDefault(); smoothScrollTo('#top') }} aria-label="Harvestfield Healthcare — back to top" className="order-1 inline-block">
+              <HarvestfieldLogo className="h-10 md:h-12" />
             </a>
-            <p className="mt-5 max-w-sm text-sm text-white/75">
+            <p className="order-3 w-full max-w-sm text-sm text-white/75 md:mt-5">
               A Nigerian healthcare manufacturer producing Synera DuoForte dual-insecticide nets in Ogun State.
             </p>
             <a
@@ -27,7 +34,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${PARENT.name} (opens in a new tab)`}
-              className="group mt-7 inline-flex items-center gap-3 text-sm text-white/75 hover:text-white"
+              className="group order-2 ml-auto inline-flex items-center gap-3 text-sm text-white/75 hover:text-white md:ml-0 md:mt-7"
             >
               {parentLogo ? (
                 <span className="inline-flex items-center rounded-lg bg-white px-2.5 py-1.5 transition-opacity group-hover:opacity-90">
@@ -36,13 +43,13 @@ export default function Footer() {
               ) : (
                 <span className="rounded-md border border-white/25 px-2.5 py-1 text-xs font-semibold tracking-wide text-white/85">{PARENT.name}</span>
               )}
-              <span>A {PARENT.name} company ↗</span>
+              <span className="hidden sm:inline">A {PARENT.name} company ↗</span>
             </a>
           </div>
 
           <nav aria-label="Footer">
             <p className="eyebrow text-white/60">Site</p>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 md:mt-4 md:block md:space-y-2.5">
               {navLinks.map((l) => (
                 <li key={l.href}>
                   {l.route ? (
@@ -66,23 +73,25 @@ export default function Footer() {
 
           <div>
             <p className="eyebrow text-white/60">Address</p>
-            <address className="mt-4 text-sm not-italic leading-relaxed text-white/85">
+            <address className="mt-3 text-sm not-italic leading-relaxed text-white/85 md:mt-4">
               {site.name}
-              <br />
+              <span className="md:hidden">, </span>
+              <br className="hidden md:inline" />
               {site.address.line1}
-              <br />
+              <span className="md:hidden">, </span>
+              <br className="hidden md:inline" />
               {site.address.line2}
             </address>
             <a
               href={`mailto:${site.contactEmail}`}
-              className="mt-3 inline-block text-sm text-white/85 underline-offset-4 hover:text-white hover:underline"
+              className="mt-2 inline-block text-sm text-white/85 underline-offset-4 hover:text-white hover:underline md:mt-3"
             >
               {site.contactEmail}
             </a>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-row flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5 text-xs text-white/60 md:mt-12 md:pt-6">
           <p>
             © {new Date().getFullYear()} {site.name}.
             {modelLoaded && credit && (
