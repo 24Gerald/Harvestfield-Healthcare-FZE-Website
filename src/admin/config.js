@@ -11,8 +11,10 @@ export const ADMIN = {
   postsDir: 'content/posts',
   mediaDir: 'public/blog-media', // served by the site at /blog-media/<file>
   galleryDir: 'src/assets/gallery', // home-page photo slider; bundled at build time, file-name order
+  modelsDir: 'public/models', // 3D models (.glb/.gltf); served by the site at /models/<file>
   passwordHash: '79f0dcc971c0894120988e01886dcdd190bf4d8647fec39fcbe5c972e6c7e480',
   siteUrl: typeof window !== 'undefined' ? `${window.location.origin}${import.meta.env.BASE_URL.replace(/\/$/, '')}` : '',
   workflowFile: 'pages.yml',
   maxImageEdge: 1800, // uploads are resized in the browser to keep the repo light
+  maxUploadMb: 24, // a single file's ceiling — the panel commits through the GitHub API
 }

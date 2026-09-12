@@ -145,8 +145,17 @@ export default function HeroBackground({ hostRef }) {
           draggable="false"
         />
       )}
-      {/* Teal wash over the photograph — what actually guarantees the white headline's contrast. */}
-      {photo && <div className="absolute inset-0 bg-teal-deep" style={{ opacity: HERO_BACKGROUND.overlay }} />}
+      {/* Two layers carry the text contrast over the photograph: an even teal wash
+          that ties it to the brand, then a light scrim weighted to the text side.
+          Deliberately restrained — measured white-on-photo contrast behind the
+          subhead is well past the 4.5:1 body-copy threshold, so there is nothing
+          to buy by darkening the picture further. */}
+      {photo && (
+        <>
+          <div className="absolute inset-0 bg-teal-deep" style={{ opacity: HERO_BACKGROUND.overlay }} />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,59,67,0.45)_0%,rgba(11,59,67,0.12)_50%,rgba(11,59,67,0.4)_100%)] md:bg-[linear-gradient(100deg,rgba(11,59,67,0.62)_0%,rgba(11,59,67,0.4)_36%,rgba(11,59,67,0.04)_70%,rgba(11,59,67,0)_100%)]" />
+        </>
+      )}
 
       {showSvg && (
         <div

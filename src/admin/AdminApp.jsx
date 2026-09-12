@@ -48,6 +48,7 @@ export default function AdminApp() {
     { id: 'posts', label: 'Posts' },
     { id: 'media', label: 'Media' },
     { id: 'gallery', label: 'Gallery' },
+    { id: 'models', label: '3D models' },
   ]
   const signOut = () => {
     if (confirm('Sign out?')) {
@@ -122,6 +123,19 @@ export default function AdminApp() {
                 </p>
                 <div className="mt-6">
                   <MediaLibrary client={client} dir={ADMIN.galleryDir} sequence imagesOnly maxEdge={1400} />
+                </div>
+              </motion.div>
+            )}
+            {view.name === 'models' && (
+              <motion.div key="models" exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
+                <h1 className="text-3xl font-bold text-teal-deep">3D models</h1>
+                <p className="mt-1 max-w-2xl text-sm text-muted">
+                  GLB and glTF files for the 3D elements on the site. Upload the file here, then press Copy and send the path to your developer —
+                  which element a model drives has to be wired in code, so a new upload does not change the site on its own. A .gltf package needs
+                  its .bin and texture files uploaded alongside it with their names unchanged.
+                </p>
+                <div className="mt-6">
+                  <MediaLibrary client={client} dir={ADMIN.modelsDir} models />
                 </div>
               </motion.div>
             )}

@@ -16,7 +16,13 @@ const seqPrefix = (n) => String(n).padStart(2, '0')
  * `sequence` mode (the home-page gallery): files are numbered 01-, 02-, … in the
  * order they are chosen, because the slider shows them in file-name order.
  */
-export default function MediaLibrary({ client, onPick, pickLabel = 'Use this image', dir = ADMIN.mediaDir, sequence = false, imagesOnly = false, maxEdge = ADMIN.maxImageEdge }) {
+/**
+ * `models` mode is for 3D assets. Two things differ from a photo upload: the
+ * file is committed byte-for-byte with no resizing, and its name is kept
+ * exactly as given — a .gltf references its .bin and textures by sibling file
+ * name, so renaming any one of them breaks the package.
+ */
+export default function MediaLibrary({ client, onPick, pickLabel = 'Use this image', dir = ADMIN.mediaDir, sequence = false, imagesOnly = false, models = false, maxEdge = ADMIN.maxImageEdge }) {
   const [items, setItems] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [drag, setDrag] = useState(false)
@@ -47,7 +53,15 @@ export default function MediaLibrary({ client, onPick, pickLabel = 'Use this ima
     for (const file of files) {
       try {
         let name, base64
-        if (file.type.startsWith('image/') && file.type !== 'image/gif' && file.type !== 'image/svg+xml') {
+        const mb = file.size / 1024 / 1024
+        if (mb > ADMIN.maxUploadMb) {
+          throw new Error(`${file.name} is ${mb.toFixed(1)} MB; the limit is ${ADMIN.maxUploadMb} MB. Decimate the mesh or compress the textures (Draco or glTF-Transform) and try again.`)
+        }
+        if (models) {
+          // Byte-for-byte, original name: a glTF package resolves siblings by name.
+          name = file.name.replace(/[^a-zA-Z0-9._-]+/g, '-')
+          base64 = await fileToBase64(file)
+        } else if (file.type.startsWith('image/') && file.type !== 'image/gif' && file.type !== 'image/svg+xml') {
           const img = await prepareImage(file, maxEdge)
           name = img.name
           base64 = img.base64
@@ -58,7 +72,8 @@ export default function MediaLibrary({ client, onPick, pickLabel = 'Use this ima
           base64 = await fileToBase64(file)
         }
         if (sequence) name = `${seqPrefix(next++)}-${name.replace(/^[0-9a-z]+-/, '')}`
-        await client.write(`${dir}/${name}`, base64, `${sequence ? 'Add gallery photo' : 'Upload media'}: ${name}`, { isBase64: true })
+        const verb = sequence ? 'Add gallery photo' : models ? 'Upload 3D model' : 'Upload media'
+        await client.write(`${dir}/${name}`, base64, `${verb}: ${name}`, { isBase64: true })
         toast(`Uploaded ${name}`, 'success')
       } catch (e) {
         toast(`Upload failed: ${e.message}`, 'error')
@@ -87,21 +102,52 @@ export default function MediaLibrary({ client, onPick, pickLabel = 'Use this ima
         onDrop={(e) => { e.preventDefault(); setDrag(false); upload([...e.dataTransfer.files]) }}
         className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 py-6 text-center transition-colors sm:px-6 sm:py-8 ${drag ? 'border-teal-deep bg-teal-tint' : 'border-teal-deep/25 bg-teal-tint-solid/60'}`}
       >
-        <p className="text-sm font-medium text-teal-deep"><span className="hidden sm:inline">Drop images here</span><span className="sm:hidden">Add images</span></p>
+        <p className="text-sm font-medium text-teal-deep">
+          <span className="hidden sm:inline">Drop {models ? 'model files' : 'images'} here</span>
+          <span className="sm:hidden">Add {models ? 'model files' : 'images'}</span>
+        </p>
         <p className="mt-1 text-xs text-muted">
-          {imagesOnly ? 'JPG, PNG or WebP.' : 'JPG, PNG, WebP, GIF or PDF.'} Large images are resized to {maxEdge}px on the long edge.
-          {sequence && ' Photos are numbered in the order you choose them.'}
+          {models ? (
+            <>
+              GLB or glTF, up to {ADMIN.maxUploadMb} MB each. A .gltf needs its .bin and textures uploaded alongside it, with their
+              names unchanged. Files are committed exactly as given.
+            </>
+          ) : (
+            <>
+              {imagesOnly ? 'JPG, PNG or WebP.' : 'JPG, PNG, WebP, GIF or PDF.'} Large images are resized to {maxEdge}px on the long edge.
+              {sequence && ' Photos are numbered in the order you choose them.'}
+            </>
+          )}
         </p>
         <Btn variant="ghost" className="mt-4" busy={uploading} onClick={() => fileRef.current.click()}>
           Choose files
         </Btn>
-        <input ref={fileRef} type="file" multiple accept={imagesOnly ? 'image/jpeg,image/png,image/webp' : 'image/*,application/pdf'} className="hidden" onChange={(e) => upload([...e.target.files])} />
+        <input
+          ref={fileRef}
+          type="file"
+          multiple
+          accept={
+            models
+              ? '.glb,.gltf,.bin,model/gltf-binary,model/gltf+json,image/png,image/jpeg,image/webp'
+              : imagesOnly
+                ? 'image/jpeg,image/png,image/webp'
+                : 'image/*,application/pdf'
+          }
+          className="hidden"
+          onChange={(e) => upload([...e.target.files])}
+        />
       </div>
 
       {items === null ? (
         <p className="mt-6 text-sm text-muted">Loading…</p>
       ) : items.length === 0 ? (
-        <p className="mt-6 text-sm text-muted">{sequence ? 'No photos yet. The slider stays hidden on the site until you add some.' : 'No media yet.'}</p>
+        <p className="mt-6 text-sm text-muted">
+          {sequence
+            ? 'No photos yet. The slider stays hidden on the site until you add some.'
+            : models
+              ? 'No models yet. Upload a .glb and send the path to your developer to wire it in.'
+              : 'No media yet.'}
+        </p>
       ) : (
         <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4">
           {items.map((f, i) => (
@@ -121,7 +167,14 @@ export default function MediaLibrary({ client, onPick, pickLabel = 'Use this ima
                     </Btn>
                   )}
                   {!sequence && (
-                    <Btn variant="quiet" className="px-2 py-1 text-xs" onClick={() => { navigator.clipboard.writeText(`blog-media/${f.name}`); toast('Path copied') }}>
+                    <Btn
+                      variant="quiet"
+                      className="px-2 py-1 text-xs"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${models ? 'models' : 'blog-media'}/${f.name}`)
+                        toast('Path copied')
+                      }}
+                    >
                       Copy
                     </Btn>
                   )}
