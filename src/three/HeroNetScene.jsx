@@ -35,6 +35,7 @@ import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.j
 import { HERO_MOSQUITO_MODEL } from '../data/siteConfig'
 import { modelStatus } from '../lib/modelStatus'
 import { useAssetAvailable } from '../lib/useAssetAvailable'
+import { assetUrl } from '../lib/assetUrl'
 import RealisticMosquito from './RealisticMosquito'
 import { CANOPY, canopyRadius } from './canopy'
 
@@ -312,7 +313,7 @@ export function Mosquito({
 
 /** Chooses the real model when configured and present, with the procedural body as fallback. */
 function MosquitoBody({ anim, color }) {
-  const available = useAssetAvailable(`${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`, HERO_MOSQUITO_MODEL.enabled)
+  const available = useAssetAvailable(assetUrl(HERO_MOSQUITO_MODEL.url), HERO_MOSQUITO_MODEL.enabled)
   if (!available) return <ProceduralBody anim={anim} color={color} />
   return (
     <ModelErrorBoundary fallback={<ProceduralBody anim={anim} color={color} />}>
@@ -461,7 +462,7 @@ export function HeroCanvas({ lite = false, mosquitoes = true, net = true, onRead
   const cameraPos = lite ? [0, 0.6, 10.5] : [0, 0.4, 8.5]
 
   // Start fetching the model as soon as we know the file exists (no-op otherwise).
-  const modelUrl = `${import.meta.env.BASE_URL}${HERO_MOSQUITO_MODEL.url}`
+  const modelUrl = assetUrl(HERO_MOSQUITO_MODEL.url)
   const modelOk = useAssetAvailable(modelUrl, HERO_MOSQUITO_MODEL.enabled)
   useEffect(() => {
     if (modelOk) useGLTF.preload(modelUrl)

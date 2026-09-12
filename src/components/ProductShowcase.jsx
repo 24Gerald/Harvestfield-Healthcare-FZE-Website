@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { PRODUCT_MODEL } from '../data/siteConfig'
 import { useAssetAvailable } from '../lib/useAssetAvailable'
+import { assetUrl } from '../lib/assetUrl'
 
 const ProductPackage = lazy(() => import('../three/ProductPackage'))
 const ModelPackage = lazy(() => import('../three/ModelPackage'))
@@ -47,7 +48,7 @@ export default function ProductShowcase({ className = '' }) {
     return () => clearTimeout(id)
   }, [inView, mounted])
 
-  const modelUrl = `${base}${PRODUCT_MODEL.url}`
+  const modelUrl = assetUrl(PRODUCT_MODEL.url)
   const hasModel = useAssetAvailable(modelUrl, PRODUCT_MODEL.enabled)
 
   const webgl = typeof document !== 'undefined' && !!document.createElement('canvas').getContext('webgl2')

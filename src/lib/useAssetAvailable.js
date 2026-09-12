@@ -9,9 +9,10 @@ const cache = new Map()
  * Returns null while checking, then true/false.
  */
 export function useAssetAvailable(url, enabled = true) {
-  const [ok, setOk] = useState(() => (enabled ? (cache.has(url) ? cache.get(url) : null) : false))
+  const inline = typeof url === 'string' && url.startsWith('data:')
+  const [ok, setOk] = useState(() => (enabled ? (inline ? true : cache.has(url) ? cache.get(url) : null) : false))
   useEffect(() => {
-    if (!enabled) return
+    if (!enabled || inline) return
     if (cache.has(url)) {
       setOk(cache.get(url))
       return
@@ -27,6 +28,6 @@ export function useAssetAvailable(url, enabled = true) {
     return () => {
       alive = false
     }
-  }, [url, enabled])
+  }, [url, enabled, inline])
   return ok
 }

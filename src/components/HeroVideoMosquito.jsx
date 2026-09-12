@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { animate, motion, useMotionValue, useReducedMotion } from 'framer-motion'
 import { HERO_MOSQUITO_VIDEO as cfg } from '../data/siteConfig'
 import { useAssetAvailable } from '../lib/useAssetAvailable'
+import { assetUrl } from '../lib/assetUrl'
 import { EASE_OUT, EASE_IN_OUT } from '../lib/motion'
 
 /**
@@ -10,9 +11,8 @@ import { EASE_OUT, EASE_IN_OUT } from '../lib/motion'
  * The path is expressed in % of the hero so it scales with the viewport.
  */
 export default function HeroVideoMosquito() {
-  const base = import.meta.env.BASE_URL
-  const webm = `${base}${cfg.webm}`
-  const hevc = `${base}${cfg.hevc}`
+  const webm = assetUrl(cfg.webm)
+  const hevc = assetUrl(cfg.hevc)
   const hasWebm = useAssetAvailable(webm, cfg.enabled)
   const hasHevc = useAssetAvailable(hevc, cfg.enabled)
   const reduce = useReducedMotion()

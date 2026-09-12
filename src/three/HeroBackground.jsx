@@ -28,6 +28,7 @@ import NetIllustration from '../components/NetIllustration'
 import HeroVideoMosquito from '../components/HeroVideoMosquito'
 import { HERO_BACKGROUND, HERO_MOBILE_MODE, HERO_MOBILE_BREAKPOINT, HERO_MOSQUITO_VIDEO } from '../data/siteConfig'
 import { useAssetAvailable } from '../lib/useAssetAvailable'
+import { assetUrl } from '../lib/assetUrl'
 
 const HeroCanvas = lazy(() => import('./HeroNetScene').then((m) => ({ default: m.HeroCanvas })))
 
@@ -111,7 +112,7 @@ export default function HeroBackground({ hostRef }) {
     return () => io.disconnect()
   }, [hostRef])
 
-  const photoUrl = `${import.meta.env.BASE_URL}${HERO_BACKGROUND.src}`
+  const photoUrl = assetUrl(HERO_BACKGROUND.src)
   const photo = useAssetAvailable(photoUrl, HERO_BACKGROUND.enabled)
 
   const useSvg = reduce || !webgl || failed || (small && HERO_MOBILE_MODE === 'svg')
@@ -122,9 +123,8 @@ export default function HeroBackground({ hostRef }) {
   const showCanvas = !useSvg && inView
 
   // A supplied mosquito video replaces the 3D/SVG mosquitoes (the net stays).
-  const base = import.meta.env.BASE_URL
-  const videoWebm = useAssetAvailable(`${base}${HERO_MOSQUITO_VIDEO.webm}`, HERO_MOSQUITO_VIDEO.enabled)
-  const videoHevc = useAssetAvailable(`${base}${HERO_MOSQUITO_VIDEO.hevc}`, HERO_MOSQUITO_VIDEO.enabled)
+  const videoWebm = useAssetAvailable(assetUrl(HERO_MOSQUITO_VIDEO.webm), HERO_MOSQUITO_VIDEO.enabled)
+  const videoHevc = useAssetAvailable(assetUrl(HERO_MOSQUITO_VIDEO.hevc), HERO_MOSQUITO_VIDEO.enabled)
   const hideMosquitoes = HERO_MOSQUITO_VIDEO.replace3D && (videoWebm || videoHevc)
 
   return (
