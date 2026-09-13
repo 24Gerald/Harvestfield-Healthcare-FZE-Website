@@ -28,9 +28,8 @@ export const whoWeAre = {
 /* Section 3 — Where we are today. Replaces the four-figure statistics strip. */
 export const today = {
   title: 'Where we are today',
-  // Item 2's WHO wording was supplied by the client (Sept 2026): "approved as an
-  // additional WHO prequalification manufacturing site". The card in Section 7
-  // still carries the earlier phrasing — see the note there.
+  // Item 2's WHO wording was supplied by the client (Sept 2026) and the card in
+  // Section 7 is worded to match. Change both together.
   items: [
     {
       lead: 'In commercial production since September 2026.',
@@ -155,18 +154,16 @@ export const certified = {
     'Every net we produce must meet the required standards before it leaves our facility. Our quality team has the authority to hold production, stop a line or reject a product when those standards are not met.',
     'Production matters. Quality comes first.',
   ],
-  // ISO standard and NAFDAC GMP confirmed by the client (Sept 2026).
-  // TODO(md-office): the WHO card below still reads "included as an approved
-  // manufacturing site under that prequalification", while "Where we are today"
-  // now says "approved as an additional WHO prequalification manufacturing
-  // site". Same fact, two phrasings — align them once the listing's exact terms
-  // are confirmed.
+  // ISO standard, NAFDAC GMP and the WHO wording all confirmed by the client
+  // (Sept 2026). The WHO card and "Where we are today" now use the same
+  // phrasing — "approved as an additional manufacturing site" — because this is
+  // the claim procurement agencies verify directly. Change both together.
   items: [
     {
       key: 'who',
       kicker: 'Globally validated',
       title: 'WHO prequalification',
-      body: 'Synera DuoForte is a WHO-prequalified product, developed and owned by GDM Health Products. Our facility in Nigeria is included as an approved manufacturing site under that prequalification.',
+      body: 'Synera DuoForte is a WHO-prequalified product, developed and owned by GDM Health Products. Our facility in Nigeria is approved as an additional manufacturing site under that prequalification.',
       logoAlt: 'World Health Organization',
     },
     {
