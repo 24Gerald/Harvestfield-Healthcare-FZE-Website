@@ -141,7 +141,7 @@ export const navLinks = [
   { label: 'Home', href: '/', route: true },
   { label: 'About', href: '/about', route: true },
   { label: 'Synera DuoForte', href: '/synera-duoforte', route: true },
-  { label: 'Manufacturing and quality', href: '/manufacturing', route: true },
+  { label: 'Manufacturing', href: '/manufacturing', route: true },
   { label: 'Leadership', href: '/about#management', route: true },
   { label: 'News', href: '/news', route: true },
   { label: 'Contact', href: '/contact', route: true },

@@ -14,9 +14,8 @@
 /* Section 1 — Hero */
 export const hero = {
   eyebrow: 'Harvestfield Healthcare FZE',
-  title: 'Protection, made close to the fight',
-  subtitle:
-    'Harvestfield Healthcare is a Nigerian healthcare manufacturer producing Synera DuoForte dual-insecticide nets at its facility in Nigeria. Advanced malaria protection, made in the country carrying the world’s heaviest malaria burden.',
+  title: 'Mosquito nets manufactured in Nigeria',
+  subtitle: 'Strengthening the fight against malaria.',
   primaryCta: { label: 'Request supply', href: '/contact' },
   secondaryCta: { label: 'See the net', href: '#net' },
 }
@@ -29,17 +28,18 @@ export const whoWeAre = {
 /* Section 3 — Where we are today. Replaces the four-figure statistics strip. */
 export const today = {
   title: 'Where we are today',
-  // TODO(md-office): item 2 still needs the WHO site-inclusion wording in the
-  // exact terms of the listing — the client is coming back on it.
+  // Item 2's WHO wording was supplied by the client (Sept 2026): "approved as an
+  // additional WHO prequalification manufacturing site". The card in Section 7
+  // still carries the earlier phrasing — see the note there.
   items: [
     {
       lead: 'In commercial production since September 2026.',
       detail: 'Synera DuoForte dual-insecticide nets, manufactured at our Ogun State facility.',
     },
     {
-      lead: 'An approved manufacturing site.',
+      lead: 'Nigeria’s first.',
       detail:
-        'Our facility is included as an approved manufacturing site under the WHO prequalification held for Synera DuoForte, and is GMP certified by NAFDAC.',
+        'First LLIN manufacturing facility in Nigeria approved as an additional WHO prequalification manufacturing site. First ISO-certified LLIN manufacturing facility in the country.',
     },
     {
       lead: '26 years in Nigerian vector control.',
@@ -155,8 +155,12 @@ export const certified = {
     'Every net we produce must meet the required standards before it leaves our facility. Our quality team has the authority to hold production, stop a line or reject a product when those standards are not met.',
     'Production matters. Quality comes first.',
   ],
-  // ISO standard and NAFDAC GMP confirmed by the client (Sept 2026). The WHO
-  // card still awaits the exact wording of the listing.
+  // ISO standard and NAFDAC GMP confirmed by the client (Sept 2026).
+  // TODO(md-office): the WHO card below still reads "included as an approved
+  // manufacturing site under that prequalification", while "Where we are today"
+  // now says "approved as an additional WHO prequalification manufacturing
+  // site". Same fact, two phrasings — align them once the listing's exact terms
+  // are confirmed.
   items: [
     {
       key: 'who',
@@ -370,7 +374,7 @@ export const pages = {
   },
   manufacturing: {
     path: '/manufacturing',
-    navLabel: 'Manufacturing and quality',
+    navLabel: 'Manufacturing',
     eyebrow: 'Manufacturing and quality',
     title: 'How the nets are made, and to what standard',
     standfirst: 'The facility, the process, the quality system and the regulatory position.',
