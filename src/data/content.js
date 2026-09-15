@@ -14,7 +14,7 @@
 /* Section 1 — Hero */
 export const hero = {
   eyebrow: 'Harvestfield Healthcare FZE',
-  title: 'Mosquito nets manufactured in Nigeria',
+  title: 'Dual active mosquito nets manufactured in Nigeria',
   subtitle: 'Strengthening the fight against malaria.',
   primaryCta: { label: 'Request supply', href: '/contact' },
   secondaryCta: { label: 'See the net', href: '#net' },
