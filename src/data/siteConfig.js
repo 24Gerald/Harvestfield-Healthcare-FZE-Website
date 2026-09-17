@@ -34,6 +34,14 @@ export const FORM_BACKEND = 'formsubmit'
 export const FORM_ENDPOINT_URL = '' // e.g. 'https://api.example.com/supply-requests'
 
 /**
+ * One gallery photo can be pulled out of the slider and used as the still image
+ * in "The Factory" instead. Name the file exactly as it appears in
+ * src/assets/gallery/; it is then excluded from the slider automatically, so the
+ * same photo never appears in both places. Set to '' to use none.
+ */
+export const FACTORY_STILL = '11-harvestfield-healthcare-78.jpg'
+
+/**
  * Supplied 3D model for the pack in "The Net" section.
  *
  * With this file present the rotating pack is the model; without it the site

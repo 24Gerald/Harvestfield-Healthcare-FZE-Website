@@ -4,6 +4,7 @@ import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 import { renderInline } from '../components/InlineMarkup'
 import { factory } from '../data/content'
+import { factoryStill } from '../lib/gallery'
 import { EASE_OUT, smoothScrollTo } from '../lib/motion'
 
 /* Line icons for the four process steps — icons, not photos (no factory photography yet).
@@ -95,6 +96,20 @@ export default function Factory() {
             <Reveal variant="rise" delay={0.08} duration={0.8}>
               <h2 className="mt-4 text-3xl font-bold text-teal-deep sm:text-4xl lg:text-5xl">{factory.title}</h2>
             </Reveal>
+            {/* The production hall, directly under the heading. Drawn from the
+                gallery folder and excluded from the slider — see FACTORY_STILL. */}
+            {factoryStill && (
+              <Reveal delay={0.2} className="mt-7">
+                <img
+                  src={factoryStill.src}
+                  alt={factoryStill.alt}
+                  className="aspect-[16/10] w-full rounded-2xl object-cover shadow-[0_18px_40px_-28px_rgba(16,81,91,0.55)]"
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                />
+              </Reveal>
+            )}
           </div>
           <div className="lg:col-span-7 lg:pt-2">
             <Reveal delay={0.15} className="space-y-5 text-base text-ink/85 md:text-lg">
