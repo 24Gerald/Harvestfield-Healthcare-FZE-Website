@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Btn } from './ui'
 
-const ALLOWED = new Set(['P', 'BR', 'STRONG', 'B', 'EM', 'I', 'U', 'H2', 'H3', 'BLOCKQUOTE', 'UL', 'OL', 'LI', 'A', 'IMG', 'HR', 'FIGURE', 'FIGCAPTION'])
+const ALLOWED = new Set(['P', 'BR', 'STRONG', 'B', 'EM', 'I', 'U', 'H2', 'H3', 'BLOCKQUOTE', 'UL', 'OL', 'LI', 'A', 'IMG', 'HR', 'FIGURE', 'FIGCAPTION',
+  'TABLE', 'CAPTION', 'THEAD', 'TBODY', 'TR', 'TH', 'TD'])
+// Table-cell attributes that carry meaning (header scope, spans). Everything else, including inline style, is stripped.
+const CELL_ATTRS = ['scope', 'colspan', 'rowspan']
 
 /** Keep only the tags/attributes the site renders; unwrap everything else. Used on paste and on save. */
 export function cleanHtml(html) {
@@ -28,7 +31,10 @@ export function cleanHtml(html) {
           continue
         }
         for (const attr of [...child.attributes]) {
-          const keep = (tag === 'A' && attr.name === 'href') || (tag === 'IMG' && ['src', 'alt', 'width', 'height'].includes(attr.name))
+          const keep =
+            (tag === 'A' && attr.name === 'href') ||
+            (tag === 'IMG' && ['src', 'alt', 'width', 'height'].includes(attr.name)) ||
+            ((tag === 'TH' || tag === 'TD') && CELL_ATTRS.includes(attr.name))
           if (!keep) child.removeAttribute(attr.name)
         }
         if (tag === 'B') child.outerHTML = `<strong>${child.innerHTML}</strong>`
