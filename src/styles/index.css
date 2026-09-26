@@ -554,3 +554,42 @@
   main #top .flex-col { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
   main #top .flex-col > a { flex: 1 1 auto; }
 }
+
+   /* Tables in post bodies. safeHtml() wraps each table in .hf-table-wrap so wide
+   tables scroll horizontally on phones instead of widening the page. */
+.hf-prose .hf-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.hf-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.hf-prose th,
+.hf-prose td {
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-teal-deep) 15%, transparent);
+}
+.hf-prose thead th {
+  vertical-align: bottom;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--color-teal-deep);
+  background: color-mix(in oklab, var(--color-teal-deep) 6%, transparent);
+  border-bottom: 2px solid color-mix(in oklab, var(--color-teal-deep) 40%, transparent);
+}
+.hf-prose tbody th {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.hf-prose caption {
+  caption-side: bottom;
+  padding-top: 0.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
