@@ -49,5 +49,13 @@ export function safeHtml(html = '') {
       el.setAttribute('rel', 'noopener noreferrer')
     }
   })
+    // Wide tables scroll inside their own box on small screens instead of widening the page.
+  doc.querySelectorAll('table').forEach((table) => {
+    if (table.parentElement?.classList.contains('hf-table-wrap')) return
+    const wrap = doc.createElement('div')
+    wrap.className = 'hf-table-wrap'
+    table.replaceWith(wrap)
+    wrap.appendChild(table)
+  })
   return doc.body.innerHTML
 }

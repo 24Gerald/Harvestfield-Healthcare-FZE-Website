@@ -57,3 +57,27 @@
   border: 0;
   border-top: 1px solid color-mix(in oklab, var(--color-teal-deep) 20%, transparent);
 }
+
+/* Tables pasted into the editor (the public site styles them via .hf-prose) */
+.hf-editor table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.hf-editor th,
+.hf-editor td {
+  padding: 0.5rem 0.625rem;
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid color-mix(in oklab, var(--color-teal-deep) 20%, transparent);
+}
+.hf-editor thead th {
+  background: color-mix(in oklab, var(--color-teal-deep) 6%, transparent);
+  font-weight: 600;
+}
+.hf-editor caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
