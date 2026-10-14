@@ -52,12 +52,12 @@ export default function Certified() {
                   transition={{ duration: 0.35, ease: EASE_OUT }}
                 >
                   {/* One mark height across all three cards, contained and left-aligned, so a
-                      round seal and a wide lockup line up on the same baseline. */}
-                  <span className="flex h-16 w-full items-center md:h-20">
-                    {logo ? (
+                      round seal and a wide lockup line up on the same baseline. A card
+                      with no mark keeps the band empty rather than showing placeholder
+                      text, so the three stay aligned — see the WHO note in content.js. */}
+                  <span className="flex h-16 w-full items-center md:h-20" aria-hidden={!logo || undefined}>
+                    {logo && (
                       <img src={logo} alt={it.logoAlt} className="max-h-full w-auto max-w-[170px] object-contain object-left md:max-w-[200px]" draggable="false" />
-                    ) : (
-                      <span className="text-[11px] font-bold uppercase leading-tight tracking-wide text-teal-deep">{it.key}</span>
                     )}
                   </span>
                   <div className="mt-7 flex flex-1 flex-col">

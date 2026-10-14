@@ -38,7 +38,7 @@ export const today = {
     {
       lead: 'Nigeria’s first.',
       detail:
-        'First LLIN manufacturing facility in Nigeria approved as an additional WHO prequalification manufacturing site. First ISO-certified LLIN manufacturing facility in the country.',
+        'First LLIN manufacturing facility in Nigeria listed as an additional WHO prequalification manufacturing site. First ISO-certified LLIN manufacturing facility in the country.',
     },
     {
       lead: '26 years in Nigerian vector control.',
@@ -156,15 +156,18 @@ export const certified = {
   ],
   // ISO standard, NAFDAC GMP and the WHO wording all confirmed by the client
   // (Sept 2026). The WHO card and "Where we are today" now use the same
-  // phrasing — "approved as an additional manufacturing site" — because this is
+  // phrasing — "listed as an additional manufacturing site" — because this is
   // the claim procurement agencies verify directly. Change both together.
+  //
+  // The WHO emblem was removed from this card on WHO's instruction (Oct 2026).
+  // WHO restricts use of its emblem; do not reinstate it. The wording is a
+  // factual reference to the prequalification listing and is unaffected.
   items: [
     {
       key: 'who',
       kicker: 'Globally validated',
       title: 'WHO prequalification',
-      body: 'Synera DuoForte is a WHO-prequalified product, developed and owned by GDM Health Products. Our facility in Nigeria is approved as an additional manufacturing site under that prequalification.',
-      logoAlt: 'World Health Organization',
+      body: 'Synera DuoForte is a WHO-prequalified product, developed and owned by GDM Health Products. Our facility in Nigeria is listed as an additional manufacturing site under that prequalification.',
     },
     {
       key: 'nafdac',
