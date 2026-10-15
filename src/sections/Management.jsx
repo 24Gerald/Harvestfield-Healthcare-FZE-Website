@@ -7,11 +7,12 @@ import { managementPhoto } from '../lib/managementPhotos'
 import { EASE_OUT } from '../lib/motion'
 
 /**
- * "Leadership" — one card per person. Each shows a 4:5
- * portrait (optional file in src/assets/management/, initials until it
- * exists), name, role and the first paragraph of the bio; the rest expands
- * in place under "Read full profile". Photos are cropped from the top with
- * object-fit, never stretched.
+ * "Leadership" — the people, in groups: Harvestfield Healthcare's own
+ * Chairman and Managing Director first, then the board and the executive
+ * management of the parent company. Each card shows a 4:5 portrait (optional
+ * file in src/assets/management/, initials until it exists), name, role and
+ * the first paragraph of the bio; the rest expands in place under "Read full
+ * profile". Photos are cropped from the top with object-fit, never stretched.
  */
 export default function Management() {
   return (
@@ -33,14 +34,23 @@ export default function Management() {
           )}
         </div>
 
-        {/* One card while the Chairman biography is outstanding; two once it lands. */}
-        <ul className={`mt-10 grid gap-5 md:mt-12 md:gap-6 ${c.people.length > 1 ? 'md:grid-cols-2' : 'max-w-2xl'}`}>
-          {c.people.map((p, i) => (
-            <Reveal key={p.name} as="li" delay={0.1 + i * 0.12} className="h-full">
-              <PersonCard person={p} />
+        {c.groups.map((g, gi) => (
+          <div key={g.title} className={gi === 0 ? 'mt-10 md:mt-12' : 'mt-12 md:mt-16'}>
+            <Reveal>
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-teal-deep/15 pb-3">
+                <h3 className="eyebrow text-teal-deep">{g.title}</h3>
+                {g.note && <p className="text-sm text-muted">{g.note}</p>}
+              </div>
             </Reveal>
-          ))}
-        </ul>
+            <ul className={`mt-6 grid gap-5 md:gap-6 ${g.people.length > 1 ? 'md:grid-cols-2' : 'max-w-2xl'}`}>
+              {g.people.map((p, i) => (
+                <Reveal key={p.name} as="li" delay={0.08 + i * 0.1} className="h-full">
+                  <PersonCard person={p} />
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </section>
   )
@@ -73,8 +83,9 @@ function PersonCard({ person: p }) {
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <h3 className="text-lg font-bold leading-tight text-teal-deep sm:text-xl">{p.name}</h3>
+        <h4 className="text-lg font-bold leading-tight text-teal-deep sm:text-xl">{p.name}</h4>
         <p className="eyebrow mt-1 text-muted">{p.role}</p>
+        {p.also && <p className="mt-1 text-xs leading-snug text-muted">{p.also}</p>}
 
         <div className="mt-3 space-y-3 text-sm leading-relaxed text-ink/85">
           <p>{first}</p>
