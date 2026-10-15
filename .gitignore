@@ -6,3 +6,4 @@ dist-ssr
 .DS_Store
 npm-debug.log*
 .vite
+vite.preview-single.config.js
