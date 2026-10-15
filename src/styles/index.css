@@ -24,6 +24,14 @@
   --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1); /* no bounce — clinical, calm */
 
   --breakpoint-xs: 23.4375rem; /* 375px */
+
+  /* `lg` is the tablet → desktop switch: the full header, the two-column
+     section layouts and the large headings all key off it. It sits at 960px
+     rather than Tailwind's default 1024px so that "Desktop site" / "Request
+     Desktop Website" on a phone — which lays the page out at a fixed 980px and
+     ignores the viewport meta — gets the desktop version, which is the whole
+     point of asking for it. Real viewports at 1024px and up are unaffected. */
+  --breakpoint-lg: 60rem; /* 960px */
 }
 
 @layer base {
@@ -460,6 +468,18 @@
    adjusts. If a section needs its own mobile treatment, add a variant on the
    component instead of widening this block.
    ------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------
+   Small desktop (960–1023px) — the band the lowered `lg` breakpoint opened up,
+   which is also where a phone asking for the desktop site lands (980px). The
+   full header fits, but only just, so the logo and the link padding come in a
+   notch. Nothing at 1024px and above is touched.
+   ------------------------------------------------------------------------ */
+@media (min-width: 60rem) and (max-width: 63.9375rem) {
+  nav[aria-label='Primary'] svg { height: 2.5rem; }
+  nav[aria-label='Primary'] ul a { padding-inline: 0.5rem; }
+  nav[aria-label='Primary'] ul + div a { padding-inline: 0.875rem; }
+}
+
 @media (max-width: 767px) {
   /* Section rhythm */
   main .section-pad { padding-block: 2.25rem; }
